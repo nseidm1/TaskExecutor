@@ -14,17 +14,17 @@ import com.taskexecutorservice.exceptions.NoQueuedTasksException;
 import com.taskexecutorservice.exceptions.PendingTasksException;
 import com.taskexecutorservice.runnables.Task;
 
-public class TaskService extends Service {
-	private static TaskService mTaskService = null;
+public class TaskExecutorService extends Service {
+	private static TaskExecutorService mTaskService = null;
 	private ArrayList<Task> mQueue = new ArrayList<Task>();
 	private Executor mTaskExecutor = Executors.newSingleThreadExecutor();
 
-	private TaskService() {
+	private TaskExecutorService() {
 	}
 
-	public static TaskService getInstance() {
+	public static TaskExecutorService getInstance() {
 		if (mTaskService == null) {
-			mTaskService = new TaskService();
+			mTaskService = new TaskExecutorService();
 			mTaskService.startService(null);
 		}
 		return mTaskService;

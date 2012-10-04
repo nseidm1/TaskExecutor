@@ -2,18 +2,18 @@ package com.taskexecutorservice.runnables;
 
 import java.util.concurrent.Semaphore;
 
-import com.taskexecutorservice.TaskService;
+import com.taskexecutorservice.TaskExecutorService;
 import com.taskexecutorservice.callbacks.CompleteCallback;
 
 public abstract class Task implements Runnable {
-	private TaskService mTaskService;
+	private TaskExecutorService mTaskService;
 	private CompleteCallback mCompleteCallback;
 	private Semaphore mPause = new Semaphore(1);
 	private boolean mRemoveOnFail = false;
 
 	public abstract void defineTask() throws Exception;
 
-	public Task(TaskService taskService, CompleteCallback completeCallback) {
+	public Task(TaskExecutorService taskService, CompleteCallback completeCallback) {
 		mTaskService = taskService;
 		mCompleteCallback = completeCallback;
 	}
