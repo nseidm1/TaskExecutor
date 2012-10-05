@@ -14,6 +14,7 @@ public abstract class Task implements Runnable
 	private Semaphore mPause = new Semaphore(1);
 	private boolean mRemoveOnException = false;
 	private Handler mUiHandler = new Handler();
+	private String TAG = "";
 
 	public abstract void task() throws Exception;
 
@@ -25,6 +26,24 @@ public abstract class Task implements Runnable
 	public Task(TaskCompletedCallback completeCallback)
 	{
 		mCompleteCallback = completeCallback;
+	}
+
+	/**
+	 * @param tag
+	 *            Set the tag of this Task. You can use it to identify the Task
+	 *            in the callback.
+	 */
+	public void setTag(String tag)
+	{
+		TAG = tag;
+	}
+
+	/**
+	 * @return the TAG of this Task.
+	 */
+	public String getTag()
+	{
+		return TAG;
 	}
 
 	/**

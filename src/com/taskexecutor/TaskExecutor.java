@@ -13,7 +13,7 @@ import com.taskexecutor.runnables.Task;
 
 public class TaskExecutor
 {
-	private boolean mAutoExecution = false;
+	private boolean mAutoExecution = true;
 	private boolean mIsPaused = false;
 	private boolean mPermitCallbackIfPaused = false;
 	private Handler mHandler = new Handler();
@@ -21,8 +21,21 @@ public class TaskExecutor
 	private ThreadPoolExecutor mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newSingleThreadExecutor();
 
 	/**
+	 * @param setAutoExecution
+	 *            Do you want the queue to automatically start executing if not
+	 *            currently executing? You can set this to false at a later
+	 *            time, which may be useful if you want to stage Tasks to be
+	 *            executed in a batch.
+	 */
+	public TaskExecutor(boolean setAutoExecution)
+	{
+		setAutoExecution(setAutoExecution);
+	}
+
+	/**
 	 * @param threadPoolExecutor
-	 *            Specify a custom thread pool executor. The default is a single thread pool maximizing the effectiveness of pausing.
+	 *            Specify a custom thread pool executor. The default is a single
+	 *            thread pool maximizing the effectiveness of pausing.
 	 */
 	public void specifyExecutor(ThreadPoolExecutor threadPoolExecutor)
 	{
@@ -73,7 +86,7 @@ public class TaskExecutor
 					}
 				}
 				if (mAutoExecution)
-					mHandler.postDelayed(this, 500);
+					mHandler.postDelayed(this, 1000);
 			}
 
 		};
@@ -151,10 +164,10 @@ public class TaskExecutor
 	}
 
 	/**
-	 * Pause queue execution if applicable. If a task is currently being executed it will
-	 * complete, but but the CompleteExecution callback will block until
-	 * resumeQueue() is called; this gives the opportunity to reset the Task
-	 * callback in onResume().
+	 * Pause queue execution if applicable. If a task is currently being
+	 * executed it will complete, but but the CompleteExecution callback will
+	 * block until resumeQueue() is called; this gives the opportunity to reset
+	 * the Task callback in onResume().
 	 */
 	public void onPause()
 	{
