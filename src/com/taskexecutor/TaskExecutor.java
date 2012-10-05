@@ -98,7 +98,7 @@ public class TaskExecutor
 	 */
 	public void addTaskToQueue(Task task, boolean removeOnException) throws IllegalStateException
 	{
-		if (mTaskThreadExecutor.getQueue().size() == 0)
+		if (mTaskThreadExecutor.getQueue().size() != 0)
 			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
 		task.setTaskExecutor(this);
 		task.setRemoveOnException(removeOnException);
@@ -113,7 +113,7 @@ public class TaskExecutor
 	 */
 	public void addTaskToQueue(Task task) throws IllegalStateException
 	{
-		if (mTaskThreadExecutor.getQueue().size() == 0)
+		if (mTaskThreadExecutor.getQueue().size() != 0)
 			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
 		task.setTaskExecutor(this);
 		mQueue.add(task);
@@ -126,9 +126,18 @@ public class TaskExecutor
 	 */
 	public void removeTaskFromQueue(Task task) throws IllegalStateException
 	{
-		if (mTaskThreadExecutor.getQueue().size() == 0)
+		if (mTaskThreadExecutor.getQueue().size() != 0)
 			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
 		mQueue.remove(task);
+	}
+	
+	/**
+	 * @param task
+	 * A task to execute immediately, bypassing the queue.
+	 */
+	public void runTask(Task task)
+	{
+		mTaskThreadExecutor.execute(task);
 	}
 
 	/**
