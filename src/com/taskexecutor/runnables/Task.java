@@ -8,13 +8,12 @@ import android.os.Handler;
 import com.taskexecutor.TaskExecutor;
 import com.taskexecutor.callbacks.TaskCompletedCallback;
 
-public abstract class Task implements Runnable
-{
+public abstract class Task implements Runnable {
 	private TaskExecutor mTaskExecutor;
 	private TaskCompletedCallback mCompleteCallback;
 	private Semaphore mPause = new Semaphore(1);
 	private boolean mRemoveOnException = false;
-	private boolean mExperiencedException  = false;
+	private boolean mExperiencedException = false;
 	private Handler mUiHandler;
 	private Bundle mBundle = new Bundle();
 	private String TAG = "";
@@ -26,41 +25,36 @@ public abstract class Task implements Runnable
 	 *            Provide an interface callback to reporting when this task is
 	 *            complete.
 	 */
-	public Task(TaskCompletedCallback completeCallback)
-	{
+	public Task(TaskCompletedCallback completeCallback) {
 		mCompleteCallback = completeCallback;
 	}
-	
+
 	/**
 	 * @param uiHandler
-	 * Set the ui handler for this Task.
+	 *            Set the ui handler for this Task.
 	 */
-	public void setUiHandler(Handler uiHandler)
-	{
+	public void setUiHandler(Handler uiHandler) {
 		mUiHandler = uiHandler;
 	}
-	
+
 	/**
 	 * @param bundle
 	 */
-	public void setBundle(Bundle bundle)
-	{
+	public void setBundle(Bundle bundle) {
 		mBundle = bundle;
 	}
-	
+
 	/**
 	 * @return
 	 */
-	public Bundle getBundle()
-	{
+	public Bundle getBundle() {
 		return mBundle;
 	}
-	
+
 	/**
 	 * @return If an exception occured.
 	 */
-	public boolean getExperiencedException()
-	{
+	public boolean getExperiencedException() {
 		return mExperiencedException;
 	}
 
@@ -69,16 +63,14 @@ public abstract class Task implements Runnable
 	 *            Set the tag of this Task. You can use it to identify the Task
 	 *            in the callback.
 	 */
-	public void setTag(String tag)
-	{
+	public void setTag(String tag) {
 		TAG = tag;
 	}
 
 	/**
 	 * @return the TAG of this Task.
 	 */
-	public String getTag()
-	{
+	public String getTag() {
 		return TAG;
 	}
 
@@ -87,8 +79,7 @@ public abstract class Task implements Runnable
 	 *            Aside from the constructor you can specify the callback using
 	 *            this method.
 	 */
-	public void setCompleteCallback(TaskCompletedCallback completeCallback)
-	{
+	public void setCompleteCallback(TaskCompletedCallback completeCallback) {
 		mCompleteCallback = completeCallback;
 	}
 
@@ -97,8 +88,7 @@ public abstract class Task implements Runnable
 	 *            If you want this Task to automatically retrieve itself from
 	 *            the TaskExecutor's queue, a reference is needed.
 	 */
-	public void setTaskExecutor(TaskExecutor taskExecutor)
-	{
+	public void setTaskExecutor(TaskExecutor taskExecutor) {
 		mTaskExecutor = taskExecutor;
 	}
 
@@ -107,55 +97,45 @@ public abstract class Task implements Runnable
 	 *            If the task fails to execute because of an exception, do you
 	 *            still want to remove it from the queue?
 	 */
-	public void setRemoveOnException(Boolean removeOnException)
-	{
+	public void setRemoveOnException(Boolean removeOnException) {
 		mRemoveOnException = removeOnException;
 	}
 
 	/**
 	 * 
 	 */
-	public void pause()
-	{
+	public void pause() {
 		mPause.drainPermits();
 	}
 
 	/**
 	 * 
 	 */
-	public void resume()
-	{
+	public void resume() {
 		mPause.release();
 	}
 
 	@Override
-	public void run()
-	{
-		try
-		{
+	public void run() {
+		try {
 			task();
 			mPause.acquire();
 			if (mTaskExecutor != null)
 				mTaskExecutor.removeTaskFromQueue(this);
-			mUiHandler.post(new Runnable()
-			{
+			mUiHandler.post(new Runnable() {
 				@Override
-				public void run()
-				{
+				public void run() {
 					if (mCompleteCallback != null)
 						mCompleteCallback.onTaskComplete(Task.this, true, null);
 				}
 			});
-		} catch (final Exception e)
-		{
+		} catch (final Exception e) {
 			mExperiencedException = true;
 			if (mRemoveOnException && mTaskExecutor != null)
 				mTaskExecutor.removeTaskFromQueue(this);
-			mUiHandler.post(new Runnable()
-			{
+			mUiHandler.post(new Runnable() {
 				@Override
-				public void run()
-				{
+				public void run() {
 					if (mCompleteCallback != null)
 						mCompleteCallback.onTaskComplete(Task.this, false, e);
 				}

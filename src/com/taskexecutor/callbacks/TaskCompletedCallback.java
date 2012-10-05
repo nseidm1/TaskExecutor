@@ -2,8 +2,7 @@ package com.taskexecutor.callbacks;
 
 import com.taskexecutor.runnables.Task;
 
-public interface TaskCompletedCallback
-{
+public interface TaskCompletedCallback {
 	/**
 	 * @param task
 	 *            The Task that was being executed.
