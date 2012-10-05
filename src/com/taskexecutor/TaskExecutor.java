@@ -239,18 +239,4 @@ public class TaskExecutor
 	{
 		mTaskThreadExecutor.getQueue().clear();
 	}
-
-	/**
-	 * @param forcedShutdown
-	 *            If false and there are items in the queue this will throw a
-	 *            PendingTasksException. Pass true if you want to forceShutdown.
-	 * @throws PendingTasksException
-	 */
-	public void shutdownTaskExecutor(boolean forceShutdown) throws PendingTasksException
-	{
-		if (!forceShutdown && mQueue.size() > 0)
-			throw new PendingTasksException("Tasks are in the queue.");
-		clearQueue();
-		mTaskThreadExecutor.shutdownNow();
-	}
 }
