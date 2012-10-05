@@ -151,14 +151,10 @@ public class TaskExecutor
 	}
 
 	/**
-	 * Pause queue execution. If a task is currently being executed it will
+	 * Pause queue execution if applicable. If a task is currently being executed it will
 	 * complete, but but the CompleteExecution callback will block until
 	 * resumeQueue() is called; this gives the opportunity to reset the Task
 	 * callback in onResume().
-	 * 
-	 * @throws IllegalStateException
-	 *             Exception will be thrown if the queue isn't currently
-	 *             executing, or the queue is already paused.
 	 */
 	public void onPause()
 	{
@@ -173,11 +169,7 @@ public class TaskExecutor
 	}
 
 	/**
-	 * Resume queue execution from a paused state.
-	 * 
-	 * @throws IllegalStateException
-	 *             Exception will be thrown if the queue isn't currently
-	 *             executing, or the queue is not paused.
+	 * Resume queue execution from a paused state if applicable.
 	 */
 	public void onResume(TaskCompletedCallback callCompleteCallback)
 	{
