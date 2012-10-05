@@ -4,18 +4,14 @@ import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import android.os.Handler;
-
 import com.taskexecutor.callbacks.TaskCompletedCallback;
 import com.taskexecutor.exceptions.PendingTasksException;
 import com.taskexecutor.runnables.Task;
 
 public class TaskExecutor
 {
-	private boolean mAutoExecution = true;
 	private boolean mIsPaused = false;
 	private boolean mPermitCallbackIfPaused = false;
-	private Handler mHandler = new Handler();
 	private ArrayList<Task> mQueue = new ArrayList<Task>();
 	private ThreadPoolExecutor mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newSingleThreadExecutor();
 
@@ -26,9 +22,8 @@ public class TaskExecutor
 	 *            time, which may be useful if you want to stage Tasks to be
 	 *            executed in a batch.
 	 */
-	public TaskExecutor(boolean setAutoExecution)
+	public TaskExecutor()
 	{
-		setAutoExecution(setAutoExecution);
 	}
 
 	/**
@@ -58,32 +53,6 @@ public class TaskExecutor
 	public boolean isPaused()
 	{
 		return mIsPaused;
-	}
-
-	/**
-	 * @param autoExecution
-	 *            Start auto execution. If enabled executeQueue will be called
-	 *            every 500ms. Auto execution is off by default!
-	 */
-	public void setAutoExecution(final boolean autoExecution)
-	{
-		mAutoExecution = autoExecution;
-		Runnable autoLoop = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (mQueue.size() > 0 && !isExecuting())
-				{
-					executeQueue();
-				}
-				if (mAutoExecution)
-					mHandler.postDelayed(this, 1000);
-			}
-
-		};
-		if (mAutoExecution)
-			mHandler.post(autoLoop);
 	}
 
 	/**

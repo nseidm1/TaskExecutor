@@ -14,7 +14,7 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
 	{
 		super.onCreate(bundle);
 		if (mTaskExecutor == null)
-			mTaskExecutor = new TaskExecutor(true);
+			mTaskExecutor = new TaskExecutor();
 	}
 
 	@Override
