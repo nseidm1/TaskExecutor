@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import android.os.Handler;
+
 import com.taskexecutor.callbacks.CompleteCallback;
 import com.taskexecutor.exceptions.NoQueuedTasksException;
 import com.taskexecutor.exceptions.PendingTasksException;
@@ -11,7 +13,9 @@ import com.taskexecutor.runnables.Task;
 
 public class TaskExecutor
 {
+	private boolean mAutoExecution = false;
 	private static TaskExecutor mTaskExecutor = null;
+	private Handler mHandler = new Handler();
 	private ArrayList<Task> mQueue = new ArrayList<Task>();
 	private ThreadPoolExecutor mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newSingleThreadExecutor();
 
@@ -26,6 +30,39 @@ public class TaskExecutor
 		return mTaskExecutor;
 	}
 
+	/**
+	 * @param autoExecution
+	 * Start auto execution. If enabled executeQueue will be called every 500ms. Auto execution is off by default!
+	 */
+	public void setAutoExecution(final boolean autoExecution)
+	{
+		mAutoExecution = autoExecution;
+		Runnable autoLoop = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+
+				if (!isExecuting())
+				{
+					try
+					{
+						executeQueue();
+					} 
+					catch (NoQueuedTasksException e)
+					{
+						e.printStackTrace();
+					}
+				}
+				if (mAutoExecution)
+					mHandler.postDelayed(this, 500);
+			}
+			
+		};
+		if (mAutoExecution)
+			mHandler.post(autoLoop);
+	}
+	
 	/**
 	 * @param task
 	 *            Provide a Task to be added to the queue pending execution.
