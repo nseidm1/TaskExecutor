@@ -27,7 +27,7 @@ public class TaskExecutor {
 	}
 
 	/**
-	 * @param continueExecutionIfPaused
+	 * @param autoPauseQueue
 	 *            Default is true, when your activity is paused the queue will
 	 *            pause. If set to false Task execution will not pause with the
 	 *            activity. Please carefully consider this because of the
