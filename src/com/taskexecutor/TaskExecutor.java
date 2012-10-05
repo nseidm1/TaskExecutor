@@ -33,9 +33,13 @@ public class TaskExecutor
 	 *            By default Tasks will not be removed from the queue if they
 	 *            fail to execute completely because of an exception. Pass true
 	 *            to remove Tasks that experience exception.
+	 * @throws IllegalStateException
+	 * Queue is executing, please call stopExecution() first.
 	 */
-	public void addTaskToQueue(Task task, boolean removeOnFail)
+	public void addTaskToQueue(Task task, boolean removeOnFail) throws IllegalStateException
 	{
+		if (mTaskThreadExecutor.getQueue().size() == 0)
+			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
 		task.setTaskExecutor(mTaskExecutor);
 		task.setRemoveOnFail(removeOnFail);
 		mQueue.add(task);
@@ -43,11 +47,22 @@ public class TaskExecutor
 
 	/**
 	 * @param task
-	 *            Remove a specific task from the queue.
+	 * @throws IllegalStateException
+	 * Queue is executing, please call stopExecution() first.
 	 */
-	public void removeTaskFromQueue(Task task)
+	public void removeTaskFromQueue(Task task) throws IllegalStateException
 	{
+		if (mTaskThreadExecutor.getQueue().size() == 0)
+			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
 		mQueue.remove(task);
+	}
+	
+	/**
+	 * @return true if the queue is currently executing.
+	 */
+	public boolean isExecuting()
+	{
+		return mTaskThreadExecutor.getQueue().size() != 0;
 	}
 
 	/**
@@ -62,7 +77,7 @@ public class TaskExecutor
 			throw new NoQueuedTasksException("No tasks are currently queued.");
 		for (Task task : mQueue)
 		{
-			executeSpecificTask(task);
+			mTaskThreadExecutor.execute(task);
 		}
 	}
 
@@ -116,11 +131,6 @@ public class TaskExecutor
 		{
 			task.setCompleteCallback(completeCallback);
 		}
-	}
-
-	private void executeSpecificTask(Task task)
-	{
-		mTaskThreadExecutor.execute(task);
 	}
 
 	/**
