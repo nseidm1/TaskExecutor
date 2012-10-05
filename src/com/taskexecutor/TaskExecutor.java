@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import android.os.Handler;
 
-import com.taskexecutor.callbacks.CompleteCallback;
+import com.taskexecutor.callbacks.TaskCompletedCallback;
 import com.taskexecutor.exceptions.NoQueuedTasksException;
 import com.taskexecutor.exceptions.PendingTasksException;
 import com.taskexecutor.runnables.Task;
@@ -184,7 +184,7 @@ public class TaskExecutor
 	 *             Exception will be thrown if the queue isn't currently
 	 *             executing, or the queue is not paused.
 	 */
-	public void onResume(CompleteCallback callCompleteCallback) throws IllegalStateException
+	public void onResume(TaskCompletedCallback callCompleteCallback) throws IllegalStateException
 	{
 		setCallbackForAllQueuedTasks(callCompleteCallback);
 
@@ -209,7 +209,7 @@ public class TaskExecutor
 	 * 
 	 * @param completeCallback
 	 */
-	public void setCallbackForAllQueuedTasks(CompleteCallback completeCallback)
+	public void setCallbackForAllQueuedTasks(TaskCompletedCallback completeCallback)
 	{
 		if (getQueueCount() != 0)
 		{

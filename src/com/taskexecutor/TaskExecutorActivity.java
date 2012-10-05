@@ -3,9 +3,9 @@ package com.taskexecutor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-import com.taskexecutor.callbacks.CompleteCallback;
+import com.taskexecutor.callbacks.TaskCompletedCallback;
 
-public abstract class TaskExecutorActivity extends FragmentActivity implements CompleteCallback
+public abstract class TaskExecutorActivity extends FragmentActivity implements TaskCompletedCallback
 {
 	protected static TaskExecutor mTaskExecutor;
 

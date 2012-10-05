@@ -2,7 +2,7 @@ package com.taskexecutor.callbacks;
 
 import com.taskexecutor.runnables.Task;
 
-public interface CompleteCallback
+public interface TaskCompletedCallback
 {
 	/**
 	 * @param task
@@ -15,5 +15,5 @@ public interface CompleteCallback
 	 *            Null if the task did not throw an exception.
 	 * 
 	 */
-	public void onTaskCompletion(Task task, boolean success, Exception exception);
+	public void onTaskComplete(Task task, boolean success, Exception exception);
 }

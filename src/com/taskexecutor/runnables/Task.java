@@ -5,12 +5,12 @@ import java.util.concurrent.Semaphore;
 import android.os.Handler;
 
 import com.taskexecutor.TaskExecutor;
-import com.taskexecutor.callbacks.CompleteCallback;
+import com.taskexecutor.callbacks.TaskCompletedCallback;
 
 public abstract class Task implements Runnable
 {
 	private TaskExecutor mTaskExecutor;
-	private CompleteCallback mCompleteCallback;
+	private TaskCompletedCallback mCompleteCallback;
 	private Semaphore mPause = new Semaphore(1);
 	private boolean mRemoveOnException = false;
 	private Handler mUiHandler = new Handler();
@@ -23,7 +23,7 @@ public abstract class Task implements Runnable
 	 *            Provide an interface callback to reporting when this task is
 	 *            complete.
 	 */
-	public Task(CompleteCallback completeCallback)
+	public Task(TaskCompletedCallback completeCallback)
 	{
 		mCompleteCallback = completeCallback;
 	}
@@ -51,7 +51,7 @@ public abstract class Task implements Runnable
 	 *            Aside from the constructor you can specify the callback using
 	 *            this method.
 	 */
-	public void setCompleteCallback(CompleteCallback completeCallback)
+	public void setCompleteCallback(TaskCompletedCallback completeCallback)
 	{
 		mCompleteCallback = completeCallback;
 	}
@@ -107,7 +107,7 @@ public abstract class Task implements Runnable
 				public void run()
 				{
 					if (mCompleteCallback != null)
-						mCompleteCallback.onTaskCompletion(Task.this, true, null);
+						mCompleteCallback.onTaskComplete(Task.this, true, null);
 				}
 			});
 		} catch (final Exception e)
@@ -120,7 +120,7 @@ public abstract class Task implements Runnable
 				public void run()
 				{
 					if (mCompleteCallback != null)
-						mCompleteCallback.onTaskCompletion(Task.this, false, e);
+						mCompleteCallback.onTaskComplete(Task.this, false, e);
 				}
 			});
 		}
