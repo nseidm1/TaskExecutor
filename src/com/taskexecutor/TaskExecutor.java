@@ -18,17 +18,6 @@ public class TaskExecutor
 	private ThreadPoolExecutor mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newSingleThreadExecutor();
 
 	/**
-	 * @param setAutoExecution
-	 *            Do you want the queue to automatically start executing if not
-	 *            currently executing? You can set this to false at a later
-	 *            time, which may be useful if you want to stage Tasks to be
-	 *            executed in a batch.
-	 */
-	public TaskExecutor()
-	{
-	}
-
-	/**
 	 * @param threadPoolExecutor
 	 *            Specify a custom thread pool executor. The default is a single
 	 *            thread pool maximizing the effectiveness of pausing.
