@@ -2,6 +2,7 @@ package com.taskexecutor.runnables;
 
 import java.util.concurrent.Semaphore;
 
+import android.os.Bundle;
 import android.os.Handler;
 
 import com.taskexecutor.TaskExecutor;
@@ -15,6 +16,7 @@ public abstract class Task implements Runnable
 	private boolean mRemoveOnException = false;
 	private boolean mExperiencedException  = false;
 	private Handler mUiHandler = new Handler();
+	private Bundle mBundle = new Bundle();
 	private String TAG = "";
 
 	public abstract void task() throws Exception;
@@ -27,6 +29,22 @@ public abstract class Task implements Runnable
 	public Task(TaskCompletedCallback completeCallback)
 	{
 		mCompleteCallback = completeCallback;
+	}
+	
+	/**
+	 * @param bundle
+	 */
+	public void setBundle(Bundle bundle)
+	{
+		mBundle = bundle;
+	}
+	
+	/**
+	 * @return
+	 */
+	public Bundle getBundle()
+	{
+		return mBundle;
 	}
 	
 	/**
