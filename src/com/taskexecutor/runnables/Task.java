@@ -14,21 +14,36 @@ public abstract class Task implements Runnable
 	private Semaphore mPause = new Semaphore(1);
 	private boolean mRemoveOnFail = false;
 	private Handler mUiHandler = new Handler();
+	private String TAG = "";
 
 	public abstract void task() throws Exception;
 
 	/**
-	 * @param taskService
-	 *            Provide a reference to the TaskExecutorService so when this
-	 *            task is complete it can remove itself from an existing queue.
 	 * @param completeCallback
 	 *            Provide an interface callback to reporting when this task is
 	 *            complete.
-	 * @param uiHandler
 	 */
 	public Task(CompleteCallback completeCallback)
 	{
 		mCompleteCallback = completeCallback;
+	}
+
+	/**
+	 * @param tag
+	 *            Set the tag of this Task. You can use it to identify the Task
+	 *            in the callback.
+	 */
+	public void setTag(String tag)
+	{
+		TAG = tag;
+	}
+
+	/**
+	 * @return the TAG of this Task.
+	 */
+	public String getTag()
+	{
+		return TAG;
 	}
 
 	/**
