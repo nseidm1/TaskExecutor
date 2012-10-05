@@ -12,7 +12,7 @@ import com.taskexecutor.runnables.Task;
 public class TaskExecutor
 {
 	private boolean mIsPaused = false;
-	private boolean mPermitCallbackIfPaused = false;
+	private boolean mAutoPauseQueue = true;
 	private Handler mUiHandler = new Handler();
 	private ArrayList<Task> mQueue = new ArrayList<Task>();
 	private ThreadPoolExecutor mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newSingleThreadExecutor();
@@ -44,9 +44,9 @@ public class TaskExecutor
 	 *            pause with the activity. Please carefully consider this if
 	 *            your callbacks invoke anything in the ui!
 	 */
-	public void setPermitCallbackIfPaused(boolean permitCallbackIfPaused)
+	public void setAutoPauseQueue(boolean autoPauseQueue)
 	{
-		mPermitCallbackIfPaused = permitCallbackIfPaused;
+		mAutoPauseQueue = autoPauseQueue;
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class TaskExecutor
 	 */
 	public void onPause()
 	{
-		if (!mPermitCallbackIfPaused && isExecuting() && !mIsPaused)
+		if (mAutoPauseQueue && isExecuting() && !mIsPaused)
 		{
 			mIsPaused = true;
 			for (Task task : mQueue)
