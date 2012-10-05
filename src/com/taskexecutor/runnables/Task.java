@@ -13,6 +13,7 @@ public abstract class Task implements Runnable
 	private TaskCompletedCallback mCompleteCallback;
 	private Semaphore mPause = new Semaphore(1);
 	private boolean mRemoveOnException = false;
+	private boolean mExperiencedException  = false;
 	private Handler mUiHandler = new Handler();
 	private String TAG = "";
 
@@ -26,6 +27,14 @@ public abstract class Task implements Runnable
 	public Task(TaskCompletedCallback completeCallback)
 	{
 		mCompleteCallback = completeCallback;
+	}
+	
+	/**
+	 * @return If an exception occured.
+	 */
+	public boolean getExperiencedException()
+	{
+		return mExperiencedException;
 	}
 
 	/**
@@ -112,6 +121,7 @@ public abstract class Task implements Runnable
 			});
 		} catch (final Exception e)
 		{
+			mExperiencedException = true;
 			if (mRemoveOnException && mTaskExecutor != null)
 				mTaskExecutor.removeTaskFromQueue(this);
 			mUiHandler.post(new Runnable()
