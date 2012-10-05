@@ -2,7 +2,7 @@ TaskExecutor
 ===================
 
 The included abstract TaskExecutorActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. Tasks 
-Are runnables with additional helper methods to facilitate management by the executor. Tasks take a TaskCompletedCallback which the abstract class implements. You will 
+Are runnables with additional helper methods to facilitate management by the TaskExecutor facility. Tasks take a TaskCompletedCallback which the abstract class implements. You will 
 receive callbacks to this method when executed Tasks are completed.
 <br><br>
 By default executed Tasks are paused when the activity is paused. If a Task is currently being executed it will continue, but the runnable will be blocked prior to the callback. 
