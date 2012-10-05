@@ -13,7 +13,7 @@ public abstract class Task implements Runnable
 	private CompleteCallback mCompleteCallback;
 	private Semaphore mPause = new Semaphore(1);
 	private boolean mRemoveOnFail = false;
-	private Handler mUiHandler;
+	private Handler mUiHandler = new Handler();
 
 	public abstract void task() throws Exception;
 
@@ -26,16 +26,9 @@ public abstract class Task implements Runnable
 	 *            complete.
 	 * @param uiHandler
 	 */
-	public Task(CompleteCallback completeCallback, Handler uiHandler)
+	public Task(CompleteCallback completeCallback)
 	{
 		mCompleteCallback = completeCallback;
-		if (uiHandler == null)
-		{
-			mUiHandler = new Handler();
-		} else
-		{
-			mUiHandler = uiHandler;
-		}
 	}
 
 	/**
