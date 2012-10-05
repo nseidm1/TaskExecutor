@@ -18,7 +18,7 @@ Tasks have 5 public methods:<br>
 3) setRemoveOnException(Boolean removeOnException)<br>
 4) pause()<br>
 5) resume()<br><br>
-
+<b>Tips</b><br>
 1, 2, 4, and 5 are managed by the TaskExecutor and likely will not ever be used directly. 3, setRemoveOnException may be useful; if your Task experiences an exception during 
 execution, and the Task is part of the queue, do you want it to be removed from the queue? This is obviously irrelevant if the Task wasn't queue using the runTask() method. For queued tasks, by default, if the Task experiences an exception it will not be automatically removed from the queue.
 <br><br>
