@@ -38,9 +38,9 @@ public class TaskExecutor
 
 	/**
 	 * @param continueExecutionIfPaused
-	 *            Default is false andif set to true Task execution will not
+	 *            Default is false and if set to true Task execution will not
 	 *            pause with the activity. Please carefully consider this if
-	 *            your callbacks invoke anything in the UI!
+	 *            your callbacks invoke anything in the ui!
 	 */
 	public void setPermitCallbackIfPaused(boolean permitCallbackIfPaused)
 	{
@@ -180,6 +180,20 @@ public class TaskExecutor
 			for (Task task : mQueue)
 			{
 				task.setCompleteCallback(completeCallback);
+			}
+		}
+	}
+	
+	/**
+	 * This will set the removeOnException flag for all queued Tasks.
+	 */
+	public void setRemoveOnExceptionForAllQueuedTasks()
+	{
+		if (getQueueCount() != 0)
+		{
+			for (Task task : mQueue)
+			{
+				task.setRemoveOnException(true);
 			}
 		}
 	}
