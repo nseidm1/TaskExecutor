@@ -5,7 +5,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import com.taskexecutor.callbacks.TaskCompletedCallback;
-import com.taskexecutor.exceptions.PendingTasksException;
 import com.taskexecutor.runnables.Task;
 
 public class TaskExecutor
