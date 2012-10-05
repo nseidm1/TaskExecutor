@@ -69,7 +69,7 @@ public class TaskExecutor
 	 */
 	public void addTaskToQueue(Task task, boolean removeOnException) throws IllegalStateException
 	{
-		if (mTaskThreadExecutor.getQueue().size() != 0)
+		if (isExecuting())
 			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
 		task.setUiHandler(mUiHandler);
 		task.setTaskExecutor(this);
@@ -85,7 +85,7 @@ public class TaskExecutor
 	 */
 	public void addTaskToQueue(Task task) throws IllegalStateException
 	{
-		if (mTaskThreadExecutor.getQueue().size() != 0)
+		if (isExecuting())
 			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
 		task.setUiHandler(mUiHandler);
 		task.setTaskExecutor(this);
@@ -99,7 +99,7 @@ public class TaskExecutor
 	 */
 	public void removeTaskFromQueue(Task task) throws IllegalStateException
 	{
-		if (mTaskThreadExecutor.getQueue().size() != 0)
+		if (isExecuting())
 			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
 		mQueue.remove(task);
 	}
