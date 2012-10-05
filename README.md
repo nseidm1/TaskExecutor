@@ -19,8 +19,9 @@ Tasks have 5 public methods:<br>
 4) pause()<br>
 5) resume()<br><br>
 <b>Tips</b><br>
-1, 2, 4, and 5 are managed by the TaskExecutor and likely will not ever be used directly. 3, setRemoveOnException may be useful; if your Task experiences an exception during 
-execution, and the Task is part of the queue, do you want it to be removed from the queue? This is obviously irrelevant if the Task wasn't queue using the runTask() method. For queued tasks, by default, if the Task experiences an exception it will not be automatically removed from the queue.
+1, 2, 4, and 5 are managed by the TaskExecutor and likely will not ever be used directly.
 <br><br>
 The TaskExecutor has a queue for you to bulk execute Tasks. You can use the addToQueue() and removeFromQueue() methods, followed by the executeQueue() method. You cannot add to the queue while it's executing; such a circumstance will throw an illegalStateException. You can directly execute Tasks using the runTask() method, but Tasks 
-executed as such will not have their callback updated in onResume, thus will not accommodate configurationChanges gracefully compared to queued Tasks. It's recommended to use the queue facility and not the runTask feature.
+executed as such will not have their callback updated in onResume, thus will not accommodate configurationChanges gracefully compared to queued Tasks. It's recommended to use the queue facility and not the runTask feature. setRemoveOnException() may be useful; if your Task experiences an exception during 
+execution, and the Task is part of the queue, do you want it to be removed from the queue? This is obviously irrelevant if the Task wasn't queue using the runTask() method. For queued tasks, by default, if the Task experiences an exception it will not be automatically removed from the queue, so you can call executeQueue() again to attempt reexecution.
+<br><br>
