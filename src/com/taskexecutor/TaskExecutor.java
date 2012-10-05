@@ -7,7 +7,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import android.os.Handler;
 
 import com.taskexecutor.callbacks.TaskCompletedCallback;
-import com.taskexecutor.exceptions.NoQueuedTasksException;
 import com.taskexecutor.exceptions.PendingTasksException;
 import com.taskexecutor.runnables.Task;
 
@@ -74,16 +73,9 @@ public class TaskExecutor
 			@Override
 			public void run()
 			{
-
-				if (!isExecuting())
+				if (mQueue.size() > 0 && !isExecuting())
 				{
-					try
-					{
-						executeQueue();
-					} catch (NoQueuedTasksException e)
-					{
-						e.printStackTrace();
-					}
+					executeQueue();
 				}
 				if (mAutoExecution)
 					mHandler.postDelayed(this, 1000);
@@ -153,10 +145,8 @@ public class TaskExecutor
 	 * 
 	 * @throws NoQueuedTasksException
 	 */
-	public void executeQueue() throws NoQueuedTasksException
+	public void executeQueue()
 	{
-		if (mQueue.size() == 0)
-			throw new NoQueuedTasksException("No tasks are currently queued.");
 		for (Task task : mQueue)
 		{
 			mTaskThreadExecutor.execute(task);
