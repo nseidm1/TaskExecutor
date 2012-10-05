@@ -71,7 +71,7 @@ public class TaskExecutor
 	 * will complete, but subsequent items will wait on the resumeQueue() call.
 	 * If you have not called executeQueue(), should you be calling this method?
 	 * 
-	 * @throws QueueNotExecutingException
+	 * @throws IllegalStateException
 	 *             Exception will be thrown if the queue isn't currently
 	 *             executing.
 	 */
@@ -89,7 +89,7 @@ public class TaskExecutor
 	 * Resume queue execution. If you have not called executeQueue(), should you
 	 * be calling this method?
 	 * 
-	 * @throws QueueNotExecutingException
+	 * @throws IllegalStateException
 	 *             Exception will be thrown if the queue isn't currently
 	 *             executing.
 	 */
