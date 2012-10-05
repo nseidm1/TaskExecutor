@@ -1,7 +1,7 @@
 TaskExecutor
 ===================
 
-The included abstract FragmentActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. Tasks 
+The included abstract TaskExecutorActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. Tasks 
 Are runnables with additional helper methods to facilitate management by the executor. Tasks take a TaskCompletedCallback which the abstract class implements. You will 
 receive callbacks to this method when executed Tasks are completed.
 <br><br>
