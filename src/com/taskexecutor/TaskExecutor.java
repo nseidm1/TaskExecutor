@@ -132,6 +132,20 @@ public class TaskExecutor
 			task.setCompleteCallback(completeCallback);
 		}
 	}
+	
+	/**
+	 * @param TAG
+	 * @return The Task for the specified TAG. This is useful is you want to specifically set a callback for a particular Task that is queued.
+	 */
+	public Task findTaskForTag(String TAG)
+	{
+		for (Task task : mQueue)
+		{
+			if (task.getTag().equals(TAG))
+				return task;
+		}
+		return null;
+	}
 
 	/**
 	 * @return return a count of items currently in the queue.
