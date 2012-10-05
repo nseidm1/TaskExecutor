@@ -19,7 +19,7 @@ Tasks have 5 public methods:<br>
 4) pause()<br>
 5) resume()<br><br>
 
-1, 2, 4, and 5 are managed by the TaskExecutor and likely will not even be used directly. 3, setRemoveOnException may be useful; if your Task experiences an exception during 
+1, 2, 4, and 5 are managed by the TaskExecutor and likely will not ever be used directly. 3, setRemoveOnException may be useful; if your Task experiences an exception during 
 execution, and the Task is part of the queue, do you want it to be removed from the queue? This is obviously irrelevant if the Task wasn't queue using the runTask() method. For queued tasks by default if the Task experiences an exception it will not be automatically removed from the queue.
 <br><br>
 The TaskExecutor has a queue for you to bulk execute Tasks. You can use the addToQueue() and removeFromQueue() methods, followed by the executeQueue() method. You cannot add to the queue while it's executing; such a circumstance will throw an illegalStateException. You can directly execute Tasks using the runTask() method, but Tasks 
