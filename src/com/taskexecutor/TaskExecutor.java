@@ -44,6 +44,20 @@ public class TaskExecutor
 		task.setRemoveOnFail(removeOnFail);
 		mQueue.add(task);
 	}
+	
+	/**
+	 * @param task
+	 *            Provide a Task to be added to the queue pending execution.
+	 * @throws IllegalStateException
+	 * Queue is executing, please call stopExecution() first.
+	 */
+	public void addTaskToQueue(Task task) throws IllegalStateException
+	{
+		if (mTaskThreadExecutor.getQueue().size() == 0)
+			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
+		task.setTaskExecutor(mTaskExecutor);
+		mQueue.add(task);
+	}
 
 	/**
 	 * @param task
