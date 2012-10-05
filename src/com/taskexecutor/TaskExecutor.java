@@ -14,6 +14,8 @@ import com.taskexecutor.runnables.Task;
 public class TaskExecutor
 {
 	private boolean mAutoExecution = false;
+	private boolean mIsPaused = false;
+	private boolean mShouldContinueExecutionIfPaused = false;
 	private static TaskExecutor mTaskExecutor = null;
 	private Handler mHandler = new Handler();
 	private ArrayList<Task> mQueue = new ArrayList<Task>();
@@ -29,10 +31,36 @@ public class TaskExecutor
 			mTaskExecutor = new TaskExecutor();
 		return mTaskExecutor;
 	}
+	
+	/**
+	 * @param continueExecutionIfPaused
+	 * If set to true Task execution will not pause with the activity. Please carefully consider this if your callbacks invoke anything in the UI!
+	 */
+	public void setShouldContinueExecutionIfPaused(boolean continueExecutionIfPaused)
+	{
+		mShouldContinueExecutionIfPaused = continueExecutionIfPaused;
+	}
+	
+	/**
+	 * @return The set behavior to occur when the activity is paused.
+	 */
+	public boolean getShouldContinueExecutionIfPaused()
+	{
+		return mShouldContinueExecutionIfPaused;
+	}
+	
+	/**
+	 * @return Return if the queue's execution is currently paused.
+	 */
+	public boolean isPaused()
+	{
+		return mIsPaused;
+	}
 
 	/**
 	 * @param autoExecution
-	 * Start auto execution. If enabled executeQueue will be called every 500ms. Auto execution is off by default!
+	 *            Start auto execution. If enabled executeQueue will be called
+	 *            every 500ms. Auto execution is off by default!
 	 */
 	public void setAutoExecution(final boolean autoExecution)
 	{
@@ -48,8 +76,7 @@ public class TaskExecutor
 					try
 					{
 						executeQueue();
-					} 
-					catch (NoQueuedTasksException e)
+					} catch (NoQueuedTasksException e)
 					{
 						e.printStackTrace();
 					}
@@ -57,12 +84,12 @@ public class TaskExecutor
 				if (mAutoExecution)
 					mHandler.postDelayed(this, 500);
 			}
-			
+
 		};
 		if (mAutoExecution)
 			mHandler.post(autoLoop);
 	}
-	
+
 	/**
 	 * @param task
 	 *            Provide a Task to be added to the queue pending execution.
@@ -71,7 +98,7 @@ public class TaskExecutor
 	 *            fail to execute completely because of an exception. Pass true
 	 *            to remove Tasks that experience exception.
 	 * @throws IllegalStateException
-	 * Queue is executing, please call stopExecution() first.
+	 *             Queue is executing, please call stopExecution() first.
 	 */
 	public void addTaskToQueue(Task task, boolean removeOnFail) throws IllegalStateException
 	{
@@ -81,12 +108,12 @@ public class TaskExecutor
 		task.setRemoveOnFail(removeOnFail);
 		mQueue.add(task);
 	}
-	
+
 	/**
 	 * @param task
 	 *            Provide a Task to be added to the queue pending execution.
 	 * @throws IllegalStateException
-	 * Queue is executing, please call stopExecution() first.
+	 *             Queue is executing, please call stopExecution() first.
 	 */
 	public void addTaskToQueue(Task task) throws IllegalStateException
 	{
@@ -99,7 +126,7 @@ public class TaskExecutor
 	/**
 	 * @param task
 	 * @throws IllegalStateException
-	 * Queue is executing, please call stopExecution() first.
+	 *             Queue is executing, please call stopExecution() first.
 	 */
 	public void removeTaskFromQueue(Task task) throws IllegalStateException
 	{
@@ -107,7 +134,7 @@ public class TaskExecutor
 			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
 		mQueue.remove(task);
 	}
-	
+
 	/**
 	 * @return true if the queue is currently executing.
 	 */
@@ -133,16 +160,20 @@ public class TaskExecutor
 	}
 
 	/**
-	 * Pause queue execution. If a task is currently being executed it likely
-	 * will complete, but subsequent items will wait on the resumeQueue() call.
-	 * If you have not called executeQueue(), should you be calling this method?
+	 * Pause queue execution. If a task is currently being executed it will
+	 * complete, but but the CompleteExecution callback will block until
+	 * resumeQueue() is called; this gives the opportunity to reset the callback
+	 * prior to resuming.
 	 * 
 	 * @throws IllegalStateException
 	 *             Exception will be thrown if the queue isn't currently
-	 *             executing.
+	 *             executing, or the queue is already paused.
 	 */
 	public void pause() throws IllegalStateException
 	{
+		if (mIsPaused)
+			throw new IllegalStateException("Already paused.");
+		mIsPaused = true;
 		if (mTaskThreadExecutor.getQueue().size() == 0)
 			throw new IllegalStateException("Nothing is executing, why pause?");
 		for (Task task : mQueue)
@@ -152,17 +183,19 @@ public class TaskExecutor
 	}
 
 	/**
-	 * Resume queue execution. If you have not called executeQueue(), should you
-	 * be calling this method?
+	 * Resume queue execution from a paused state.
 	 * 
 	 * @throws IllegalStateException
 	 *             Exception will be thrown if the queue isn't currently
-	 *             executing.
+	 *             executing, or the queue is not paused.
 	 */
 	public void resume() throws IllegalStateException
 	{
+		if (!mIsPaused)
+			throw new IllegalStateException("not paused, why resume?");
 		if (mTaskThreadExecutor.getQueue().size() == 0)
 			throw new IllegalStateException("Nothing is executing, why resume?");
+		mIsPaused = false;
 		for (Task task : mQueue)
 		{
 			task.resume();
@@ -183,10 +216,11 @@ public class TaskExecutor
 			task.setCompleteCallback(completeCallback);
 		}
 	}
-	
+
 	/**
 	 * @param TAG
-	 * @return The Task for the specified TAG. This is useful is you want to specifically set a callback for a particular Task that is queued.
+	 * @return The Task for the specified TAG. This is useful is you want to
+	 *         specifically set a callback for a particular Task that is queued.
 	 */
 	public Task findTaskForTag(String TAG)
 	{

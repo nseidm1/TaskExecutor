@@ -81,7 +81,7 @@ public abstract class Task implements Runnable
 	 */
 	public void pause()
 	{
-		mPause.tryAcquire();
+		mPause.drainPermits();
 	}
 
 	/**
@@ -97,8 +97,8 @@ public abstract class Task implements Runnable
 	{
 		try
 		{
-			mPause.acquire();
 			task();
+			mPause.acquire();
 			if (mTaskExecutor != null)
 				mTaskExecutor.removeTaskFromQueue(this);
 			mUiHandler.post(new Runnable()
