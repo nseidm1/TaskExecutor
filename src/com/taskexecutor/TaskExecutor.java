@@ -250,6 +250,7 @@ public class TaskExecutor
 	{
 		if (!forceShutdown && mQueue.size() > 0)
 			throw new PendingTasksException("Tasks are in the queue.");
+		clearQueue();
 		mTaskThreadExecutor.shutdownNow();
 	}
 }
