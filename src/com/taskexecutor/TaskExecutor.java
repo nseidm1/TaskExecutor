@@ -7,7 +7,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import com.taskexecutor.callbacks.CompleteCallback;
 import com.taskexecutor.exceptions.NoQueuedTasksException;
 import com.taskexecutor.exceptions.PendingTasksException;
-import com.taskexecutor.exceptions.QueueNotExecutingException;
 import com.taskexecutor.runnables.Task;
 
 public class TaskExecutor
@@ -76,10 +75,10 @@ public class TaskExecutor
 	 *             Exception will be thrown if the queue isn't currently
 	 *             executing.
 	 */
-	public void pause() throws QueueNotExecutingException
+	public void pause() throws IllegalStateException
 	{
 		if (mTaskThreadExecutor.getQueue().size() == 0)
-			throw new QueueNotExecutingException("Nothing is executing, why pause?");
+			throw new IllegalStateException("Nothing is executing, why pause?");
 		for (Task task : mQueue)
 		{
 			task.pause();
@@ -94,10 +93,10 @@ public class TaskExecutor
 	 *             Exception will be thrown if the queue isn't currently
 	 *             executing.
 	 */
-	public void resume() throws QueueNotExecutingException
+	public void resume() throws IllegalStateException
 	{
 		if (mTaskThreadExecutor.getQueue().size() == 0)
-			throw new QueueNotExecutingException("Nothing is executing, why resume?");
+			throw new IllegalStateException("Nothing is executing, why resume?");
 		for (Task task : mQueue)
 		{
 			task.resume();
