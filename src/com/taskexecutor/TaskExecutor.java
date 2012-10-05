@@ -220,7 +220,7 @@ public class TaskExecutor
 	 * executing queued tasks. If a task is currently being executed it will
 	 * likely continue to completion. This will not remove items from the queue.
 	 */
-	public void stopExecution()
+	public void stopExecution() throws UnsupportedOperationException
 	{
 		mTaskThreadExecutor.getQueue().clear();
 	}
