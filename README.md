@@ -14,12 +14,14 @@ will finish, but subsequent tasks will not begin.
 <b>Tasks</b><br>
 Tasks are extended Runnables, and instead of overriding run you'll override the task method. The Task constructor takes a reference to the TaskCompletedCallback which the abstract activity implements.
 <br><br>
-Tasks have 5 public methods:<br>
+Tasks have 7 public methods:<br>
 1) setCompleteCallback(TaskCompletedCallback completeCallback)<br>
 2) setTaskExecutor(TaskExecutor taskExecutor)<br>
 3) setRemoveOnException(Boolean removeOnException)<br>
 4) pause()<br>
-5) resume()<br><br>
+5) resume()<br>
+6) setBundle(Bundle bundle)<br>
+7) getBundle()<br><br>
 <b>Tips</b><br>
 1, 2, 4, and 5 are managed by the TaskExecutor and likely will not ever be used directly.
 <br><br>
