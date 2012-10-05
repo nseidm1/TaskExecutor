@@ -12,7 +12,7 @@ public abstract class Task implements Runnable
 	private TaskExecutor mTaskExecutor;
 	private CompleteCallback mCompleteCallback;
 	private Semaphore mPause = new Semaphore(1);
-	private boolean mRemoveOnFail = false;
+	private boolean mRemoveOnException = false;
 	private Handler mUiHandler = new Handler();
 	private String TAG = "";
 
@@ -71,9 +71,9 @@ public abstract class Task implements Runnable
 	 *            If the task fails to execute because of an exception, do you
 	 *            still want to remove it from the queue?
 	 */
-	public void setRemoveOnFail(Boolean removeOnFail)
+	public void setRemoveOnException(Boolean removeOnException)
 	{
-		mRemoveOnFail = removeOnFail;
+		mRemoveOnException = removeOnException;
 	}
 
 	/**
@@ -112,7 +112,7 @@ public abstract class Task implements Runnable
 			});
 		} catch (final Exception e)
 		{
-			if (mRemoveOnFail && mTaskExecutor != null)
+			if (mRemoveOnException && mTaskExecutor != null)
 				mTaskExecutor.removeTaskFromQueue(this);
 			mUiHandler.post(new Runnable()
 			{

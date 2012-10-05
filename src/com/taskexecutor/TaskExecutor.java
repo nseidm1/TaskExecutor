@@ -1,6 +1,7 @@
 package com.taskexecutor;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -16,39 +17,31 @@ public class TaskExecutor
 	private boolean mAutoExecution = false;
 	private boolean mIsPaused = false;
 	private boolean mShouldContinueExecutionIfPaused = false;
-	private static TaskExecutor mTaskExecutor = null;
 	private Handler mHandler = new Handler();
 	private ArrayList<Task> mQueue = new ArrayList<Task>();
 	private ThreadPoolExecutor mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newSingleThreadExecutor();
 
-	private TaskExecutor()
+	/**
+	 * @param threadPoolExecutor
+	 *            Specify a custom thread pool executor. The default is a single.
+	 *            thread pool.
+	 */
+	public void specifyExecutor(ThreadPoolExecutor threadPoolExecutor)
 	{
+		mTaskThreadExecutor = threadPoolExecutor;
 	}
 
-	public static TaskExecutor getInstance()
-	{
-		if (mTaskExecutor == null)
-			mTaskExecutor = new TaskExecutor();
-		return mTaskExecutor;
-	}
-	
 	/**
 	 * @param continueExecutionIfPaused
-	 * If set to true Task execution will not pause with the activity. Please carefully consider this if your callbacks invoke anything in the UI!
+	 *            Default is false andif set to true Task execution will not
+	 *            pause with the activity. Please carefully consider this if
+	 *            your callbacks invoke anything in the UI!
 	 */
 	public void setShouldContinueExecutionIfPaused(boolean continueExecutionIfPaused)
 	{
 		mShouldContinueExecutionIfPaused = continueExecutionIfPaused;
 	}
-	
-	/**
-	 * @return The set behavior to occur when the activity is paused.
-	 */
-	public boolean getShouldContinueExecutionIfPaused()
-	{
-		return mShouldContinueExecutionIfPaused;
-	}
-	
+
 	/**
 	 * @return Return if the queue's execution is currently paused.
 	 */
@@ -100,12 +93,12 @@ public class TaskExecutor
 	 * @throws IllegalStateException
 	 *             Queue is executing, please call stopExecution() first.
 	 */
-	public void addTaskToQueue(Task task, boolean removeOnFail) throws IllegalStateException
+	public void addTaskToQueue(Task task, boolean removeOnException) throws IllegalStateException
 	{
 		if (mTaskThreadExecutor.getQueue().size() == 0)
 			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
-		task.setTaskExecutor(mTaskExecutor);
-		task.setRemoveOnFail(removeOnFail);
+		task.setTaskExecutor(this);
+		task.setRemoveOnException(removeOnException);
 		mQueue.add(task);
 	}
 
@@ -119,7 +112,7 @@ public class TaskExecutor
 	{
 		if (mTaskThreadExecutor.getQueue().size() == 0)
 			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
-		task.setTaskExecutor(mTaskExecutor);
+		task.setTaskExecutor(this);
 		mQueue.add(task);
 	}
 
@@ -162,23 +155,26 @@ public class TaskExecutor
 	/**
 	 * Pause queue execution. If a task is currently being executed it will
 	 * complete, but but the CompleteExecution callback will block until
-	 * resumeQueue() is called; this gives the opportunity to reset the callback
-	 * prior to resuming.
+	 * resumeQueue() is called; this gives the opportunity to reset the Task
+	 * callback in onResume().
 	 * 
 	 * @throws IllegalStateException
 	 *             Exception will be thrown if the queue isn't currently
 	 *             executing, or the queue is already paused.
 	 */
-	public void pause() throws IllegalStateException
+	public void onPause() throws IllegalStateException
 	{
-		if (mIsPaused)
-			throw new IllegalStateException("Already paused.");
-		mIsPaused = true;
-		if (mTaskThreadExecutor.getQueue().size() == 0)
-			throw new IllegalStateException("Nothing is executing, why pause?");
-		for (Task task : mQueue)
+		if (!mShouldContinueExecutionIfPaused && isExecuting() && !mIsPaused)
 		{
-			task.pause();
+			if (mIsPaused)
+				throw new IllegalStateException("Already paused.");
+			mIsPaused = true;
+			if (mTaskThreadExecutor.getQueue().size() == 0)
+				throw new IllegalStateException("Nothing is executing, why pause?");
+			for (Task task : mQueue)
+			{
+				task.pause();
+			}
 		}
 	}
 
@@ -189,16 +185,21 @@ public class TaskExecutor
 	 *             Exception will be thrown if the queue isn't currently
 	 *             executing, or the queue is not paused.
 	 */
-	public void resume() throws IllegalStateException
+	public void onResume(CompleteCallback callCompleteCallback) throws IllegalStateException
 	{
-		if (!mIsPaused)
-			throw new IllegalStateException("not paused, why resume?");
-		if (mTaskThreadExecutor.getQueue().size() == 0)
-			throw new IllegalStateException("Nothing is executing, why resume?");
-		mIsPaused = false;
-		for (Task task : mQueue)
+		setCallbackForAllQueuedTasks(callCompleteCallback);
+
+		if (mIsPaused)
 		{
-			task.resume();
+			if (!mIsPaused)
+				throw new IllegalStateException("not paused, why resume?");
+			if (mTaskThreadExecutor.getQueue().size() == 0)
+				throw new IllegalStateException("Nothing is executing, why resume?");
+			mIsPaused = false;
+			for (Task task : mQueue)
+			{
+				task.resume();
+			}
 		}
 	}
 
@@ -211,9 +212,12 @@ public class TaskExecutor
 	 */
 	public void setCallbackForAllQueuedTasks(CompleteCallback completeCallback)
 	{
-		for (Task task : mQueue)
+		if (getQueueCount() != 0)
 		{
-			task.setCompleteCallback(completeCallback);
+			for (Task task : mQueue)
+			{
+				task.setCompleteCallback(completeCallback);
+			}
 		}
 	}
 
@@ -270,6 +274,5 @@ public class TaskExecutor
 		if (!forceShutdown && mQueue.size() > 0)
 			throw new PendingTasksException("Tasks are in the queue.");
 		mTaskThreadExecutor.shutdownNow();
-		mTaskExecutor = null;
 	}
 }

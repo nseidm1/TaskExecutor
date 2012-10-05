@@ -1,29 +1,33 @@
 package com.taskexecutor;
 
+import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
 import com.taskexecutor.callbacks.CompleteCallback;
 
 public abstract class TaskExecutorActivity extends FragmentActivity implements CompleteCallback
 {
-	protected TaskExecutor mTaskExecutor = TaskExecutor.getInstance();
+	protected static TaskExecutor mTaskExecutor;
+
+	@Override
+	public void onCreate(Bundle bundle)
+	{
+		super.onCreate(bundle);
+		if (mTaskExecutor == null)
+			mTaskExecutor = new TaskExecutor();
+	}
 
 	@Override
 	public void onResume()
 	{
 		super.onResume();
-		if (mTaskExecutor.getQueueCount() != 0)
-			mTaskExecutor.setCallbackForAllQueuedTasks(this);
-		if (mTaskExecutor.isPaused())
-			mTaskExecutor.resume();
+		mTaskExecutor.onResume(this);
 	}
 
 	@Override
 	public void onPause()
 	{
 		super.onPause();
-		if (!mTaskExecutor.getShouldContinueExecutionIfPaused() && mTaskExecutor.isExecuting() && !mTaskExecutor.isPaused())
-			mTaskExecutor.pause();
+		mTaskExecutor.onPause();
 	}
-
 }
