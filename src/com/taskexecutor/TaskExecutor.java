@@ -22,7 +22,7 @@ public class TaskExecutor
 
 	/**
 	 * @param threadPoolExecutor
-	 *            Specify a custom thread pool executor. The default is a single thread pool maximizing pausability.
+	 *            Specify a custom thread pool executor. The default is a single thread pool maximizing the effectiveness of pausing.
 	 */
 	public void specifyExecutor(ThreadPoolExecutor threadPoolExecutor)
 	{
