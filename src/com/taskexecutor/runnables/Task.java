@@ -15,7 +15,7 @@ public abstract class Task implements Runnable
 	private Semaphore mPause = new Semaphore(1);
 	private boolean mRemoveOnException = false;
 	private boolean mExperiencedException  = false;
-	private Handler mUiHandler = new Handler();
+	private Handler mUiHandler;
 	private Bundle mBundle = new Bundle();
 	private String TAG = "";
 
@@ -29,6 +29,15 @@ public abstract class Task implements Runnable
 	public Task(TaskCompletedCallback completeCallback)
 	{
 		mCompleteCallback = completeCallback;
+	}
+	
+	/**
+	 * @param uiHandler
+	 * Set the ui handler for this Task.
+	 */
+	public void setUiHandler(Handler uiHandler)
+	{
+		mUiHandler = uiHandler;
 	}
 	
 	/**

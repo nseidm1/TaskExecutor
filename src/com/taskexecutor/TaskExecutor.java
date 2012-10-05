@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import android.os.Handler;
+
 import com.taskexecutor.callbacks.TaskCompletedCallback;
 import com.taskexecutor.runnables.Task;
 
@@ -11,6 +13,7 @@ public class TaskExecutor
 {
 	private boolean mIsPaused = false;
 	private boolean mPermitCallbackIfPaused = false;
+	private Handler mUiHandler = new Handler();
 	private ArrayList<Task> mQueue = new ArrayList<Task>();
 	private ThreadPoolExecutor mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newSingleThreadExecutor();
 
@@ -68,6 +71,7 @@ public class TaskExecutor
 	{
 		if (mTaskThreadExecutor.getQueue().size() != 0)
 			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
+		task.setUiHandler(mUiHandler);
 		task.setTaskExecutor(this);
 		task.setRemoveOnException(removeOnException);
 		mQueue.add(task);
@@ -83,6 +87,7 @@ public class TaskExecutor
 	{
 		if (mTaskThreadExecutor.getQueue().size() != 0)
 			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
+		task.setUiHandler(mUiHandler);
 		task.setTaskExecutor(this);
 		mQueue.add(task);
 	}
@@ -105,6 +110,8 @@ public class TaskExecutor
 	 */
 	public void runTask(Task task)
 	{
+		task.setUiHandler(mUiHandler);
+		task.setTaskExecutor(this);
 		mTaskThreadExecutor.execute(task);
 	}
 
