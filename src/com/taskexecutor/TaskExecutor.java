@@ -9,20 +9,21 @@ import android.os.Handler;
 import com.taskexecutor.callbacks.TaskCompletedCallback;
 import com.taskexecutor.runnables.Task;
 
-public class TaskExecutor {
+public class TaskExecutor
+{
 	private boolean mIsPaused = false;
 	private boolean mAutoPauseQueue = true;
 	private Handler mUiHandler = new Handler();
 	private ArrayList<Task> mQueue = new ArrayList<Task>();
-	private ThreadPoolExecutor mTaskThreadExecutor = (ThreadPoolExecutor) Executors
-			.newSingleThreadExecutor();
+	private ThreadPoolExecutor mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newSingleThreadExecutor();
 
 	/**
 	 * @param threadPoolExecutor
 	 *            Specify a custom thread pool executor. The default is a single
 	 *            thread pool maximizing the effectiveness of pausing.
 	 */
-	public void specifyExecutor(ThreadPoolExecutor threadPoolExecutor) {
+	public void specifyExecutor(ThreadPoolExecutor threadPoolExecutor)
+	{
 		mTaskThreadExecutor = threadPoolExecutor;
 	}
 
@@ -33,14 +34,16 @@ public class TaskExecutor {
 	 *            activity. Please carefully consider this because of the
 	 *            callback becomes null it will not execute!
 	 */
-	public void setAutoPauseQueue(boolean autoPauseQueue) {
+	public void setAutoPauseQueue(boolean autoPauseQueue)
+	{
 		mAutoPauseQueue = autoPauseQueue;
 	}
 
 	/**
 	 * @return Return if the queue's execution is currently paused.
 	 */
-	public boolean isPaused() {
+	public boolean isPaused()
+	{
 		return mIsPaused;
 	}
 
@@ -54,11 +57,10 @@ public class TaskExecutor {
 	 * @throws IllegalStateException
 	 *             Queue is executing, please call stopExecution() first.
 	 */
-	public void addTaskToQueue(Task task, boolean removeOnException)
-			throws IllegalStateException {
+	public void addTaskToQueue(Task task, boolean removeOnException) throws IllegalStateException
+	{
 		if (isExecuting())
-			throw new IllegalStateException(
-					"Queue is executing, please call stopExecution() first.");
+			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
 		task.setUiHandler(mUiHandler);
 		task.setTaskExecutor(this);
 		task.setRemoveOnException(removeOnException);
@@ -71,10 +73,10 @@ public class TaskExecutor {
 	 * @throws IllegalStateException
 	 *             Queue is executing, please call stopExecution() first.
 	 */
-	public void addTaskToQueue(Task task) throws IllegalStateException {
+	public void addTaskToQueue(Task task) throws IllegalStateException
+	{
 		if (isExecuting())
-			throw new IllegalStateException(
-					"Queue is executing, please call stopExecution() first.");
+			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
 		task.setUiHandler(mUiHandler);
 		task.setTaskExecutor(this);
 		mQueue.add(task);
@@ -82,21 +84,26 @@ public class TaskExecutor {
 
 	/**
 	 * @param task
+	 *            Provide an existing Task to remove from the queue. You can use
+	 *            findTaskForTag to locate a particular Task.
 	 * @throws IllegalStateException
 	 *             Queue is executing, please call stopExecution() first.
 	 */
-	public void removeTaskFromQueue(Task task) throws IllegalStateException {
+	public void removeTaskFromQueue(Task task) throws IllegalStateException
+	{
 		if (isExecuting())
-			throw new IllegalStateException(
-					"Queue is executing, please call stopExecution() first.");
+			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
 		mQueue.remove(task);
 	}
 
 	/**
 	 * @param task
-	 *            A task to execute immediately, bypassing the queue.
+	 *            A task to execute immediately, bypassing the queue. Running a
+	 *            Task this way will not preserve the callback in
+	 *            configurationChanges.
 	 */
-	public void runTask(Task task) {
+	public void runTask(Task task)
+	{
 		task.setUiHandler(mUiHandler);
 		task.setTaskExecutor(this);
 		mTaskThreadExecutor.execute(task);
@@ -105,18 +112,22 @@ public class TaskExecutor {
 	/**
 	 * @return true if the queue is currently executing.
 	 */
-	public boolean isExecuting() {
+	public boolean isExecuting()
+	{
 		return mTaskThreadExecutor.getQueue().size() != 0;
 	}
 
 	/**
 	 * Execute all tasks waiting in the queue. This adds all queued tasks to the
-	 * executor queue for pending serial execution.
+	 * executor queue for serial execution. Serial execution is the default, you
+	 * can set the executor to pool if desired.
 	 * 
 	 * @throws NoQueuedTasksException
 	 */
-	public void executeQueue() {
-		for (Task task : mQueue) {
+	public void executeQueue()
+	{
+		for (Task task : mQueue)
+		{
 			mTaskThreadExecutor.execute(task);
 		}
 	}
@@ -127,10 +138,13 @@ public class TaskExecutor {
 	 * block until resumeQueue() is called; this gives the opportunity to reset
 	 * the Task callback in onResume().
 	 */
-	public void onPause() {
-		if (mAutoPauseQueue && isExecuting() && !mIsPaused) {
+	public void onPause()
+	{
+		if (mAutoPauseQueue && isExecuting() && !mIsPaused)
+		{
 			mIsPaused = true;
-			for (Task task : mQueue) {
+			for (Task task : mQueue)
+			{
 				task.pause();
 			}
 		}
@@ -139,12 +153,15 @@ public class TaskExecutor {
 	/**
 	 * Resume queue execution from a paused state if applicable.
 	 */
-	public void onResume(TaskCompletedCallback callCompleteCallback) {
+	public void onResume(TaskCompletedCallback callCompleteCallback)
+	{
 		setCallbackForAllQueuedTasks(callCompleteCallback);
 
-		if (mIsPaused) {
+		if (mIsPaused)
+		{
 			mIsPaused = false;
-			for (Task task : mQueue) {
+			for (Task task : mQueue)
+			{
 				task.resume();
 			}
 		}
@@ -157,10 +174,12 @@ public class TaskExecutor {
 	 * 
 	 * @param completeCallback
 	 */
-	public void setCallbackForAllQueuedTasks(
-			TaskCompletedCallback completeCallback) {
-		if (getQueueCount() != 0) {
-			for (Task task : mQueue) {
+	public void setCallbackForAllQueuedTasks(TaskCompletedCallback completeCallback)
+	{
+		if (getQueueCount() != 0)
+		{
+			for (Task task : mQueue)
+			{
 				task.setCompleteCallback(completeCallback);
 			}
 		}
@@ -169,9 +188,12 @@ public class TaskExecutor {
 	/**
 	 * This will set the removeOnException flag for all queued Tasks.
 	 */
-	public void setRemoveOnExceptionForAllQueuedTasks() {
-		if (getQueueCount() != 0) {
-			for (Task task : mQueue) {
+	public void setRemoveOnExceptionForAllQueuedTasks()
+	{
+		if (getQueueCount() != 0)
+		{
+			for (Task task : mQueue)
+			{
 				task.setRemoveOnException(true);
 			}
 		}
@@ -179,11 +201,14 @@ public class TaskExecutor {
 
 	/**
 	 * @param TAG
-	 * @return The Task for the specified TAG. This is useful is you want to
-	 *         specifically set a callback for a particular Task that is queued.
+	 * @return The Task for the specified TAG. Null is returned if no Task is
+	 *         found. This is useful is you want to specifically set a callback
+	 *         for a particular Task that is queued.
 	 */
-	public Task findTaskForTag(String TAG) {
-		for (Task task : mQueue) {
+	public Task findTaskForTag(String TAG)
+	{
+		for (Task task : mQueue)
+		{
 			if (task.getTag().equals(TAG))
 				return task;
 		}
@@ -193,7 +218,8 @@ public class TaskExecutor {
 	/**
 	 * @return return a count of items currently in the queue.
 	 */
-	public int getQueueCount() {
+	public int getQueueCount()
+	{
 		return mQueue.size();
 	}
 
@@ -201,7 +227,8 @@ public class TaskExecutor {
 	 * Clear all items from the queue. If tasks are currently being executed
 	 * this will not prevent tasks from being executed.
 	 */
-	public void clearQueue() {
+	public void clearQueue()
+	{
 		mQueue.clear();
 	}
 
@@ -210,7 +237,8 @@ public class TaskExecutor {
 	 * executing queued tasks. If a task is currently being executed it will
 	 * likely continue to completion. This will not remove items from the queue.
 	 */
-	public void stopExecution() throws UnsupportedOperationException {
+	public void stopExecution() throws UnsupportedOperationException
+	{
 		mTaskThreadExecutor.getQueue().clear();
 	}
 }
