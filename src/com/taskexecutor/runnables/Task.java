@@ -125,7 +125,7 @@ public abstract class Task implements Runnable
 	}
 
 	/**
-	 * 
+	 * Block this Task before the callback.
 	 */
 	public void pause()
 	{
@@ -133,7 +133,7 @@ public abstract class Task implements Runnable
 	}
 
 	/**
-	 * 
+	 * Resume this task unblocking the callback.
 	 */
 	public void resume()
 	{
