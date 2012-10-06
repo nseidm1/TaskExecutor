@@ -14,6 +14,7 @@ public abstract class Task implements Runnable
 	private TaskCompletedCallback mCompleteCallback;
 	private Semaphore mPause = new Semaphore(1);
 	private boolean mRemoveOnException = false;
+	private boolean mRemoveOnSuccess = true;
 	private boolean mExperiencedException = false;
 	private Handler mUiHandler;
 	private Bundle mBundle = new Bundle();
@@ -113,6 +114,17 @@ public abstract class Task implements Runnable
 	}
 
 	/**
+	 * @param removeOnSuccess
+	 *            By default Tasks are removed from the queue when they
+	 *            successfully complete. You can set this to false keeping
+	 *            successful Tasks in the queue.
+	 */
+	public void setRemoveOnSuccess(Boolean removeOnSuccess)
+	{
+		mRemoveOnSuccess = removeOnSuccess;
+	}
+
+	/**
 	 * 
 	 */
 	public void pause()
@@ -135,7 +147,7 @@ public abstract class Task implements Runnable
 		{
 			task();
 			mPause.acquire();
-			if (mTaskExecutor != null)
+			if (mRemoveOnSuccess && mTaskExecutor != null)
 				mTaskExecutor.removeTaskFromQueue(this);
 			mUiHandler.post(new Runnable()
 			{
