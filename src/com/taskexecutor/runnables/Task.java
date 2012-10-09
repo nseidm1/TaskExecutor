@@ -20,6 +20,11 @@ public abstract class Task implements Runnable
 	private Bundle mBundle = new Bundle();
 	private String TAG = "";
 
+	/**
+	 * Define the task you want to perform on the supplied bundle.
+	 * 
+	 * @throws Exception
+	 */
 	public abstract void task() throws Exception;
 
 	/**
@@ -27,9 +32,9 @@ public abstract class Task implements Runnable
 	 *            Provide an interface callback to reporting when this task is
 	 *            complete.
 	 */
-	public Task(TaskCompletedCallback completeCallback)
+	public Task(Bundle bundle)
 	{
-		mCompleteCallback = completeCallback;
+		mBundle = bundle;
 	}
 
 	/**
@@ -147,29 +152,27 @@ public abstract class Task implements Runnable
 		{
 			task();
 			mPause.acquire();
-			if (mRemoveOnSuccess && mTaskExecutor != null)
+			if (mRemoveOnSuccess)
 				mTaskExecutor.removeTaskFromQueue(this);
 			mUiHandler.post(new Runnable()
 			{
 				@Override
 				public void run()
 				{
-					if (mCompleteCallback != null)
-						mCompleteCallback.onTaskComplete(Task.this, true, null);
+					mCompleteCallback.onTaskComplete(Task.this, true, null);
 				}
 			});
 		} catch (final Exception e)
 		{
 			mExperiencedException = true;
-			if (mRemoveOnException && mTaskExecutor != null)
+			if (mRemoveOnException)
 				mTaskExecutor.removeTaskFromQueue(this);
 			mUiHandler.post(new Runnable()
 			{
 				@Override
 				public void run()
 				{
-					if (mCompleteCallback != null)
-						mCompleteCallback.onTaskComplete(Task.this, false, e);
+					mCompleteCallback.onTaskComplete(Task.this, false, e);
 				}
 			});
 		}

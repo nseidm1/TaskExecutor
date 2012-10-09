@@ -12,8 +12,6 @@ import com.taskexecutor.runnables.Task;
 public class TaskExecutor
 {
 	private boolean mIsPaused = false;
-	private boolean mAutoPauseQueue = true;
-	private Handler mUiHandler = new Handler();
 	private ArrayList<Task> mQueue = new ArrayList<Task>();
 	private ThreadPoolExecutor mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newSingleThreadExecutor();
 
@@ -28,18 +26,6 @@ public class TaskExecutor
 	}
 
 	/**
-	 * @param autoPauseQueue
-	 *            Default is true, when your activity is paused the queue will
-	 *            pause. If set to false Task execution will not pause with the
-	 *            activity. Please carefully consider this because of the
-	 *            callback becomes null it will not execute!
-	 */
-	public void setAutoPauseQueue(boolean autoPauseQueue)
-	{
-		mAutoPauseQueue = autoPauseQueue;
-	}
-
-	/**
 	 * @return Return if the queue's execution is currently paused.
 	 */
 	public boolean isPaused()
@@ -50,36 +36,26 @@ public class TaskExecutor
 	/**
 	 * @param task
 	 *            Provide a Task to be added to the queue pending execution.
-	 * @param removeOnFail
-	 *            By default Tasks will not be removed from the queue if they
-	 *            fail to execute completely because of an exception. Pass true
-	 *            to remove Tasks that experience exception.
+	 * @param uiHandler
+	 *            Provide a UI handler for the Task to post.
+	 * @param removeOnException
+	 *            Should the Task be removed from the queue if it fails to
+	 *            execute completely because of an exception?
+	 * @param removeOnSuccess
+	 *            Should the Task be removed from the queue if it completes
+	 *            without exception?
 	 * @throws IllegalStateException
 	 *             Queue is executing, please call stopExecution() first.
 	 */
-	public void addTaskToQueue(Task task, boolean removeOnException, boolean removeOnSuccess) throws IllegalStateException
+	public void addTaskToQueue(Task task, Handler uiHandler, boolean removeOnException, boolean removeOnSuccess)
+			throws IllegalStateException
 	{
 		if (isExecuting())
 			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
-		task.setUiHandler(mUiHandler);
+		task.setUiHandler(uiHandler);
 		task.setTaskExecutor(this);
 		task.setRemoveOnException(removeOnException);
 		task.setRemoveOnSuccess(removeOnSuccess);
-		mQueue.add(task);
-	}
-
-	/**
-	 * @param task
-	 *            Provide a Task to be added to the queue pending execution.
-	 * @throws IllegalStateException
-	 *             Queue is executing, please call stopExecution() first.
-	 */
-	public void addTaskToQueue(Task task) throws IllegalStateException
-	{
-		if (isExecuting())
-			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
-		task.setUiHandler(mUiHandler);
-		task.setTaskExecutor(this);
 		mQueue.add(task);
 	}
 
@@ -98,19 +74,6 @@ public class TaskExecutor
 	}
 
 	/**
-	 * @param task
-	 *            A task to execute immediately, bypassing the queue. Running a
-	 *            Task this way will not preserve the callback in
-	 *            configurationChanges.
-	 */
-	public void runTask(Task task)
-	{
-		task.setUiHandler(mUiHandler);
-		task.setTaskExecutor(this);
-		mTaskThreadExecutor.execute(task);
-	}
-
-	/**
 	 * @return true if the queue is currently executing.
 	 */
 	public boolean isExecuting()
@@ -121,7 +84,7 @@ public class TaskExecutor
 	/**
 	 * Execute all tasks waiting in the queue. This adds all queued tasks to the
 	 * executor queue for serial execution. Serial execution is the default, you
-	 * can set the executor to pool if desired.
+	 * can set the executor to pool if desired using specifyExecutor().
 	 * 
 	 * @throws NoQueuedTasksException
 	 */
@@ -137,11 +100,11 @@ public class TaskExecutor
 	 * Pause queue execution if applicable. If a task is currently being
 	 * executed it will complete, but but the CompleteExecution callback will
 	 * block until resumeQueue() is called; this gives the opportunity to reset
-	 * the Task callback in onResume().
+	 * the Task callback and the UI handler in onResume().
 	 */
 	public void onPause()
 	{
-		if (mAutoPauseQueue && isExecuting() && !mIsPaused)
+		if (isExecuting() && !mIsPaused)
 		{
 			mIsPaused = true;
 			for (Task task : mQueue)
@@ -152,12 +115,25 @@ public class TaskExecutor
 	}
 
 	/**
-	 * Resume queue execution from a paused state if applicable.
+	 * Resume Task execution. Provide a fresh taskCompleteCallback and a fresh
+	 * UI handler just to be sure.
+	 * 
+	 * @param callCompleteCallback
+	 *            Provide the taskCompleteCallback so your Tasks can report back
+	 *            to the activity.
+	 * @param uiHandler
+	 *            Provide a uiHandler so your task can post back to the current
+	 *            UI thread.
 	 */
-	public void onResume(TaskCompletedCallback callCompleteCallback)
+	public void onResume(TaskCompletedCallback taskCompleteCallback, Handler uiHandler)
 	{
-		setCallbackForAllQueuedTasks(callCompleteCallback);
+		setCallbackForAllQueuedTasks(taskCompleteCallback);
+		setUIHandlerForAllQueuedTask(uiHandler);
+		unPauseAllQueuedTasks();
+	}
 
+	private void unPauseAllQueuedTasks()
+	{
 		if (mIsPaused)
 		{
 			mIsPaused = false;
@@ -177,12 +153,24 @@ public class TaskExecutor
 	 */
 	public void setCallbackForAllQueuedTasks(TaskCompletedCallback completeCallback)
 	{
-		if (getQueueCount() != 0)
+		for (Task task : mQueue)
 		{
-			for (Task task : mQueue)
-			{
-				task.setCompleteCallback(completeCallback);
-			}
+			task.setCompleteCallback(completeCallback);
+		}
+	}
+
+	/**
+	 * If you expect your UI handler reference to be destroyed you can reset it
+	 * using this method.
+	 * 
+	 * @param uiHandler
+	 *            Provide a reference to a UI handler.
+	 */
+	public void setUIHandlerForAllQueuedTask(Handler uiHandler)
+	{
+		for (Task task : mQueue)
+		{
+			task.setUiHandler(uiHandler);
 		}
 	}
 
@@ -191,17 +179,15 @@ public class TaskExecutor
 	 */
 	public void setRemoveOnExceptionForAllQueuedTasks()
 	{
-		if (getQueueCount() != 0)
+		for (Task task : mQueue)
 		{
-			for (Task task : mQueue)
-			{
-				task.setRemoveOnException(true);
-			}
+			task.setRemoveOnException(true);
 		}
 	}
 
 	/**
 	 * @param TAG
+	 *            Provide the TAG of the Task you want to find.
 	 * @return The Task for the specified TAG. Null is returned if no Task is
 	 *         found. This is useful is you want to specifically set a callback
 	 *         for a particular Task that is queued.
@@ -223,6 +209,23 @@ public class TaskExecutor
 	{
 		return mQueue.size();
 	}
+	
+	/**
+	 * @return A reference to the existing Task queue.
+	 */
+	public ArrayList<Task> getQueue()
+	{
+		return mQueue;
+	}
+	
+	/**
+	 * @param queue
+	 * Set the Task queue. Typically used when restoring the TaskExecutor for the persisted instance on disk.
+	 */
+	public void setQueue(ArrayList<Task> queue)
+	{
+		mQueue = queue;
+	}
 
 	/**
 	 * Clear all items from the queue. If tasks are currently being executed
@@ -235,8 +238,9 @@ public class TaskExecutor
 
 	/**
 	 * If you've called executeQueue(), then this method will attempt to stop
-	 * executing queued tasks. If a task is currently being executed it will
-	 * likely continue to completion. This will not remove items from the queue.
+	 * executing queued tasks by removing them from the executor's queue. If a
+	 * task is currently being executed it will likely continue to completion.
+	 * This will not remove items from the queue, use clearQueue() for that.
 	 */
 	public void stopExecution() throws UnsupportedOperationException
 	{
