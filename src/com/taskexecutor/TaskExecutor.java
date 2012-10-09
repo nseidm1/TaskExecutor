@@ -47,11 +47,12 @@ public class TaskExecutor
 	 * @throws IllegalStateException
 	 *             Queue is executing, please call stopExecution() first.
 	 */
-	public void addTaskToQueue(Task task, Handler uiHandler, boolean removeOnException, boolean removeOnSuccess)
+	public void addTaskToQueue(Task task, TaskCompletedCallback taskCompletedCallback, Handler uiHandler, boolean removeOnException, boolean removeOnSuccess)
 			throws IllegalStateException
 	{
 		if (isExecuting())
 			throw new IllegalStateException("Queue is executing, please call stopExecution() first.");
+		task.setCompleteCallback(taskCompletedCallback);
 		task.setUiHandler(uiHandler);
 		task.setTaskExecutor(this);
 		task.setRemoveOnException(removeOnException);
@@ -129,7 +130,16 @@ public class TaskExecutor
 	{
 		setCallbackForAllQueuedTasks(taskCompleteCallback);
 		setUIHandlerForAllQueuedTask(uiHandler);
+		setTaskExecutorForAllQueuedTasks();
 		unPauseAllQueuedTasks();
+	}
+
+	private void setTaskExecutorForAllQueuedTasks()
+	{
+		for (Task task : mQueue)
+		{
+			task.setTaskExecutor(this);
+		}
 	}
 
 	private void unPauseAllQueuedTasks()
