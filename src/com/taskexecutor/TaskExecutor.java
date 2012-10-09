@@ -209,7 +209,7 @@ public class TaskExecutor
 	{
 		return mQueue.size();
 	}
-	
+
 	/**
 	 * @return A reference to the existing Task queue.
 	 */
@@ -217,10 +217,11 @@ public class TaskExecutor
 	{
 		return mQueue;
 	}
-	
+
 	/**
 	 * @param queue
-	 * Set the Task queue. Typically used when restoring the TaskExecutor for the persisted instance on disk.
+	 *            Set the Task queue. Typically used when restoring the
+	 *            TaskExecutor for the persisted instance on disk.
 	 */
 	public void setQueue(ArrayList<Task> queue)
 	{
