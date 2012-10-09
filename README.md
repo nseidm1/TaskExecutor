@@ -31,10 +31,14 @@ Tasks have 7 public methods:<br>
 <b>Tips</b><br>
 1, 2, 4, and 5 are managed by the TaskExecutor and likely will not ever be used directly.
 <br><br>
-The TaskExecutor has a queue for you to bulk execute Tasks. You can use the addToQueue() and removeFromQueue() methods, followed by the executeQueue() method. You cannot add to the queue while it's executing; such a circumstance will throw an illegalStateException. You can directly execute Tasks using the runTask() method, but Tasks 
-executed as such will not have their callback updated in onResume, thus will not accommodate configurationChanges gracefully compared to queued Tasks. It's recommended to use the queue facility and not the runTask feature. setRemoveOnException() may be useful; if your Task experiences an exception during 
-execution, and the Task is part of the queue, do you want it to be removed from the queue? This is obviously irrelevant if the Task wasn't queue using the runTask() method. For queued tasks, by default, if the Task experiences an exception it will not be automatically removed from the queue, so you can call executeQueue() again to attempt re-execution. Tasks can 
-have a TAG set, and the TaskExecutor has the findTaskByTag(String TAG) method. Tasks also take a bundle, and the Task is returned in the onCompleteCallback to provide access to the bundle for at minimum identification purposes.
+1) The TaskExecutor has a queue for you to bulk execute Tasks. You can use the addToQueue() and removeFromQueue() methods, 
+followed by the executeQueue() method. 
+2) If you add items to the queue after calling executeQueue(), you'll have to call executeQueue() at a future time. You'll probably want to check the queue for existing items, as you may 
+want to double check your not executing items that are already been executed. 
+3) setRemoveOnException() may be useful; if your Task experiences an exception 
+during execution, and the Task is part of the queue, do you want it to be removed from the queue? 
+4) TaskExecutor has the findTaskByTag(String TAG) method. 
+5) Tasks also take a bundle in the constructor. This is to encourage proper design as your Task should be designed to perform a discrete operation on the Bundle's data.
 <br><br>
 
 COPYRIGHT
