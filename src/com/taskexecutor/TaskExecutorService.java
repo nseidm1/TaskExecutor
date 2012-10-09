@@ -1,4 +1,5 @@
 package com.taskexecutor;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
@@ -9,57 +10,60 @@ import android.os.IBinder;
 import android.util.Log;
 import com.taskexecutor.Helpers.ServiceHelper;
 import com.taskexecutor.callbacks.TaskExecutorReferenceCallback;
+
 public class TaskExecutorService extends Service
 {
-    private TaskExecutor mTaskExecutor = new TaskExecutor();
-    private static SoftReference<TaskExecutorReferenceCallback> mSoftCallback;
-    public static void requestExecutorReference(Context context, TaskExecutorReferenceCallback serviceReferenceCallback)
-    {
-	mSoftCallback = new SoftReference<TaskExecutorReferenceCallback>(serviceReferenceCallback);
-	context.startService(new Intent(context, TaskExecutorService.class));
-    }
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
-	mSoftCallback.get().getTaskExecutorReference(mTaskExecutor);
-	return Service.START_STICKY;
-    }
-    @Override
-    public void onCreate()
-    {
-	super.onCreate();
-	try
+	private TaskExecutor mTaskExecutor = new TaskExecutor();
+	private static SoftReference<TaskExecutorReferenceCallback> mSoftCallback;
+
+	public static void requestExecutorReference(Context context, TaskExecutorReferenceCallback serviceReferenceCallback)
 	{
-	    ServiceHelper.retrieveTasksFromDisk(this, mTaskExecutor);
-	    ServiceHelper.deleteSavedQueue(this);
-	    mTaskExecutor.executeQueue();
+		mSoftCallback = new SoftReference<TaskExecutorReferenceCallback>(serviceReferenceCallback);
+		context.startService(new Intent(context, TaskExecutorService.class));
 	}
-	catch (FileNotFoundException e)
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId)
 	{
-	    //No queue available to restore
+		mSoftCallback.get().getTaskExecutorReference(mTaskExecutor);
+		return Service.START_STICKY;
 	}
-	catch (IOException e)
+
+	@Override
+	public void onCreate()
 	{
-	    Log.e(TaskExecutorService.class.getName(), "Error retrieving existing queue.");
+		super.onCreate();
+		try
+		{
+			ServiceHelper.retrieveTasksFromDisk(this, mTaskExecutor);
+			ServiceHelper.deleteSavedQueue(this);
+			mTaskExecutor.executeQueue();
+		} catch (FileNotFoundException e)
+		{
+			// No queue available to restore
+		} catch (IOException e)
+		{
+			Log.e(TaskExecutorService.class.getName(), "Error retrieving existing queue.");
+		}
 	}
-    }
-    @Override
-    public void onDestroy()
-    {
-	super.onDestroy();
-	try
+
+	@Override
+	public void onDestroy()
 	{
-	    mTaskExecutor.stopExecution(false);
-	    ServiceHelper.persistQueueToDisk(this, mTaskExecutor);
+		super.onDestroy();
+		try
+		{
+			mTaskExecutor.stopExecution(false);
+			ServiceHelper.persistQueueToDisk(this, mTaskExecutor);
+		} catch (IOException e)
+		{
+			Log.e(TaskExecutorService.class.getName(), "Queue could not be saved.");
+		}
 	}
-	catch (IOException e)
+
+	@Override
+	public IBinder onBind(Intent arg0)
 	{
-	    Log.e(TaskExecutorService.class.getName(), "Queue could not be saved.");
+		return null;
 	}
-    }
-    @Override
-    public IBinder onBind(Intent arg0)
-    {
-	return null;
-    }
 }
