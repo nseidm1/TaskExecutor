@@ -28,13 +28,28 @@ public class TaskExecutorService extends Service
 		context.startService(new Intent(context, TaskExecutorService.class));
 	}
 
+	/**
+	 * @return A reference to the TaskExecutor facility.
+	 */
+	public TaskExecutor getTaskExecutor()
+	{
+		return mTaskExecutor;
+	}
+
 	@Override
 	public void onCreate()
 	{
 		super.onCreate();
-		mSoftCallback.get().getServiceReference(this);
 		retrieveTasksFromDisk();
+		mTaskExecutor.onResume(null, null);//FIXME Is there something logical to provide for the Task callback and uiHandler????
 		mTaskExecutor.executeQueue();
+	}
+	
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId)
+	{
+		mSoftCallback.get().getServiceReference(this);
+		return Service.START_STICKY;
 	}
 
 	@Override
@@ -50,10 +65,7 @@ public class TaskExecutorService extends Service
 	{
 		try
 		{
-			FileInputStream fis = openFileInput("task.executor");
-			StringBuffer fileContent = getFileContent(fis);
-			ArrayList<Task> tasks = getTasks(fileContent);
-			mTaskExecutor.setQueue(tasks);
+			mTaskExecutor.setQueue(getTasks(getFileContent(openFileInput("task.executor"))));
 		} catch (FileNotFoundException e)
 		{
 			e.printStackTrace();
@@ -77,7 +89,6 @@ public class TaskExecutorService extends Service
 	private StringBuffer getFileContent(FileInputStream fis) throws IOException
 	{
 		StringBuffer fileContent = new StringBuffer("");
-
 		byte[] buffer = new byte[1024];
 		while ((fis.read(buffer)) != -1)
 		{
