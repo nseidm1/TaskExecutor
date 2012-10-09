@@ -55,25 +55,31 @@ public abstract class Task implements Runnable
 	}
 
 	/**
-	 * @return
+	 * @return The bundle.
 	 */
 	public Bundle getBundle()
 	{
 		return mBundle;
 	}
 
+	/**
+	 * @param future
+	 */
 	public void setFuture(Future<?> future)
 	{
 		mFuture = future;
 	}
 
+	/**
+	 * @return
+	 */
 	public Future<?> getFuture()
 	{
 		return mFuture;
 	}
 
 	/**
-	 * @return If an exception occured.
+	 * @return If an exception occurred.
 	 */
 	public boolean getExperiencedException()
 	{
