@@ -16,7 +16,9 @@ an activity in the foreground. Keep in mind that if your activity is destroyed s
 in the onCreate. The service is designed to be STICKY so your Tasks have a high assurance of being executed even if your activity is destroyed or your service is paused/stopped by the system.
 
 <b>Tasks</b><br>
-Tasks are extended Runnables, and instead of overriding run you'll override the task method.
+Tasks are extended Runnables, and instead of overriding run you'll override the task method. The constructor takes a Bundle to encourange proper design. Your Task should be designed 
+to perform a concrete action on the Bundle. It's recommended not to reference items outside of the Tasks's scope. Again, the task method is designed 
+to perform a discrete operation on the Bundle.
 <br><br>
 Tasks have 7 public methods:<br>
 1) setCompleteCallback(TaskCompletedCallback completeCallback)<br>
