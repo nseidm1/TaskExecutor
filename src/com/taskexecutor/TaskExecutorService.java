@@ -1,120 +1,65 @@
 package com.taskexecutor;
-
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
-import java.util.ArrayList;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-
-import com.google.gson.Gson;
+import android.util.Log;
+import com.taskexecutor.Helpers.ServiceHelper;
 import com.taskexecutor.callbacks.TaskExecutorReferenceCallback;
-import com.taskexecutor.runnables.Task;
-
 public class TaskExecutorService extends Service
 {
-	private static final String TASK_PERSISTENCE_DELIMER = ":TPD:";
-	private TaskExecutor mTaskExecutor = new TaskExecutor();
-	private static SoftReference<TaskExecutorReferenceCallback> mSoftCallback;
-
-	public static void requestExecutorReference(Context context, TaskExecutorReferenceCallback serviceReferenceCallback)
+    private TaskExecutor mTaskExecutor = new TaskExecutor();
+    private static SoftReference<TaskExecutorReferenceCallback> mSoftCallback;
+    public static void requestExecutorReference(Context context, TaskExecutorReferenceCallback serviceReferenceCallback)
+    {
+	mSoftCallback = new SoftReference<TaskExecutorReferenceCallback>(serviceReferenceCallback);
+	context.startService(new Intent(context, TaskExecutorService.class));
+    }
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
+	mSoftCallback.get().getTaskExecutorReference(mTaskExecutor);
+	return Service.START_STICKY;
+    }
+    @Override
+    public void onCreate()
+    {
+	super.onCreate();
+	try
 	{
-		mSoftCallback = new SoftReference<TaskExecutorReferenceCallback>(serviceReferenceCallback);
-		context.startService(new Intent(context, TaskExecutorService.class));
+	    ServiceHelper.retrieveTasksFromDisk(this, mTaskExecutor);
+	    ServiceHelper.deleteSavedQueue(this);
+	    mTaskExecutor.executeQueue();
 	}
-
-	@Override
-	public void onCreate()
+	catch (FileNotFoundException e)
 	{
-		super.onCreate();
-		retrieveTasksFromDisk();
-		mTaskExecutor.onResume(null, null);//FIXME Is there something logical to provide for the Task callback and uiHandler????
-		mTaskExecutor.executeQueue();
+	    //No queue available to restore
 	}
-	
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId)
+	catch (IOException e)
 	{
-		mSoftCallback.get().getTaskExecutorReference(mTaskExecutor);
-		return Service.START_STICKY;
+	    Log.e(TaskExecutorService.class.getName(), "Error retrieving existing queue.");
 	}
-
-	@Override
-	public void onDestroy()
+    }
+    @Override
+    public void onDestroy()
+    {
+	super.onDestroy();
+	try
 	{
-		super.onDestroy();
-		mTaskExecutor.onPause();
-		mTaskExecutor.stopExecution();
-		persistTasksToDisk();
+	    mTaskExecutor.stopExecution(false);
+	    ServiceHelper.persistQueueToDisk(this, mTaskExecutor);
 	}
-
-	private void retrieveTasksFromDisk()
+	catch (IOException e)
 	{
-		try
-		{
-			mTaskExecutor.setQueue(getTasks(getFileContent(openFileInput("task.executor"))));
-		} catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+	    Log.e(TaskExecutorService.class.getName(), "Queue could not be saved.");
 	}
-
-	private ArrayList<Task> getTasks(StringBuffer fileContent)
-	{
-		String[] taskFiles = fileContent.toString().split(TASK_PERSISTENCE_DELIMER);
-		ArrayList<Task> tasks = new ArrayList<Task>();
-		for (String taskFile : taskFiles)
-		{
-			tasks.add(new Gson().fromJson(taskFile, Task.class));
-		}
-		return tasks;
-	}
-
-	private StringBuffer getFileContent(FileInputStream fis) throws IOException
-	{
-		StringBuffer fileContent = new StringBuffer("");
-		byte[] buffer = new byte[1024];
-		while ((fis.read(buffer)) != -1)
-		{
-			fileContent.append(new String(buffer));
-		}
-		return fileContent;
-	}
-
-	private void persistTasksToDisk()
-	{
-		try
-		{
-			String tasks = "";
-			for (Task task : mTaskExecutor.getQueue())
-			{
-				tasks += new Gson().toJson(task) + TASK_PERSISTENCE_DELIMER;
-			}
-			FileOutputStream fos = openFileOutput("task.executor", Context.MODE_PRIVATE);
-			fos.write(tasks.getBytes());
-			fos.close();
-		} catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public IBinder onBind(Intent arg0)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+    }
+    @Override
+    public IBinder onBind(Intent arg0)
+    {
+	return null;
+    }
 }
