@@ -13,27 +13,19 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.google.gson.Gson;
-import com.taskexecutor.callbacks.ServiceReferenceCallback;
+import com.taskexecutor.callbacks.TaskExecutorReferenceCallback;
 import com.taskexecutor.runnables.Task;
 
 public class TaskExecutorService extends Service
 {
 	private static final String TASK_PERSISTENCE_DELIMER = ":TPD:";
 	private TaskExecutor mTaskExecutor = new TaskExecutor();
-	private static SoftReference<ServiceReferenceCallback> mSoftCallback;
+	private static SoftReference<TaskExecutorReferenceCallback> mSoftCallback;
 
-	public static void requestReference(Context context, ServiceReferenceCallback serviceReferenceCallback)
+	public static void requestExecutorReference(Context context, TaskExecutorReferenceCallback serviceReferenceCallback)
 	{
-		mSoftCallback = new SoftReference<ServiceReferenceCallback>(serviceReferenceCallback);
+		mSoftCallback = new SoftReference<TaskExecutorReferenceCallback>(serviceReferenceCallback);
 		context.startService(new Intent(context, TaskExecutorService.class));
-	}
-
-	/**
-	 * @return A reference to the TaskExecutor facility.
-	 */
-	public TaskExecutor getTaskExecutor()
-	{
-		return mTaskExecutor;
 	}
 
 	@Override
@@ -48,7 +40,7 @@ public class TaskExecutorService extends Service
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
-		mSoftCallback.get().getServiceReference(this);
+		mSoftCallback.get().getTaskExecutorReference(mTaskExecutor);
 		return Service.START_STICKY;
 	}
 
