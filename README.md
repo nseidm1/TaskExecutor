@@ -16,7 +16,7 @@ an activity in the foreground. Keep in mind that if your activity is destroyed s
 in the onCreate. The service is designed to be STICKY so your Tasks have a high assurance of being executed even if your activity is destroyed or your service is paused/stopped by the system.
 
 <b>Tasks</b><br>
-Tasks are extended Runnables, and instead of overriding run you'll override the task method. The Task constructor takes a reference to the TaskCompletedCallback which the abstract activity implements.
+Tasks are extended Runnables, and instead of overriding run you'll override the task method.
 <br><br>
 Tasks have 7 public methods:<br>
 1) setCompleteCallback(TaskCompletedCallback completeCallback)<br>
