@@ -4,17 +4,17 @@ TaskExecutor
 <b>Included Components</b><br>
 The included abstract TaskExecutorActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. Tasks 
 Are runnables with additional helper methods to facilitate management by the TaskExecutor facility. Tasks take a TaskCompletedCallback which the abstract TaskExecutorActivity implements. You will 
-receive callbacks to this interface when executed Tasks are completed.
+receive callbacks to this interface when executed Tasks are completed. By default queue execution is paused when the activity is paused, but if a Task is currently being executed it will continue, but the runnable will be blocked prior to the callback. 
+This is the default behavior to facilitate configurationChange events and activity destruction; in onResume all Tasks will 
+have their callback reset, and the queue will be unblocked. If you expect your activity to die for a period of time it may be best to call setPermitCallbackIfPaused() prior to onPause(). This will prevent 
+the queue from blocking when the activity is paused, and will allow the queue to continue executing.
+
 <br><br>
 The included TaskExecutorService is a powerful facility. Use requestExecutorReference(Context context, TaskExecutorReferenceCallback serviceReferenceCallback), and a reference to the service will be provided
 in the TaskExecutorReferenceCallback which your activities can implement. The service has the same functionality as the TaskExecutorActivity, but does not need to be paused and can continue execution without 
 an activity in the foreground. Keep in mind that if your activity is destroyed so will the TaskCompletedCallback. The service will automatically save unexecuted Tasks to disk in onDestroy, and will restore them
 in the onCreate. The service is designed to be STICKY so your Tasks have a high assurance of being executed even if your activity is destroyed or your service is paused/stopped by the system.
 <br><br>
-By default queue execution is paused when the activity is paused, but if a Task is currently being executed it will continue, but the runnable will be blocked prior to the callback. 
-This is the default behavior to facilitate configurationChange events and activity destruction; in onResume all Tasks will 
-have their callback reset, and the queue will be unblocked. If you expect your activity to die for a period of time it may be best to call setPermitCallbackIfPaused() prior to onPause(). This will prevent 
-the queue from blocking when the activity is paused, and will allow the queue to continue executing.
 
 <b>Tasks</b><br>
 Tasks are extended Runnables, and instead of overriding run you'll override the task method. The Task constructor takes a reference to the TaskCompletedCallback which the abstract activity implements.
