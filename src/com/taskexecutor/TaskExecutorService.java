@@ -22,6 +22,12 @@ public class TaskExecutorService extends Service implements ServiceHelperCallbac
 	private Executor mQueuePersister = Executors.newSingleThreadExecutor();
 	private static SoftReference<TaskExecutorReferenceCallback> mSoftCallback;
 
+	/**
+	 * @param context
+	 * Provide a context to launch the service.
+	 * @param serviceReferenceCallback
+	 * Provide a callback to pass a reference of the TaskExecutor.
+	 */
 	public static void requestExecutorReference(Context context, TaskExecutorReferenceCallback serviceReferenceCallback)
 	{
 		mSoftCallback = new SoftReference<TaskExecutorReferenceCallback>(serviceReferenceCallback);
@@ -56,28 +62,30 @@ public class TaskExecutorService extends Service implements ServiceHelperCallbac
 	@Override
 	public void queueModified()
 	{
-		mQueuePersister.execute(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				try
-				{
-					if (mTaskExecutor.getQueueCount() == 0)
-					{
-						ServiceHelper.deleteSavedQueue(TaskExecutorService.this);
-					} else
-					{
-						ServiceHelper.persistQueueToDisk(TaskExecutorService.this, mTaskExecutor);
-					}
-				} catch (IOException e)
-				{
-					Log.e(TaskExecutorService.class.getName(), "Error saving existing queue.");
-				}
-			}
-
-		});
+		mQueuePersister.execute(mQueueToDisk);
 	}
+	
+	private Runnable mQueueToDisk = new Runnable()
+	{
+		@Override
+		public void run()
+		{
+			try
+			{
+				if (mTaskExecutor.getQueueCount() == 0)
+				{
+					ServiceHelper.deleteSavedQueue(TaskExecutorService.this);
+				} else
+				{
+					ServiceHelper.persistQueueToDisk(TaskExecutorService.this, mTaskExecutor);
+				}
+			} catch (IOException e)
+			{
+				Log.e(TaskExecutorService.class.getName(), "Error saving existing queue.");
+			}
+		}
+
+	};
 	
 	//Reserved for IPC, Binder Shminder
 	@Override
