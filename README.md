@@ -1,6 +1,10 @@
 TaskExecutor
 ===================
 
+TODO for version 1.1<br>
+The queue will be written to disk upon modifiction. This will accommodate process termintion. Currently the queue is written to disk 
+only in the onDestroy of the service, which is not entirely effective, if effective at all.<br><br>
+
 <b>Task Executor Activity</b><br>
 The included abstract TaskExecutorActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. Tasks 
 Are runnables with additional helper methods to facilitate management by the TaskExecutor facility. Tasks take a TaskCompletedCallback which the abstract TaskExecutorActivity implements. You will 
