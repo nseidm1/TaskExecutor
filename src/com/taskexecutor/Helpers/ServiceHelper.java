@@ -50,7 +50,8 @@ public class ServiceHelper
 	public static void persistQueueToDisk(Context context, TaskExecutor taskExecutor) throws IOException
 	{
 		String tasks = "";
-		for (Task task : taskExecutor.getQueue())
+		ArrayList<Task> localQueueCopy = new ArrayList<Task>(taskExecutor.getQueue());
+		for (Task task : localQueueCopy)
 		{
 			tasks += new Gson().toJson(task) + TASK_PERSISTENCE_DELIMER;
 		}
