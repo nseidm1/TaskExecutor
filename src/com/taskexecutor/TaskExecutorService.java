@@ -54,12 +54,6 @@ public class TaskExecutorService extends Service implements ServiceHelperCallbac
 	}
 
 	@Override
-	public IBinder onBind(Intent arg0)
-	{
-		return null;
-	}
-
-	@Override
 	public void queueModified()
 	{
 		mQueuePersister.execute(new Runnable()
@@ -83,5 +77,12 @@ public class TaskExecutorService extends Service implements ServiceHelperCallbac
 			}
 
 		});
+	}
+	
+	//Reserved for IPC, Binder Shminder
+	@Override
+	public IBinder onBind(Intent arg0)
+	{
+		return null;
 	}
 }
