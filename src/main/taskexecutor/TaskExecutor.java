@@ -5,7 +5,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import main.taskexecutor.callbacks.ServiceHelperCallback;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
-import main.taskexecutor.exceptions.DuplicateTagException;
 import main.taskexecutor.helpers.QueueInMemoryHelper;
 import main.taskexecutor.runnables.Task;
 import android.os.Handler;
@@ -49,26 +48,17 @@ public class TaskExecutor
      * @param taskCompletedCallback
      *            Provide an interface to callback when the Task has completed
      *            execution. You can pass null if no callback is needed.
-     * @param uiHandler
-     *            Provide a UI handler for the Task to post. You can pass null
-     *            if nothing needs to post back to the UI.
      * @param removeOnException
      *            Should the Task be removed from the queue if it fails to
      *            execute completely because of an exception?
      * @param removeOnSuccess
      *            Should the Task be removed from the queue if it completes
      *            without exception?
-     * @throws DuplicateTagException
-     *             Because Tasks are persisted to disk TAGs need to be a unique
-     *             identifier.
      */
-    public void addTaskToQueue(Task task, TaskCompletedCallback taskCompletedCallback, boolean removeOnException, boolean removeOnSuccess) throws DuplicateTagException
+    public void addTaskToQueue(Task task, TaskCompletedCallback taskCompletedCallback)
     {
-	QueueInMemoryHelper.checkForDuplicateTasks(mQueue, task);
 	task.setCompleteCallback(taskCompletedCallback);
 	task.setUiHandler(mHandler);
-	task.setRemoveOnException(removeOnException);
-	task.setRemoveOnSuccess(removeOnSuccess);
 	task.setTaskExecutor(this);
 	mQueue.add(task);
 	queueModified();
@@ -95,7 +85,7 @@ public class TaskExecutor
     {
 	for (Task task : mQueue)
 	{
-	    task.setFuture(mTaskThreadExecutor.submit(task));
+	    mTaskThreadExecutor.execute(task);
 	}
     }
     /**
@@ -130,9 +120,6 @@ public class TaskExecutor
      * @param callCompleteCallback
      *            Provide the taskCompleteCallback so your Tasks can report back
      *            to the activity.
-     * @param uiHandler
-     *            Provide a uiHandler so your task can post back to the current
-     *            UI thread.
      */
     public void onResume(TaskCompletedCallback taskCompleteCallback)
     {
@@ -202,21 +189,6 @@ public class TaskExecutor
     {
 	mQueue.clear();
 	queueModified();
-    }
-    /**
-     * If you've called executeQueue(), then this method will attempt to stop
-     * executing queued tasks by canceling Future Tasks. If a task is currently
-     * being executed you can attempt interruption using the interrupt
-     * parameter. This will not remove items from the queue, use clearQueue()
-     * for that.
-     */
-    public void stopExecution(boolean interrupt) throws UnsupportedOperationException
-    {
-	for (Task task : mQueue)
-	{
-	    if (task.getFuture() != null)
-		task.getFuture().cancel(interrupt);
-	}
     }
     private void queueModified()
     {

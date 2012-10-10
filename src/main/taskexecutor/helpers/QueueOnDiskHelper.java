@@ -4,21 +4,29 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Vector;
 import main.taskexecutor.TaskExecutor;
 import main.taskexecutor.runnables.Task;
 import android.content.Context;
-import com.google.gson.Gson;
+import android.util.Log;
 /**
  * @author nseidm1
  * 
  */
 public class QueueOnDiskHelper
 {
-    private static Gson mGson = new Gson();
-    public static void retrieveTasksFromDisk(Context context, TaskExecutor taskExecutor) throws FileNotFoundException, IOException
+    public static boolean retrieveTasksFromDisk(Context context, TaskExecutor taskExecutor) throws FileNotFoundException, IOException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException
     {
-	taskExecutor.setQueue(getTasks(context));
+	Vector<Task> tasks = getTasks(context);
+	if (tasks.size() > 0)
+	{
+	    taskExecutor.setQueue(tasks);
+	    return true;
+	}
+	return false;
     }
     public static void updateTasksOnDisk(Context context, TaskExecutor taskExecutor) throws IOException
     {
@@ -29,54 +37,53 @@ public class QueueOnDiskHelper
     // ////////////////////////////////////////////////////
     // //////////Private methods hereforth/////////////////
     // ////////////////////////////////////////////////////
-    private static Vector<Task> getTasks(Context context) throws FileNotFoundException, IOException
+    private static Vector<Task> getTasks(Context context) throws FileNotFoundException, IOException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException
     {
 	Vector<Task> taskArray = new Vector<Task>();
 	File[] tasks = getTaskExecutorFilesDir(context).listFiles();
+	Log.d(QueueOnDiskHelper.class.getName(), "Number of Tasks being restored: " + tasks.length);
 	for (File file : tasks)
 	{
-	    Task task = null;
-	    try
+	    InputStream is = new FileInputStream(file);
+	    StringBuffer fileContent = new StringBuffer("");
+
+	    byte[] buffer = new byte[1024];
+	    int bytesRead;
+	    while ((bytesRead = is.read(buffer)) != -1) 
 	    {
-		task = mGson.fromJson(getFileBytes(file), Task.class);
+	        fileContent.append(new String(buffer, 0, bytesRead, "UTF-8"));
 	    }
-	    catch (Exception e)
-	    {
-		// Not a Task file.
-	    }
+	    is.close();
+
+	    String className = fileContent.toString();
+	    Class<?> clazzName = Class.forName(className);
+	    Constructor<?>[] constructors = (Constructor<?>[]) clazzName.getConstructors();
+	    Task task = (Task) constructors[0].newInstance(file.getName());
+//	    Log.d(QueueOnDiskHelper.class.getName(), task.getTag() + "Restored");
 	    if (task != null)
 		taskArray.add(task);
 	}
 	return taskArray;
     }
-    private static String getFileBytes(File task) throws IOException
-    {
-	FileInputStream fis = new FileInputStream(task);
-	StringBuffer fileBytes = new StringBuffer("");
-	byte[] buffer = new byte[1024];
-	while ((fis.read(buffer)) != -1)
-	{
-	    fileBytes.append(new String(buffer));
-	}
-	fis.close();
-	return fileBytes.toString();
-    }
     private static void addFilesInQueue(Vector<Task> localQueueCopy, Context context) throws IOException
     {
 	for (Task task : localQueueCopy)
 	{
-	    if (!new File(getTaskExecutorFilesDir(context), task.getTag()).exists())
+	    File taskFile = new File(getTaskExecutorFilesDir(context), task.getTag());
+	    if (!taskFile.exists())
 	    {
-		FileOutputStream fos = new FileOutputStream(new File(getTaskExecutorFilesDir(context), task.getTag()));
-		fos.write(mGson.toJson(task).getBytes());
+		FileOutputStream fos = new FileOutputStream(taskFile);
+		String className = task.getClass().getName();
+		fos.write(className.getBytes());
 		fos.flush();
 		fos.close();
+		Log.d(QueueOnDiskHelper.class.getName(), task.getTag() + " written to disk");
 	    }
 	}
     }
     private static void deleteFilesNotIntQueue(Vector<Task> queue, Context context)
     {
-	File[] tasks = context.getFilesDir().listFiles();
+	File[] tasks = getTaskExecutorFilesDir(context).listFiles();
 	for (int i = 0; i < tasks.length; i++)
 	{
 	    boolean delete = true;
@@ -86,7 +93,10 @@ public class QueueOnDiskHelper
 		    delete = false;
 	    }
 	    if (delete)
+	    {
+		Log.d(QueueOnDiskHelper.class.getName(), tasks[i].getName() + " deleted from disk");
 		tasks[i].delete();
+	    }
 	}
     }
     private static File getTaskExecutorFilesDir(Context context)

@@ -1,5 +1,4 @@
 package main.taskexecutor.runnables;
-import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import main.taskexecutor.TaskExecutor;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
@@ -14,12 +13,11 @@ public class Task implements Runnable
     private TaskExecutor mTaskExecutor;
     private TaskCompletedCallback mCompleteCallback;
     private Semaphore mPause = new Semaphore(1);
-    private boolean mRemoveOnException = false;
+    private boolean mRemoveOnException = true;
     private boolean mRemoveOnSuccess = true;
     private boolean mExperiencedException = false;
     private Handler mUiHandler;
     private Bundle mBundle = new Bundle();
-    private Future<?> mFuture;
     private String TAG = "";
     public Task(String tag)
     {
@@ -55,20 +53,7 @@ public class Task implements Runnable
     {
 	return mBundle;
     }
-    /**
-     * @param future
-     */
-    public void setFuture(Future<?> future)
-    {
-	mFuture = future;
-    }
-    /**
-     * @return
-     */
-    public Future<?> getFuture()
-    {
-	return mFuture;
-    }
+
     /**
      * @return If an exception occurred.
      */

@@ -2,7 +2,6 @@ package main.taskexecutor.helpers;
 import java.util.Vector;
 import main.taskexecutor.TaskExecutor;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
-import main.taskexecutor.exceptions.DuplicateTagException;
 import main.taskexecutor.runnables.Task;
 import android.os.Handler;
 /**
@@ -30,14 +29,6 @@ public class QueueInMemoryHelper
 	for (Task task : queue)
 	{
 	    task.setUiHandler(uiHandler);
-	}
-    }
-    public static void checkForDuplicateTasks(Vector<Task> queue, Task submittedTask) throws DuplicateTagException
-    {
-	for (Task task : queue)
-	{
-	    if (task.getTag().equalsIgnoreCase(submittedTask.getTag()))
-		throw new DuplicateTagException("Because the queue is written to the file system TAGs need to be unique identifiers.");
 	}
     }
 }
