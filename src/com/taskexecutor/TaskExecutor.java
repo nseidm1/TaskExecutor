@@ -1,6 +1,6 @@
 package com.taskexecutor;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -18,7 +18,7 @@ import com.taskexecutor.runnables.Task;
 public class TaskExecutor
 {
 	private boolean mIsPaused = false;
-	private ArrayList<Task> mQueue = new ArrayList<Task>();
+	private Vector<Task> mQueue = new Vector<Task>();
 	private ServiceHelperCallback mServiceHelperCallback;
 	private ThreadPoolExecutor mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newSingleThreadExecutor();
 
@@ -180,7 +180,7 @@ public class TaskExecutor
 	/**
 	 * @return A reference to the existing Task queue.
 	 */
-	public ArrayList<Task> getQueue()
+	public Vector<Task> getQueue()
 	{
 		return mQueue;
 	}
@@ -190,7 +190,7 @@ public class TaskExecutor
 	 *            Set the Task queue. Typically used when restoring the
 	 *            TaskExecutor for the persisted instance on disk.
 	 */
-	public void setQueue(ArrayList<Task> queue)
+	public void setQueue(Vector<Task> queue)
 	{
 		mQueue = queue;
 	}

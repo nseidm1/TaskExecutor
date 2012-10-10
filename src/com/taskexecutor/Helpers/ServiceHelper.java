@@ -6,7 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Vector;
+
 import android.content.Context;
+
 import com.google.gson.Gson;
 import com.taskexecutor.TaskExecutor;
 import com.taskexecutor.runnables.Task;
@@ -25,10 +28,10 @@ public class ServiceHelper
 		taskExecutor.setQueue(getTasks(getFileContent(context.openFileInput("task.executor"))));
 	}
 
-	private static ArrayList<Task> getTasks(StringBuffer fileContent)
+	private static Vector<Task> getTasks(StringBuffer fileContent)
 	{
 		String[] taskFiles = fileContent.toString().split(TASK_PERSISTENCE_DELIMER);
-		ArrayList<Task> tasks = new ArrayList<Task>();
+		Vector<Task> tasks = new Vector<Task>();
 		for (String taskFile : taskFiles)
 		{
 			tasks.add(new Gson().fromJson(taskFile, Task.class));

@@ -1,7 +1,9 @@
 package com.taskexecutor.Helpers;
 
-import java.util.ArrayList;
+import java.util.Vector;
+
 import android.os.Handler;
+
 import com.taskexecutor.TaskExecutor;
 import com.taskexecutor.callbacks.TaskCompletedCallback;
 import com.taskexecutor.runnables.Task;
@@ -12,7 +14,7 @@ import com.taskexecutor.runnables.Task;
  */
 public class QueueHelper
 {
-	public static void setCallbackForAllQueuedTasks(ArrayList<Task> queue, TaskCompletedCallback completeCallback)
+	public static void setCallbackForAllQueuedTasks(Vector<Task> queue, TaskCompletedCallback completeCallback)
 	{
 		for (Task task : queue)
 		{
@@ -20,7 +22,7 @@ public class QueueHelper
 		}
 	}
 
-	public static void setTaskExecutorForAllQueuedTasks(ArrayList<Task> queue, TaskExecutor taskExecutor)
+	public static void setTaskExecutorForAllQueuedTasks(Vector<Task> queue, TaskExecutor taskExecutor)
 	{
 		for (Task task : queue)
 		{
@@ -28,7 +30,7 @@ public class QueueHelper
 		}
 	}
 
-	public static void setUIHandlerForAllQueuedTask(ArrayList<Task> queue, Handler uiHandler)
+	public static void setUIHandlerForAllQueuedTask(Vector<Task> queue, Handler uiHandler)
 	{
 		for (Task task : queue)
 		{
