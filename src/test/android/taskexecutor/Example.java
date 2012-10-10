@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
-import com.taskexecutorservice.R;
+import com.taskexecutor.R;
 
 public class Example extends FragmentActivity implements TaskExecutorReferenceCallback, TaskCompletedCallback, OnClickListener
 {
@@ -43,8 +43,8 @@ public class Example extends FragmentActivity implements TaskExecutorReferenceCa
     @Override
     public void onClick(View v)
     {
-	switch(v.getId()){
-	case R.id.http_get_test_button:
+	if (v.getId() == R.id.http_get_test_button)
+	{
 	    try
 	    {
 		Task EXAMPLE_HTTP_GET_TASK = new Task()
@@ -69,7 +69,6 @@ public class Example extends FragmentActivity implements TaskExecutorReferenceCa
 	    {
 		e.printStackTrace();
 	    }
-	    break;
 	}
     }
     
