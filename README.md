@@ -23,10 +23,13 @@ Tasks have 7 public methods:<br>
 1) setCompleteCallback(TaskCompletedCallback completeCallback)<br>
 2) setTaskExecutor(TaskExecutor taskExecutor)<br>
 3) setRemoveOnException(Boolean removeOnException)<br>
-4) pause()<br>
-5) resume()<br>
-6) setBundle(Bundle bundle)<br>
-7) getBundle()<br><br>
+4) setRemoveOnSuccess(Boolen removeOnSuccess)<br>
+5) pause()<br>
+6) resume()<br>
+7) setBundle(Bundle bundle)<br>
+8) getBundle()<br>
+9) setTag(String TAG)<br>
+10) getTag()<br><br>
 <b>Tips</b><br>
 1, 2, 4, and 5 are managed by the TaskExecutor and likely will not ever be used directly.
 <br><br>
