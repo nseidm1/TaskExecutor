@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 public class QueueOnDiskHelper
 {
     private static Gson mGson = new Gson();
+    private static final String FOLDER = "TaskExecutor";
     public static void retrieveTasksFromDisk(Context context, TaskExecutor taskExecutor) throws FileNotFoundException, IOException
     {
 	taskExecutor.setQueue(getTasks(context));
@@ -23,18 +24,11 @@ public class QueueOnDiskHelper
     private static Vector<Task> getTasks(Context context) throws FileNotFoundException, IOException
     {
 	Vector<Task> taskArray = new Vector<Task>();
-	File[] tasks = context.getFilesDir().listFiles();
+	File[] tasks = new File(context.getFilesDir(), FOLDER).listFiles();
 	for (File file : tasks)
 	{
 	    Task task = null;
-	    try
-	    {
 		task = mGson.fromJson(getFileBytes(file), Task.class);
-	    }
-	    catch(Exception e)
-	    {
-		//Not a Task file.
-	    }
 	    if (task != null)
 		taskArray.add(task);
 	}
@@ -71,11 +65,12 @@ public class QueueOnDiskHelper
     }
     private static void addFilesInQueue(Vector<Task> localQueueCopy, Context context) throws IOException
     {
+	File folder = new File(context.getFilesDir(), FOLDER);
 	for (Task task : localQueueCopy)
 	{
 	    if (!new File(context.getFilesDir(), task.getTag()).exists())
 	    {
-		FileOutputStream fos = context.openFileOutput(task.getTag(), Context.MODE_PRIVATE);
+		FileOutputStream fos = context.openFileOutput(new File(folder, task.getTag()).getAbsolutePath(), Context.MODE_PRIVATE);
 		fos.write(mGson.toJson(task).getBytes());
 		fos.flush();
 		fos.close();
