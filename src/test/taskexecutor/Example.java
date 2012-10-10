@@ -55,7 +55,7 @@ public class Example extends TaskExecutorActivity
 			setTag("EXAMPLE_HTTP_GET_TASK");
 		    }
 		};	
-		mTaskExecutor.addTaskToQueue(EXAMPLE_HTTP_GET_TASK, this, mHandler, true, true);
+		mTaskExecutor.addTaskToQueue(EXAMPLE_HTTP_GET_TASK, this, true, true);
 		mTaskExecutor.executeQueue();
 	    }
 	    catch (DuplicateTagException e)
@@ -77,7 +77,7 @@ public class Example extends TaskExecutorActivity
 			HttpResponse response = client.execute(get);
 		    }
 		};	
-		mTaskExecutor.addTaskToQueue(EXAMPLE_HTTP_EXCEPTION_TASK, this, mHandler, true, true);
+		mTaskExecutor.addTaskToQueue(EXAMPLE_HTTP_EXCEPTION_TASK, this, true, true);
 		mTaskExecutor.executeQueue();
 	    }
 	    catch (DuplicateTagException e)
@@ -89,12 +89,12 @@ public class Example extends TaskExecutorActivity
 	{
 	    try
 	    {
-		Task EXAMPLE_HTTP_GET_TASK = new Task()
+		Task EXAMPLE_HTTP_GET_DELAYED_TASK = new Task()
 		{
 		    @Override
 		    public void task() throws IOException
 		    {
-			SystemClock.sleep(3000);
+			SystemClock.sleep(20000);
 			HttpGet get = new HttpGet("http://m.google.com");
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 			HttpResponse response = client.execute(get);
@@ -102,10 +102,10 @@ public class Example extends TaskExecutorActivity
 			Bundle bundle = new Bundle();
 			bundle.putString("ResponseCode", "Response Code: " + responseCode);
 			setBundle(bundle);
-			setTag("EXAMPLE_HTTP_GET_TASK");
+			setTag("EXAMPLE_HTTP_GET_DELAYED_TASK");
 		    }
 		};	
-		mTaskExecutor.addTaskToQueue(EXAMPLE_HTTP_GET_TASK, this, mHandler, true, true);
+		mTaskExecutor.addTaskToQueue(EXAMPLE_HTTP_GET_DELAYED_TASK, this, true, true);
 		mTaskExecutor.executeQueue();
 	    }
 	    catch (DuplicateTagException e)
@@ -116,7 +116,7 @@ public class Example extends TaskExecutorActivity
     }
     
     @Override
-    public void onTaskComplete(Bundle bundle, String TAG, boolean success, Exception exception)
+    public void onTaskComplete(Bundle bundle, String TAG, Exception exception)
     {
 	if (exception != null)
 	    Toast.makeText(this, TAG + " " + exception.toString(), Toast.LENGTH_SHORT).show();

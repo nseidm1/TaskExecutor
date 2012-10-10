@@ -2,7 +2,6 @@ package main.taskexecutor;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
 import main.taskexecutor.callbacks.TaskExecutorReferenceCallback;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.view.View.OnClickListener;
 /**
@@ -12,7 +11,6 @@ import android.view.View.OnClickListener;
 public abstract class TaskExecutorActivity extends FragmentActivity implements TaskCompletedCallback, TaskExecutorReferenceCallback, OnClickListener
 {
     protected TaskExecutor mTaskExecutor;
-    protected Handler mHandler = new Handler();
     @Override
     public void onCreate(Bundle bundle)
     {
@@ -29,6 +27,6 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
     public void getTaskExecutorReference(TaskExecutor taskExecutor)
     {
 	mTaskExecutor = taskExecutor;	
-	mTaskExecutor.onResume(this, mHandler);
+	mTaskExecutor.onResume(this);
     }
 }

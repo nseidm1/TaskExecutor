@@ -17,5 +17,5 @@ public interface TaskCompletedCallback
      *            Null if the task did not throw an exception.
      * 
      */
-    public void onTaskComplete(Bundle bundle, String TAG, boolean success, Exception exception);
+    public void onTaskComplete(Bundle bundle, String TAG, Exception exception);
 }

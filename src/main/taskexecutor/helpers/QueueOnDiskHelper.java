@@ -23,7 +23,7 @@ public class QueueOnDiskHelper
     private static Vector<Task> getTasks(Context context) throws FileNotFoundException, IOException
     {
 	Vector<Task> taskArray = new Vector<Task>();
-	File[] tasks = context.getFilesDir().listFiles();
+	File[] tasks = getTaskExecutorFilesDir(context).listFiles();
 	for (File file : tasks)
 	{
 	    Task task = null;
@@ -73,9 +73,9 @@ public class QueueOnDiskHelper
     {
 	for (Task task : localQueueCopy)
 	{
-	    if (!new File(context.getFilesDir(), task.getTag()).exists())
+	    if (!new File(getTaskExecutorFilesDir(context), task.getTag()).exists())
 	    {
-		FileOutputStream fos = context.openFileOutput(task.getTag(), Context.MODE_PRIVATE);
+		FileOutputStream fos = new FileOutputStream(new File(getTaskExecutorFilesDir(context), task.getTag()));
 		fos.write(mGson.toJson(task).getBytes());
 		fos.flush();
 		fos.close();
@@ -96,5 +96,12 @@ public class QueueOnDiskHelper
 	    if (delete)
 		tasks[i].delete();
 	}
+    }
+    private static File getTaskExecutorFilesDir(Context context)
+    {
+	File projDir = new File(context.getFilesDir().getAbsolutePath() + File.separator + "TaskExecutor");
+	if (!projDir.exists())
+	    projDir.mkdirs();
+	return projDir;
     }
 }

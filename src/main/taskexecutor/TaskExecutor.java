@@ -16,6 +16,7 @@ import android.os.Handler;
 public class TaskExecutor
 {
     private boolean mIsPaused = false;
+    private Handler mHandler = new Handler();
     private Vector<Task> mQueue = new Vector<Task>();
     private ServiceHelperCallback mServiceHelperCallback;
     private ExecutorService mTaskThreadExecutor = Executors.newSingleThreadExecutor();
@@ -61,11 +62,11 @@ public class TaskExecutor
      *             Because Tasks are persisted to disk TAGs need to be a unique
      *             identifier.
      */
-    public void addTaskToQueue(Task task, TaskCompletedCallback taskCompletedCallback, Handler uiHandler, boolean removeOnException, boolean removeOnSuccess) throws DuplicateTagException
+    public void addTaskToQueue(Task task, TaskCompletedCallback taskCompletedCallback, boolean removeOnException, boolean removeOnSuccess) throws DuplicateTagException
     {
 	QueueInMemoryHelper.checkForDuplicateTasks(mQueue, task);
 	task.setCompleteCallback(taskCompletedCallback);
-	task.setUiHandler(uiHandler);
+	task.setUiHandler(mHandler);
 	task.setRemoveOnException(removeOnException);
 	task.setRemoveOnSuccess(removeOnSuccess);
 	task.setTaskExecutor(this);
@@ -133,13 +134,13 @@ public class TaskExecutor
      *            Provide a uiHandler so your task can post back to the current
      *            UI thread.
      */
-    public void onResume(TaskCompletedCallback taskCompleteCallback, Handler uiHandler)
+    public void onResume(TaskCompletedCallback taskCompleteCallback)
     {
 	//Reset the task complete callback.
 	//Reset the ui handler.
 	//Reset the reference to the TaskExecutor.
 	QueueInMemoryHelper.setCallbackForAllQueuedTasks(mQueue, taskCompleteCallback);
-	QueueInMemoryHelper.setUIHandlerForAllQueuedTask(mQueue, uiHandler);
+	QueueInMemoryHelper.setUIHandlerForAllQueuedTask(mQueue, mHandler);
 	QueueInMemoryHelper.setTaskExecutorForAllQueuedTasks(mQueue, this);
 	unPauseAllQueuedTasks();
     }

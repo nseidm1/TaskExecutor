@@ -158,7 +158,7 @@ public class Task implements Runnable
 		    public void run()
 		    {
 			if (mCompleteCallback != null)
-			    mCompleteCallback.onTaskComplete(mBundle, TAG, true, null);
+			    mCompleteCallback.onTaskComplete(mBundle, TAG, null);
 		    }
 		});
 	    }
@@ -176,7 +176,7 @@ public class Task implements Runnable
 		    public void run()
 		    {
 			if (mCompleteCallback != null)
-			    mCompleteCallback.onTaskComplete(mBundle, TAG, false, e);
+			    mCompleteCallback.onTaskComplete(mBundle, TAG, e);
 		    }
 		});
 	    }
