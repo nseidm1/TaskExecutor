@@ -4,7 +4,7 @@ TaskExecutor
 <b>Task Executor Activity</b><br>
 The included abstract TaskExecutorActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. Tasks 
 Are runnables with additional helper methods to facilitate management by the TaskExecutor facility. Tasks take a TaskCompletedCallback which the abstract TaskExecutorActivity implements. You will 
-receive callbacks to this interface when executed Tasks are completed. By default queue execution is paused when the activity is paused, but if a Task is currently being executed it will continue, but the runnable will be blocked prior to the callback. 
+receive callbacks to this interface when executed Tasks are completed. By default queue execution is paused when the activity is paused, but if a Task is currently being executed it will continue, and the runnable will be blocked prior to the callback. 
 This is the default behavior to facilitate configurationChange events and activity destruction; in onResume all Tasks will 
 have their callback reset, and the queue will be unblocked. If you expect your activity to die for a period of time it may be best to call setPermitCallbackIfPaused() prior to onPause(). This will prevent 
 the queue from blocking when the activity is paused, and will allow the queue to continue executing.
