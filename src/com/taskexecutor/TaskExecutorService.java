@@ -3,17 +3,23 @@ package com.taskexecutor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+
 import com.taskexecutor.Helpers.ServiceHelper;
+import com.taskexecutor.callbacks.ServiceHelperCallback;
 import com.taskexecutor.callbacks.TaskExecutorReferenceCallback;
 
-public class TaskExecutorService extends Service
+public class TaskExecutorService extends Service implements ServiceHelperCallback
 {
-	private TaskExecutor mTaskExecutor = new TaskExecutor();
+	private TaskExecutor mTaskExecutor = new TaskExecutor(this);
+	private Executor mQueuePersister = Executors.newSingleThreadExecutor();
 	private static SoftReference<TaskExecutorReferenceCallback> mSoftCallback;
 
 	public static void requestExecutorReference(Context context, TaskExecutorReferenceCallback serviceReferenceCallback)
@@ -48,22 +54,34 @@ public class TaskExecutorService extends Service
 	}
 
 	@Override
-	public void onDestroy()
-	{
-		super.onDestroy();
-		try
-		{
-			mTaskExecutor.stopExecution(false);
-			ServiceHelper.persistQueueToDisk(this, mTaskExecutor);
-		} catch (IOException e)
-		{
-			Log.e(TaskExecutorService.class.getName(), "Queue could not be saved.");
-		}
-	}
-
-	@Override
 	public IBinder onBind(Intent arg0)
 	{
 		return null;
+	}
+
+	@Override
+	public void queueModified()
+	{
+		mQueuePersister.execute(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					if (mTaskExecutor.getQueueCount() == 0)
+					{
+						ServiceHelper.deleteSavedQueue(TaskExecutorService.this);
+					} else
+					{
+						ServiceHelper.persistQueueToDisk(TaskExecutorService.this, mTaskExecutor);
+					}
+				} catch (IOException e)
+				{
+					Log.e(TaskExecutorService.class.getName(), "Error saving existing queue.");
+				}
+			}
+
+		});
 	}
 }

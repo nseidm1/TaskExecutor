@@ -3,8 +3,11 @@ package com.taskexecutor;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+
 import android.os.Handler;
+
 import com.taskexecutor.Helpers.QueueHelper;
+import com.taskexecutor.callbacks.ServiceHelperCallback;
 import com.taskexecutor.callbacks.TaskCompletedCallback;
 import com.taskexecutor.runnables.Task;
 
@@ -12,7 +15,17 @@ public class TaskExecutor
 {
 	private boolean mIsPaused = false;
 	private ArrayList<Task> mQueue = new ArrayList<Task>();
+	private ServiceHelperCallback mServiceHelperCallback;
 	private ThreadPoolExecutor mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newSingleThreadExecutor();
+
+	public TaskExecutor()
+	{
+	}
+
+	public TaskExecutor(ServiceHelperCallback serviceHelperCallback)
+	{
+		mServiceHelperCallback = serviceHelperCallback;
+	}
 
 	/**
 	 * @param threadPoolExecutor
@@ -57,6 +70,7 @@ public class TaskExecutor
 		task.setRemoveOnSuccess(removeOnSuccess);
 		task.setTaskExecutor(this);
 		mQueue.add(task);
+		queueModified();
 	}
 
 	/**
@@ -68,6 +82,7 @@ public class TaskExecutor
 	public void removeTaskFromQueue(Task task)
 	{
 		mQueue.remove(task);
+		queueModified();
 	}
 
 	/**
@@ -183,6 +198,7 @@ public class TaskExecutor
 	public void clearQueue()
 	{
 		mQueue.clear();
+		queueModified();
 	}
 
 	/**
@@ -200,5 +216,11 @@ public class TaskExecutor
 				task.getFuture().cancel(interrupt);
 		}
 		mTaskThreadExecutor.purge();
+	}
+
+	private void queueModified()
+	{
+		if (mServiceHelperCallback != null)
+			mServiceHelperCallback.queueModified();
 	}
 }
