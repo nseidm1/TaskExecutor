@@ -23,6 +23,7 @@ public class Example extends FragmentActivity implements TaskExecutorReferenceCa
 {
     private TaskExecutor mTaskExecutor;
     private Button mTestButton1;
+    private Button mTextButton2;
     private Handler mUIHandler = new Handler();
     @Override
     public void onCreate(Bundle bundle)
@@ -31,6 +32,8 @@ public class Example extends FragmentActivity implements TaskExecutorReferenceCa
 	setContentView(R.layout.test);
 	mTestButton1 = (Button) findViewById(R.id.http_get_test_button);
 	mTestButton1.setOnClickListener(this);
+	mTextButton2 = (Button) findViewById(R.id.http_exception_test_button);
+	mTextButton2.setOnClickListener(this);
 	TaskExecutorService.requestExecutorReference(this, this);
     }
 
@@ -63,6 +66,28 @@ public class Example extends FragmentActivity implements TaskExecutorReferenceCa
 		    }
 		};	
 		mTaskExecutor.addTaskToQueue(EXAMPLE_HTTP_GET_TASK, this, mUIHandler, true, true);
+		mTaskExecutor.executeQueue();
+	    }
+	    catch (DuplicateTagException e)
+	    {
+		e.printStackTrace();
+	    }
+	}
+	else if (v.getId() == R.id.http_exception_test_button)
+	{
+	    try
+	    {
+		Task EXAMPLE_HTTP_EXCEPTION_TASK = new Task()
+		{
+		    @Override
+		    public void task() throws IOException
+		    {
+			HttpGet get = new HttpGet("http://m.google.com");
+			AndroidHttpClient client = null;//NullPointerException
+			HttpResponse response = client.execute(get);
+		    }
+		};	
+		mTaskExecutor.addTaskToQueue(EXAMPLE_HTTP_EXCEPTION_TASK, this, mUIHandler, true, true);
 		mTaskExecutor.executeQueue();
 	    }
 	    catch (DuplicateTagException e)
