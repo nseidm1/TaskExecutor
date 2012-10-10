@@ -11,7 +11,7 @@ have their callback reset, and the queue will be unblocked. It you want your Tas
 <b>Task Executor Service</b><br>
 The included TaskExecutorService is a powerful facility. Use requestExecutorReference(Context context, TaskExecutorReferenceCallback serviceReferenceCallback), and a reference to the service will be provided
 in the TaskExecutorReferenceCallback which your activities can implement. The service has the same functionality as the TaskExecutorActivity, but does not need to be paused and can continue execution without 
-an activity in the foreground. Keep in mind that if your activity is destroyed so will the TaskCompletedCallback; please define your Task considering this possible circumstance. The service will automatically save unexecuted Tasks to disk in onDestroy, and will restore them
+an activity in the foreground. Keep in mind that if your activity is destroyed so will the TaskCompletedCallback; please define your Task considering this possible circumstance. The service automatically persists Tasks to disk whenever the queue is modified, and will restore them
 in the onCreate. The service is designed to be STICKY so your Tasks have a high assurance of being executed even if your activity is destroyed or your service is paused/stopped by the system.
 
 TODO for version 1.1<br>
@@ -19,9 +19,7 @@ The queue will be written to disk upon modifiction. This will accommodate proces
 only in the onDestroy of the service, which is not entirely effective, if effective at all.<br><br>
 
 <b>Tasks</b><br>
-Tasks are extended Runnables, and instead of overriding run you'll override the task method. The constructor takes a Bundle to encourange proper design. Your Task should be designed 
-to perform a concrete action on the Bundle. It's recommended not to reference items outside of the Tasks's scope. Again, the task method is designed 
-to perform a discrete operation on the Bundle.
+Tasks are extended Runnables, and instead of overriding run you'll override the task method.
 <br><br>
 Tasks have 10 public methods:<br>
 1) setCompleteCallback(TaskCompletedCallback completeCallback)<br>
