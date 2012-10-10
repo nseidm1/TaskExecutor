@@ -11,7 +11,7 @@ have their callback reset, and the queue will be unblocked. It you want your Tas
 <b>Task Executor Service</b><br>
 The included TaskExecutorService is a powerful facility. Use requestExecutorReference(Context context, TaskExecutorReferenceCallback serviceReferenceCallback), and a reference to the service will be provided
 in the TaskExecutorReferenceCallback which your activities can implement. The service has the same functionality as the TaskExecutorActivity, but does not need to be paused and can continue execution without 
-an activity in the foreground. Keep in mind that if your activity is destroyed so will the TaskCompletedCallback. The service will automatically save unexecuted Tasks to disk in onDestroy, and will restore them
+an activity in the foreground. Keep in mind that if your activity is destroyed so will the TaskCompletedCallback; please define your Task considering this posible circumstanc. The service will automatically save unexecuted Tasks to disk in onDestroy, and will restore them
 in the onCreate. The service is designed to be STICKY so your Tasks have a high assurance of being executed even if your activity is destroyed or your service is paused/stopped by the system.
 
 TODO for version 1.1<br>
