@@ -1,33 +1,34 @@
 package main.taskexecutor;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
+import main.taskexecutor.callbacks.TaskExecutorReferenceCallback;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.view.View.OnClickListener;
 /**
  * @author nseidm1
  * 
  */
-public abstract class TaskExecutorActivity extends FragmentActivity implements TaskCompletedCallback
+public abstract class TaskExecutorActivity extends FragmentActivity implements TaskCompletedCallback, TaskExecutorReferenceCallback, OnClickListener
 {
-    protected static TaskExecutor mTaskExecutor;
+    protected TaskExecutor mTaskExecutor;
     protected Handler mHandler = new Handler();
     @Override
     public void onCreate(Bundle bundle)
     {
 	super.onCreate(bundle);
-	if (mTaskExecutor == null)
-	    mTaskExecutor = new TaskExecutor();
-    }
-    @Override
-    public void onResume()
-    {
-	super.onResume();
-	mTaskExecutor.onResume(this, mHandler);
+	TaskExecutorService.requestExecutorReference(this, this);
     }
     @Override
     public void onPause()
     {
 	super.onPause();
 	mTaskExecutor.onPause();
+    }
+    @Override
+    public void getTaskExecutorReference(TaskExecutor taskExecutor)
+    {
+	mTaskExecutor = taskExecutor;	
+	mTaskExecutor.onResume(this, mHandler);
     }
 }

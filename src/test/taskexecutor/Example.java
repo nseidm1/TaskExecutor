@@ -1,30 +1,24 @@
-package test.android.taskexecutor;
+package test.taskexecutor;
 
 import java.io.IOException;
-import main.taskexecutor.TaskExecutor;
-import main.taskexecutor.TaskExecutorService;
-import main.taskexecutor.callbacks.TaskCompletedCallback;
-import main.taskexecutor.callbacks.TaskExecutorReferenceCallback;
+import main.taskexecutor.TaskExecutorActivity;
 import main.taskexecutor.exceptions.DuplicateTagException;
 import main.taskexecutor.runnables.Task;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.FragmentActivity;
+import android.os.SystemClock;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 import com.taskexecutor.R;
 
-public class Example extends FragmentActivity implements TaskExecutorReferenceCallback, TaskCompletedCallback, OnClickListener
+public class Example extends TaskExecutorActivity
 {
-    private TaskExecutor mTaskExecutor;
     private Button mTestButton1;
     private Button mTextButton2;
-    private Handler mUIHandler = new Handler();
+    private Button mTextButton3;
     @Override
     public void onCreate(Bundle bundle)
     {
@@ -34,14 +28,10 @@ public class Example extends FragmentActivity implements TaskExecutorReferenceCa
 	mTestButton1.setOnClickListener(this);
 	mTextButton2 = (Button) findViewById(R.id.http_exception_test_button);
 	mTextButton2.setOnClickListener(this);
-	TaskExecutorService.requestExecutorReference(this, this);
+	mTextButton3 = (Button) findViewById(R.id.http_delayed_get_test_button);
+	mTextButton3.setOnClickListener(this);
     }
 
-    @Override
-    public void getTaskExecutorReference(TaskExecutor taskExecutor)
-    {
-	mTaskExecutor = taskExecutor;	
-    }
 
     @Override
     public void onClick(View v)
@@ -65,7 +55,7 @@ public class Example extends FragmentActivity implements TaskExecutorReferenceCa
 			setTag("EXAMPLE_HTTP_GET_TASK");
 		    }
 		};	
-		mTaskExecutor.addTaskToQueue(EXAMPLE_HTTP_GET_TASK, this, mUIHandler, true, true);
+		mTaskExecutor.addTaskToQueue(EXAMPLE_HTTP_GET_TASK, this, mHandler, true, true);
 		mTaskExecutor.executeQueue();
 	    }
 	    catch (DuplicateTagException e)
@@ -87,7 +77,35 @@ public class Example extends FragmentActivity implements TaskExecutorReferenceCa
 			HttpResponse response = client.execute(get);
 		    }
 		};	
-		mTaskExecutor.addTaskToQueue(EXAMPLE_HTTP_EXCEPTION_TASK, this, mUIHandler, true, true);
+		mTaskExecutor.addTaskToQueue(EXAMPLE_HTTP_EXCEPTION_TASK, this, mHandler, true, true);
+		mTaskExecutor.executeQueue();
+	    }
+	    catch (DuplicateTagException e)
+	    {
+		e.printStackTrace();
+	    }
+	}
+	else if (v.getId() == R.id.http_delayed_get_test_button)
+	{
+	    try
+	    {
+		Task EXAMPLE_HTTP_GET_TASK = new Task()
+		{
+		    @Override
+		    public void task() throws IOException
+		    {
+			SystemClock.sleep(3000);
+			HttpGet get = new HttpGet("http://m.google.com");
+			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+			HttpResponse response = client.execute(get);
+			int responseCode = response.getStatusLine().getStatusCode();
+			Bundle bundle = new Bundle();
+			bundle.putString("ResponseCode", "Response Code: " + responseCode);
+			setBundle(bundle);
+			setTag("EXAMPLE_HTTP_GET_TASK");
+		    }
+		};	
+		mTaskExecutor.addTaskToQueue(EXAMPLE_HTTP_GET_TASK, this, mHandler, true, true);
 		mTaskExecutor.executeQueue();
 	    }
 	    catch (DuplicateTagException e)
@@ -101,12 +119,8 @@ public class Example extends FragmentActivity implements TaskExecutorReferenceCa
     public void onTaskComplete(Bundle bundle, String TAG, boolean success, Exception exception)
     {
 	if (exception != null)
-	{
 	    Toast.makeText(this, TAG + " " + exception.toString(), Toast.LENGTH_SHORT).show();
-	}
-	else
-	{
+	if (bundle != null)	
 	    Toast.makeText(this, TAG + " " + bundle.getString("ResponseCode"), Toast.LENGTH_SHORT).show();
-	}
     }
 }

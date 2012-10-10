@@ -4,7 +4,7 @@
     android:versionName="1.0" >
     <uses-permission android:name="android.permission.INTERNET" />
     <application>
-        <activity android:name="test.android.taskexecutor.Example">
+        <activity android:name="test.taskexecutor.Example">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
