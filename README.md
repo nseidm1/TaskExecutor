@@ -40,7 +40,7 @@ Tasks have 10 public methods:<br>
 1) The TaskExecutor has a queue for you to bulk execute Tasks. You can use the addToQueue() and removeFromQueue() methods, 
 followed by the executeQueue() method. <br>
 2) If you add items to the queue after calling executeQueue(), you'll have to call executeQueue() at a future time. You'll probably want to check the queue for existing items, as you may 
-want to double check your not executing items that are already been executed depending on how you executed the Task (boolean removeOnException, boolean removeOnSuccess). <br>
+want to double check your not executing items that have already been executed; this is pertinent depending on how you executed the Task (boolean removeOnException, boolean removeOnSuccess). <br>
 3) setRemoveOnException() may be useful; if your Task experiences an exception 
 during execution, and the Task is part of the queue, do you want it to be removed from the queue?<br>
 4) TaskExecutor has the findTaskByTag(String TAG) method.<br>
