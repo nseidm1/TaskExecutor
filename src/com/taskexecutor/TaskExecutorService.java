@@ -16,6 +16,10 @@ import com.taskexecutor.Helpers.ServiceHelper;
 import com.taskexecutor.callbacks.ServiceHelperCallback;
 import com.taskexecutor.callbacks.TaskExecutorReferenceCallback;
 
+/**
+ * @author nseidm1
+ *
+ */
 public class TaskExecutorService extends Service implements ServiceHelperCallback
 {
 	private TaskExecutor mTaskExecutor = new TaskExecutor(this);

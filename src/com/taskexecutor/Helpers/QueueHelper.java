@@ -6,6 +6,10 @@ import com.taskexecutor.TaskExecutor;
 import com.taskexecutor.callbacks.TaskCompletedCallback;
 import com.taskexecutor.runnables.Task;
 
+/**
+ * @author nseidm1
+ *
+ */
 public class QueueHelper
 {
 	public static void setCallbackForAllQueuedTasks(ArrayList<Task> queue, TaskCompletedCallback completeCallback)

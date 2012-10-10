@@ -2,6 +2,10 @@ package com.taskexecutor.callbacks;
 
 import com.taskexecutor.runnables.Task;
 
+/**
+ * @author nseidm1
+ *
+ */
 public interface TaskCompletedCallback
 {
 	/**

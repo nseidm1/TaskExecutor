@@ -11,6 +11,10 @@ import com.taskexecutor.callbacks.ServiceHelperCallback;
 import com.taskexecutor.callbacks.TaskCompletedCallback;
 import com.taskexecutor.runnables.Task;
 
+/**
+ * @author nseidm1
+ *
+ */
 public class TaskExecutor
 {
 	private boolean mIsPaused = false;

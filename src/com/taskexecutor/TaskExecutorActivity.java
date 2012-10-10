@@ -5,6 +5,10 @@ import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import com.taskexecutor.callbacks.TaskCompletedCallback;
 
+/**
+ * @author nseidm1
+ *
+ */
 public abstract class TaskExecutorActivity extends FragmentActivity implements TaskCompletedCallback
 {
 	protected static TaskExecutor mTaskExecutor;

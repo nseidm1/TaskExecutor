@@ -11,6 +11,10 @@ import com.google.gson.Gson;
 import com.taskexecutor.TaskExecutor;
 import com.taskexecutor.runnables.Task;
 
+/**
+ * @author nseidm1
+ *
+ */
 public class ServiceHelper
 {
 	private static final String TASK_PERSISTENCE_DELIMER = ":TPD:";

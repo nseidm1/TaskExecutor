@@ -7,6 +7,10 @@ import android.os.Handler;
 import com.taskexecutor.TaskExecutor;
 import com.taskexecutor.callbacks.TaskCompletedCallback;
 
+/**
+ * @author nseidm1
+ *
+ */
 public abstract class Task implements Runnable
 {
 	private TaskExecutor mTaskExecutor;
