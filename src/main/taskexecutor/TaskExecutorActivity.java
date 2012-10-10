@@ -26,7 +26,7 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
     @Override
     public void getTaskExecutorReference(TaskExecutor taskExecutor)
     {
-	mTaskExecutor = taskExecutor;	
+	mTaskExecutor = taskExecutor;
 	mTaskExecutor.onResume(this);
     }
 }

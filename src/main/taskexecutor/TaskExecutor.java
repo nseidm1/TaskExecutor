@@ -105,8 +105,8 @@ public class TaskExecutor
      */
     public void onPause()
     {
-	//Clear the callbacks to prevent leaks.
-	//Pause all Tasks to block the next callback.
+	// Clear the callbacks to prevent leaks.
+	// Pause all Tasks to block the next callback.
 	QueueInMemoryHelper.setTaskExecutorForAllQueuedTasks(mQueue, null);
 	QueueInMemoryHelper.setUIHandlerForAllQueuedTask(mQueue, null);
 	QueueInMemoryHelper.setTaskExecutorForAllQueuedTasks(mQueue, null);
@@ -121,7 +121,7 @@ public class TaskExecutor
 	    {
 		task.pause();
 	    }
-	}	
+	}
     }
     /**
      * Resume Task execution. Provide a fresh taskCompleteCallback and a fresh
@@ -136,9 +136,9 @@ public class TaskExecutor
      */
     public void onResume(TaskCompletedCallback taskCompleteCallback)
     {
-	//Reset the task complete callback.
-	//Reset the ui handler.
-	//Reset the reference to the TaskExecutor.
+	// Reset the task complete callback.
+	// Reset the ui handler.
+	// Reset the reference to the TaskExecutor.
 	QueueInMemoryHelper.setCallbackForAllQueuedTasks(mQueue, taskCompleteCallback);
 	QueueInMemoryHelper.setUIHandlerForAllQueuedTask(mQueue, mHandler);
 	QueueInMemoryHelper.setTaskExecutorForAllQueuedTasks(mQueue, this);

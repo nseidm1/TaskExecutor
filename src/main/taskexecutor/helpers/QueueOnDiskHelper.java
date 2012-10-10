@@ -20,6 +20,15 @@ public class QueueOnDiskHelper
     {
 	taskExecutor.setQueue(getTasks(context));
     }
+    public static void updateTasksOnDisk(Context context, TaskExecutor taskExecutor) throws IOException
+    {
+	Vector<Task> localQueueCopy = new Vector<Task>(taskExecutor.getQueue());
+	addFilesInQueue(localQueueCopy, context);
+	deleteFilesNotIntQueue(localQueueCopy, context);
+    }
+    // ////////////////////////////////////////////////////
+    // //////////Private methods hereforth/////////////////
+    // ////////////////////////////////////////////////////
     private static Vector<Task> getTasks(Context context) throws FileNotFoundException, IOException
     {
 	Vector<Task> taskArray = new Vector<Task>();
@@ -31,9 +40,9 @@ public class QueueOnDiskHelper
 	    {
 		task = mGson.fromJson(getFileBytes(file), Task.class);
 	    }
-	    catch(Exception e)
+	    catch (Exception e)
 	    {
-		//Not a Task file.
+		// Not a Task file.
 	    }
 	    if (task != null)
 		taskArray.add(task);
@@ -51,23 +60,6 @@ public class QueueOnDiskHelper
 	}
 	fis.close();
 	return fileBytes.toString();
-    }
-    public static void updateTasksOnDisk(Context context, TaskExecutor taskExecutor) throws IOException
-    {
-	Vector<Task> localQueueCopy = new Vector<Task>(taskExecutor.getQueue());// This
-										// will
-										// substantially
-										// minimize
-										// blocking
-										// related
-										// to
-										// add/remove/clear
-										// calls
-										// on
-										// the
-										// queue
-	addFilesInQueue(localQueueCopy, context);
-	deleteFilesNotIntQueue(localQueueCopy, context);
     }
     private static void addFilesInQueue(Vector<Task> localQueueCopy, Context context) throws IOException
     {

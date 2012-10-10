@@ -21,16 +21,18 @@ public class Task implements Runnable
     private Bundle mBundle = new Bundle();
     private Future<?> mFuture;
     private String TAG = "";
-
-    public Task(){}
-    
+    public Task(String tag)
+    {
+	TAG = tag;
+    }
     /**
      * Define the task you want to perform on the supplied bundle.
      * 
      * @throws Exception
      */
-    public void task() throws Exception{}
-
+    public void task() throws Exception
+    {
+    }
     /**
      * @param uiHandler
      *            Set the ui handler for this Task.
@@ -76,8 +78,8 @@ public class Task implements Runnable
     }
     /**
      * @param tag
-     *            Set the tag of this Task. You can use it to identify the Task
-     *            in the callback.
+     *            The TAG needs to be unique as it's used to persist the Task to
+     *            disk.
      */
     public void setTag(String tag)
     {
