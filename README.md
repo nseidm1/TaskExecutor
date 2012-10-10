@@ -19,7 +19,7 @@ Tasks are extended Runnables, and instead of overriding run you'll override the 
 to perform a concrete action on the Bundle. It's recommended not to reference items outside of the Tasks's scope. Again, the task method is designed 
 to perform a discrete operation on the Bundle.
 <br><br>
-Tasks have 7 public methods:<br>
+Tasks have 10 public methods:<br>
 1) setCompleteCallback(TaskCompletedCallback completeCallback)<br>
 2) setTaskExecutor(TaskExecutor taskExecutor)<br>
 3) setRemoveOnException(Boolean removeOnException)<br>
