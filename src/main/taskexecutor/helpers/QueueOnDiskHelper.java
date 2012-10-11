@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Vector;
 
@@ -80,26 +81,30 @@ public class QueueOnDiskHelper
 			int length = fIn.read(buffer);
 			Log.d(QueueOnDiskHelper.class.getName(), "Buffer Length: " + length);
 			fIn.close();
+			
 			if (length != file.length())
 				throw new IndexOutOfBoundsException();
+
 			Parcel parcel = Parcel.obtain();
 			parcel.unmarshall(buffer, 0, buffer.length);
+			parcel.setDataPosition(0);
+			Log.d(QueueOnDiskHelper.class.getName(), "Data Available: " + parcel.dataAvail());
+			Log.d(QueueOnDiskHelper.class.getName(), "Data Size: " + parcel.dataSize());
 			PersistenceObject persistenceObject = PersistenceObject.CREATOR.createFromParcel(parcel);
-			Log.d(QueueOnDiskHelper.class.getName(), persistenceObject.getTag());
-			Log.d(QueueOnDiskHelper.class.getName(), persistenceObject.getClassName());
-			Log.d(QueueOnDiskHelper.class.getName(), persistenceObject.getBundle().toString());
-//			String className = persistenceObject.getClassName();
-//			Class<?> clazzName = Class.forName(className);
-//			Constructor<?> constructor = clazzName.getConstructor(String.class);
-//
-//			Task task = (Task) constructor.newInstance(file.getName());
-//			task.setBundle(persistenceObject.getBundle());
-//			task.setTag(persistenceObject.getTag());
-//
-//			parcel.recycle();
-//			Log.d(QueueOnDiskHelper.class.getName(), task.getTag() + "Restored");
-//			if (task != null)
-//				taskArray.add(task);
+			parcel.recycle();
+
+			String className = persistenceObject.getClassName();
+			Class<?> clazzName = Class.forName(className);
+			Constructor<?> constructor = clazzName.getConstructor();
+
+			Task task = (Task) constructor.newInstance();
+			task.setBundle(persistenceObject.getBundle());
+			task.setTag(persistenceObject.getTag());
+
+			Log.d(QueueOnDiskHelper.class.getName(), task.getTag() + "Restored");
+
+			if (task != null)
+				taskArray.add(task);
 		}
 		return taskArray;
 	}
