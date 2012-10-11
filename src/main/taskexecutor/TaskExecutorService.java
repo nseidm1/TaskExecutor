@@ -20,6 +20,7 @@ import android.util.Log;
  */
 public class TaskExecutorService extends Service implements ServiceHelperCallback
 {
+    private boolean mHaveTasksBeenRestored = false;
     private TaskExecutor mTaskExecutor = new TaskExecutor(this);
     private QueueToDiskTask mQueueToDisk = new QueueToDiskTask(mTaskExecutor, this);
     private Executor mQueuePersister = Executors.newSingleThreadExecutor();
@@ -42,6 +43,13 @@ public class TaskExecutorService extends Service implements ServiceHelperCallbac
     {
 	mSoftCallback.getTaskExecutorReference(mTaskExecutor);
 	mSoftCallback = null;
+	
+	if (mHaveTasksBeenRestored)
+	{
+	    mTasksRestoredCallback.tasksHaveBeenRestored();
+	    mTasksRestoredCallback = null;
+	    mHaveTasksBeenRestored = false;
+	}
 	return Service.START_STICKY;
     }
     @Override
@@ -51,47 +59,47 @@ public class TaskExecutorService extends Service implements ServiceHelperCallbac
 	try
 	{
 	    if (QueueOnDiskHelper.retrieveTasksFromDisk(this, mTaskExecutor))
-		mTasksRestoredCallback.tasksHaveBeenRestored();
-	    mTasksRestoredCallback = null;
+		mHaveTasksBeenRestored = true;
 	}
 	catch (FileNotFoundException e)
 	{
 	    e.printStackTrace();
-	    // No queue available to restore
+	    Log.e(TaskExecutorService.class.getName(), "Error retrieving existing queue.");
 	}
 	catch (IOException e)
 	{
+	    e.printStackTrace();
 	    Log.e(TaskExecutorService.class.getName(), "Error retrieving existing queue.");
 	}
 	catch (IllegalArgumentException e)
 	{
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    Log.e(TaskExecutorService.class.getName(), "Error retrieving existing queue.");
 	}
 	catch (InstantiationException e)
 	{
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    Log.e(TaskExecutorService.class.getName(), "Error retrieving existing queue.");
 	}
 	catch (IllegalAccessException e)
 	{
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    Log.e(TaskExecutorService.class.getName(), "Error retrieving existing queue.");
 	}
 	catch (InvocationTargetException e)
 	{
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    Log.e(TaskExecutorService.class.getName(), "Error retrieving existing queue.");
 	}
 	catch (NoSuchMethodException e)
 	{
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    Log.e(TaskExecutorService.class.getName(), "Error retrieving existing queue.");
 	}
 	catch (ClassNotFoundException e)
 	{
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    Log.e(TaskExecutorService.class.getName(), "Error retrieving existing queue.");
 	}
     }
     @Override

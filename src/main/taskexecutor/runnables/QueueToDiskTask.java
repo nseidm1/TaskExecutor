@@ -26,6 +26,7 @@ public class QueueToDiskTask implements Runnable
 	}
 	catch (IOException e)
 	{
+	    e.printStackTrace();
 	    Log.e(TaskExecutorService.class.getName(), "Error saving existing queue.");
 	}
     }

@@ -4,13 +4,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Vector;
 import main.taskexecutor.TaskExecutor;
+import main.taskexecutor.persistence.PersistenceObject;
 import main.taskexecutor.runnables.Task;
 import android.content.Context;
+import android.os.Parcel;
 import android.util.Log;
 /**
  * @author nseidm1
@@ -18,7 +19,8 @@ import android.util.Log;
  */
 public class QueueOnDiskHelper
 {
-    public static boolean retrieveTasksFromDisk(Context context, TaskExecutor taskExecutor) throws FileNotFoundException, IOException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException
+    public static boolean retrieveTasksFromDisk(Context context, TaskExecutor taskExecutor) throws FileNotFoundException, IOException, IllegalArgumentException, InstantiationException,
+	    IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException
     {
 	Vector<Task> tasks = getTasks(context);
 	if (tasks.size() > 0)
@@ -37,29 +39,33 @@ public class QueueOnDiskHelper
     // ////////////////////////////////////////////////////
     // //////////Private methods hereforth/////////////////
     // ////////////////////////////////////////////////////
-    private static Vector<Task> getTasks(Context context) throws FileNotFoundException, IOException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException
+    private static Vector<Task> getTasks(Context context) throws FileNotFoundException, IOException, IllegalArgumentException, InstantiationException, IllegalAccessException,
+	    InvocationTargetException, NoSuchMethodException, ClassNotFoundException
     {
 	Vector<Task> taskArray = new Vector<Task>();
 	File[] tasks = getTaskExecutorFilesDir(context).listFiles();
 	Log.d(QueueOnDiskHelper.class.getName(), "Number of Tasks being restored: " + tasks.length);
 	for (File file : tasks)
 	{
-	    InputStream is = new FileInputStream(file);
-	    StringBuffer fileContent = new StringBuffer("");
-
-	    byte[] buffer = new byte[1024];
-	    int bytesRead;
-	    while ((bytesRead = is.read(buffer)) != -1) 
-	    {
-	        fileContent.append(new String(buffer, 0, bytesRead, "UTF-8"));
-	    }
-	    is.close();
-
-	    String className = fileContent.toString();
+	    FileInputStream fIn = new FileInputStream(file);
+	    byte[] buffer = new byte[(int) file.length()];
+	    int length = fIn.read(buffer);
+	    if (length != file.length())
+		throw new IndexOutOfBoundsException();
+	    Parcel parcel = Parcel.obtain();
+	    parcel.unmarshall(buffer, 0, length);
+	    PersistenceObject persistenceObject = PersistenceObject.CREATOR.createFromParcel(parcel);
+	    String className = persistenceObject.getClassName();
 	    Class<?> clazzName = Class.forName(className);
-	    Constructor<?>[] constructors = (Constructor<?>[]) clazzName.getConstructors();
-	    Task task = (Task) constructors[0].newInstance(file.getName());
-//	    Log.d(QueueOnDiskHelper.class.getName(), task.getTag() + "Restored");
+	    
+	    Constructor<?> constructor = clazzName.getConstructor(String.class);
+	    Task task = (Task) constructor.newInstance(file.getName());
+	    task.setBundle(persistenceObject.getBundle());
+	    task.setTag(persistenceObject.getTag());
+
+	    parcel.recycle();
+	    // Log.d(QueueOnDiskHelper.class.getName(), task.getTag() +
+	    // "Restored");
 	    if (task != null)
 		taskArray.add(task);
 	}
@@ -74,10 +80,20 @@ public class QueueOnDiskHelper
 	    {
 		FileOutputStream fos = new FileOutputStream(taskFile);
 		String className = task.getClass().getName();
-		fos.write(className.getBytes());
-		fos.flush();
-		fos.close();
-		Log.d(QueueOnDiskHelper.class.getName(), task.getTag() + " written to disk");
+		PersistenceObject persistenceObject = new PersistenceObject(className, task.getBundle(), task.getTag());
+		Parcel parcel = Parcel.obtain();
+		persistenceObject.writeToParcel(parcel, 0);
+		try
+		{
+		    fos.write(parcel.marshall());
+		    Log.d(QueueOnDiskHelper.class.getName(), task.getTag() + " written to disk");
+		}
+		finally
+		{
+		    fos.flush();
+		    fos.close();
+		    parcel.recycle();
+		}
 	    }
 	}
     }

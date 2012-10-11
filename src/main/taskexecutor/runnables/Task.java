@@ -13,9 +13,6 @@ public class Task implements Runnable
     private TaskExecutor mTaskExecutor;
     private TaskCompletedCallback mCompleteCallback;
     private Semaphore mPause = new Semaphore(1);
-    private boolean mRemoveOnException = true;
-    private boolean mRemoveOnSuccess = true;
-    private boolean mExperiencedException = false;
     private Handler mUiHandler;
     private Bundle mBundle = new Bundle();
     private String TAG = "";
@@ -55,13 +52,6 @@ public class Task implements Runnable
     }
 
     /**
-     * @return If an exception occurred.
-     */
-    public boolean getExperiencedException()
-    {
-	return mExperiencedException;
-    }
-    /**
      * @param tag
      *            The TAG needs to be unique as it's used to persist the Task to
      *            disk.
@@ -95,25 +85,7 @@ public class Task implements Runnable
     {
 	mTaskExecutor = taskExecutor;
     }
-    /**
-     * @param removeOnFail
-     *            If the task fails to execute because of an exception, do you
-     *            still want to remove it from the queue?
-     */
-    public void setRemoveOnException(Boolean removeOnException)
-    {
-	mRemoveOnException = removeOnException;
-    }
-    /**
-     * @param removeOnSuccess
-     *            By default Tasks are removed from the queue when they
-     *            successfully complete. You can set this to false keeping
-     *            successful Tasks in the queue.
-     */
-    public void setRemoveOnSuccess(Boolean removeOnSuccess)
-    {
-	mRemoveOnSuccess = removeOnSuccess;
-    }
+
     /**
      * Block this Task before the callback.
      */
@@ -135,8 +107,7 @@ public class Task implements Runnable
 	{
 	    task();
 	    mPause.acquire();
-	    if (mRemoveOnSuccess)
-		mTaskExecutor.removeTaskFromQueue(this);
+	    mTaskExecutor.removeTaskFromQueue(this);
 	    if (mUiHandler != null)
 	    {
 		mUiHandler.post(new Runnable()
@@ -152,9 +123,7 @@ public class Task implements Runnable
 	}
 	catch (final Exception e)
 	{
-	    mExperiencedException = true;
-	    if (mRemoveOnException)
-		mTaskExecutor.removeTaskFromQueue(this);
+	    mTaskExecutor.removeTaskFromQueue(this);
 	    if (mUiHandler != null)
 	    {
 		mUiHandler.post(new Runnable()
