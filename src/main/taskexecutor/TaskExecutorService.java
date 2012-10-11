@@ -30,11 +30,16 @@ public class TaskExecutorService extends Service implements ServiceHelperCallbac
     public static final int CALLBACK_DEPENDENT = 1;
     public static int CURRENT_SERVICE_MODE = CALLBACK_DEPENDENT;
     public static final String SERVICE_MODE_KEY = "SERVICE_MODE_KEY";
+
     /**
+     * @param MODE
+     * Provide a mode, either CALLBACK_INCONSIDERATE, or CALLBACK_DEPENDENT. This tells the service how to behave if it's restarted. CALLBACK_DEPENDENT will not execute 
+     * the queue and will wait for an activity for a hard callback to be available. CALLBACK_INCONSIDERATE will execute the queue without a hard callback being available.
      * @param context
-     *            Provide a context to launch the service.
      * @param serviceReferenceCallback
-     *            Provide a callback to pass a reference of the TaskExecutor.
+     * The interface that returns a reference to the TaskExecutor.
+     * @param tasksRestoredCallback
+     * The interface informing an activity if Tasks have been restored by the service after a restart.
      */
     public static void requestExecutorReference(int MODE, Context context, TaskExecutorReferenceCallback serviceReferenceCallback, TasksRestoredCallback tasksRestoredCallback)
     {

@@ -2,6 +2,7 @@
     package="main.taskexecutor"
     android:versionCode="1"
     android:versionName="1.0" >
+    <uses-sdk android:minSdkVersion="8" android:maxSdkVersion="16" android:targetSdkVersion="16"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <application>
         <activity android:name="test.taskexecutor.Example">

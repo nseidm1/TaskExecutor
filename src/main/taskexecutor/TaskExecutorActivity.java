@@ -12,12 +12,17 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
     protected TaskExecutor mTaskExecutor;
     /**
      * @return Task finess will pause currently running Tasks prior to their
-     *         hard callback, allowing for it to be reset when the activity is
-     *         resumed. Be careful, what if your activity isn't resumed for a
-     *         long time? Tasks that are restored from a crashed Service will
-     *         always be finessed.
+     *         hard callback to accommodate onPause events; this allows for the
+     *         hard callback to be reset when the activity is resumed. Be
+     *         careful, what if your activity isn't resumed for a long time?
+     *         Tasks that are restored from a crashed Service are dependent on the MODE of the Service.
      */
     public abstract boolean allowTaskFiness();
+    /**
+     * Provide a mode, either CALLBACK_INCONSIDERATE, or CALLBACK_DEPENDENT. This tells the service how to behave if it's restarted. CALLBACK_DEPENDENT will not execute 
+     * the queue and will wait for an activity for a hard callback to be available. CALLBACK_INCONSIDERATE will execute the queue without a hard callback being available.
+     * @return return either TaskExecutorService.CALLBACK_INCONSIDERATE or TaskExecutorService.CALLBACK_DEPENDENT.
+     */
     public abstract int specifyServiceMode();
     @Override
     public void onPause()

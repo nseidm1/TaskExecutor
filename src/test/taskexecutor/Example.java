@@ -3,6 +3,7 @@ import main.taskexecutor.R;
 import main.taskexecutor.TaskExecutorActivity;
 import main.taskexecutor.TaskExecutorService;
 import test.taskexecutor.tasks.PostTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,29 +11,21 @@ import android.widget.Button;
 import android.widget.Toast;
 public class Example extends TaskExecutorActivity implements OnClickListener
 {
-    private Button mTestButton1;
-    private Button mTextButton2;
-    private Button mTextButton3;
-    private Button mTextButton4;
-    private Button mTextButton5;
-    private Button mTextButton6;
     @Override
     public void onCreate(Bundle bundle)
     {
 	super.onCreate(bundle);
 	setContentView(R.layout.test);
-	mTestButton1 = (Button) findViewById(R.id.http_get_test_button);
-	mTestButton1.setOnClickListener(this);
-	mTextButton2 = (Button) findViewById(R.id.http_exception_test_button);
-	mTextButton2.setOnClickListener(this);
-	mTextButton3 = (Button) findViewById(R.id.http_delayed_get_test_button);
-	mTextButton3.setOnClickListener(this);
-	mTextButton4 = (Button) findViewById(R.id.twenty_sec_http_delayed_get_test_button);
-	mTextButton4.setOnClickListener(this);
-	mTextButton5 = (Button) findViewById(R.id.execute);
-	mTextButton5.setOnClickListener(this);
-	mTextButton6 = (Button) findViewById(R.id.kill_example);
-	mTextButton6.setOnClickListener(this);
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+	{
+	    getActionBar().setTitle("TaskExector Demonstration");
+	}
+	((Button) findViewById(R.id.http_get_test_button)).setOnClickListener(this);
+	((Button) findViewById(R.id.http_exception_test_button)).setOnClickListener(this);
+	((Button) findViewById(R.id.http_delayed_get_test_button)).setOnClickListener(this);
+	((Button) findViewById(R.id.twenty_sec_http_delayed_get_test_button)).setOnClickListener(this);
+	((Button) findViewById(R.id.execute)).setOnClickListener(this);
+	((Button) findViewById(R.id.kill_example)).setOnClickListener(this);
     }
     @Override
     public void onClick(View v)
