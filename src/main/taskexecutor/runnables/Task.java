@@ -16,10 +16,10 @@ public abstract class Task implements Runnable
 {
 	private TaskExecutor mTaskExecutor;
 	private TaskCompletedCallback mCompleteCallback;
-	private Semaphore mPause = new Semaphore(1);
 	private Handler mUiHandler;
-	private Bundle mBundle = new Bundle();
 	private String TAG = "";
+	private Semaphore mPause = new Semaphore(1);
+	private Bundle mBundle = new Bundle();
 	private Random mRandom = new Random();
 	public Task()
 	{

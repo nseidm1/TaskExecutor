@@ -7,8 +7,8 @@ import android.os.Parcelable;
 public class PersistenceObject implements Parcelable
 {
 	private String className;
-	private Bundle bundle;
 	private String TAG;
+	private Bundle bundle = new Bundle();
 
 	public PersistenceObject()
 	{
