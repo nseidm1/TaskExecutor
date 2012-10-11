@@ -22,37 +22,48 @@ public class TaskExecutorService extends Service implements ServiceHelperCallbac
 {
     private boolean mHaveTasksBeenRestored = false;
     private TaskExecutor mTaskExecutor = new TaskExecutor(this);
-    private QueueToDiskTask mQueueToDisk = new QueueToDiskTask(mTaskExecutor, this);
     private Executor mQueuePersister = Executors.newSingleThreadExecutor();
+    private QueueToDiskTask mQueueToDisk = new QueueToDiskTask(mTaskExecutor, this);
     private static TaskExecutorReferenceCallback mSoftCallback;
     private static TasksRestoredCallback mTasksRestoredCallback;
+    public static final int CALLBACK_INCONSIDERATE = 0;
+    public static final int CALLBACK_DEPENDENT = 1;
+    public static int CURRENT_SERVICE_MODE = CALLBACK_DEPENDENT;
+    public static final String SERVICE_MODE_KEY = "SERVICE_MODE_KEY";
     /**
      * @param context
      *            Provide a context to launch the service.
      * @param serviceReferenceCallback
      *            Provide a callback to pass a reference of the TaskExecutor.
      */
-    public static void requestExecutorReference(Context context, TaskExecutorReferenceCallback serviceReferenceCallback, TasksRestoredCallback tasksRestoredCallback)
+    public static void requestExecutorReference(int MODE, Context context, TaskExecutorReferenceCallback serviceReferenceCallback, TasksRestoredCallback tasksRestoredCallback)
     {
 	mSoftCallback = serviceReferenceCallback;
 	mTasksRestoredCallback = tasksRestoredCallback;
-	context.startService(new Intent(context, TaskExecutorService.class));
+	context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY, MODE));
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-	if (intent != null)
-	{
+	CURRENT_SERVICE_MODE = intent.getIntExtra(SERVICE_MODE_KEY, CALLBACK_DEPENDENT);
+	if (mSoftCallback != null)
 	    mSoftCallback.getTaskExecutorReference(mTaskExecutor);
-	    mSoftCallback = null;
-	    if (mHaveTasksBeenRestored)
-	    {
-		mTasksRestoredCallback.tasksHaveBeenRestored();
-		mHaveTasksBeenRestored = false;
+	mSoftCallback = null;
+	if (mHaveTasksBeenRestored)
+	{
+	    mHaveTasksBeenRestored = false;
+	    switch (CURRENT_SERVICE_MODE) {
+	    case CALLBACK_DEPENDENT:
+		if (mTasksRestoredCallback != null)
+		    mTasksRestoredCallback.tasksHaveBeenRestored();
+		mTasksRestoredCallback = null;
+		break;
+	    case CALLBACK_INCONSIDERATE:
+		mTaskExecutor.executeQueue();
+		break;
 	    }
-	    mTasksRestoredCallback = null;
 	}
-	return Service.START_STICKY;
+	return Service.START_REDELIVER_INTENT;
     }
     @Override
     public void onCreate()

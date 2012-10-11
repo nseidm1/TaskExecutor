@@ -5,4 +5,5 @@
 	<Button android:id="@+id/http_delayed_get_test_button" android:text="Http Delayed Get Test" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 	<Button android:id="@+id/twenty_sec_http_delayed_get_test_button" android:text="20 Sec Http Delayed Get Test" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 	<Button android:layout_marginTop="25dip" android:id="@+id/execute" android:text="Execute Queued Tasks" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+	<Button android:id="@+id/kill_example" android:text="Kill Application Process" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 </LinearLayout>

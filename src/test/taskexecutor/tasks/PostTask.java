@@ -12,12 +12,20 @@ public class PostTask extends Task
     @Override
     public void task() throws IOException
     {
-	SystemClock.sleep(getBundle().getInt(DELAY));
-	HttpGet get = new HttpGet(getBundle().getString(URL));
 	AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
-	HttpResponse response = client.execute(get);
-	client.close();
-	int responseCode = response.getStatusLine().getStatusCode();
-	getBundle().putString("ResponseCode", "Response Code: " + responseCode);
+	try
+	{
+	    SystemClock.sleep(getBundle().getInt(DELAY));
+	    HttpGet get = new HttpGet(getBundle().getString(URL));
+	    HttpResponse response = client.execute(get);
+	    client.close();
+	    int responseCode = response.getStatusLine().getStatusCode();
+	    getBundle().putString("ResponseCode", "Response Code: " + responseCode);
+	}
+	catch (IOException e)
+	{
+	    client.close();
+	    throw e;
+	}
     }
 }

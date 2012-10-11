@@ -1,6 +1,7 @@
 package test.taskexecutor;
 import main.taskexecutor.R;
 import main.taskexecutor.TaskExecutorActivity;
+import main.taskexecutor.TaskExecutorService;
 import test.taskexecutor.tasks.PostTask;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +15,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener
     private Button mTextButton3;
     private Button mTextButton4;
     private Button mTextButton5;
+    private Button mTextButton6;
     @Override
     public void onCreate(Bundle bundle)
     {
@@ -29,6 +31,8 @@ public class Example extends TaskExecutorActivity implements OnClickListener
 	mTextButton4.setOnClickListener(this);
 	mTextButton5 = (Button) findViewById(R.id.execute);
 	mTextButton5.setOnClickListener(this);
+	mTextButton6 = (Button) findViewById(R.id.kill_example);
+	mTextButton6.setOnClickListener(this);
     }
     @Override
     public void onClick(View v)
@@ -73,6 +77,10 @@ public class Example extends TaskExecutorActivity implements OnClickListener
 	{
 	    mTaskExecutor.executeQueue();
 	}
+	else if (v.getId() == R.id.kill_example)
+	{
+	    System.exit(0);
+	}
     }
     @Override
     public void onTaskComplete(Bundle bundle, Exception exception)
@@ -90,5 +98,10 @@ public class Example extends TaskExecutorActivity implements OnClickListener
     public boolean allowTaskFiness()
     {
 	return true;
+    }
+    @Override
+    public int specifyServiceMode()
+    {
+	return TaskExecutorService.CALLBACK_DEPENDENT;
     };
 }
