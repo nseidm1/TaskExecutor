@@ -2,47 +2,45 @@ TaskExecutor
 ===================
 
 <b>Task Executor Activity</b><br>
-The included abstract TaskExecutorActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. Tasks 
-Are runnables with additional helper methods to facilitate management by the TaskExecutor facility. Tasks take a TaskCompletedCallback which the abstract TaskExecutorActivity implements. You will 
-receive callbacks to this interface when executed Tasks are completed. By default queue execution is paused when the activity is paused, but if a Task is currently being executed it will continue, and the runnable will be blocked prior to the callback. 
-This is the default behavior to facilitate configurationChange events and activity destruction; in onResume all Tasks will 
-have their callback reset, and the queue will be unblocked. It you want your Tasks to continue execution, and not be tied to the activity lifecycle use of TaskExecutorService is encouraged.
+The included abstract TaskExecutorActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. 
+TaskExecutorActivity has two abstract methods, allowTaskFiness() and specifyServiceMode(). Tasks can be finessed to maintain a callback to the currently visible Activity, and 
+the Service has two MODEs, CALLBACK_INCONSIDERATE and CALLBACK_DEPENDENT. The Service mode is intented to define how the Service 
+treaks Tasks restored from disk when the service goes through onCreate after being killed by the system.
 
-<b>Task Executor Service</b><br>
-The included TaskExecutorService is a powerful facility. Use requestExecutorReference(Context context, TaskExecutorReferenceCallback serviceReferenceCallback), and a reference to the service will be provided
-in the TaskExecutorReferenceCallback which your activities can implement. The service has the same functionality as the TaskExecutorActivity, but does not need to be paused and can continue execution without 
-an activity in the foreground. Keep in mind that if your activity is destroyed so will the TaskCompletedCallback; please define your Task considering this possible circumstance. The service automatically persists Tasks to disk whenever the queue is modified, and will restore them
-in the onCreate. The service is designed to be STICKY so your Tasks have a high assurance of being executed even if your activity is destroyed or your service is paused/stopped by the system.
-
-TODO for version 1.1<br>
-The queue will be written to disk upon modifiction. This will accommodate process termintion. Currently the queue is written to disk 
-only in the onDestroy of the service, which is not entirely effective, if effective at all.<br><br>
-
-<b>Tasks</b><br>
-Tasks are extended Runnables, and instead of overriding run you'll override the task method.
 <br><br>
-Tasks have 10 public methods:<br>
+
+TaskExecutorActivity has a couple of interfaces. TasksRestoredCallback, TaskCompletedCallback, and TaskExecutorReferenceCallback. The names really say it all. They provide 
+a way for the Activity to get a reference of the TaskExecutor. The Service can inform the current Activity of Tasks have been restored from disk. And the most used callback is the 
+TaskCompleteCallback where you will receive information when a Task has completed execution either successfully or with exception.
+
+<br><br>
+
+Tasks Are runnables with additional helper methods to facilitate management by the TaskExecutor facility. Task is an abstract class you'll have to extend. 
+Task has an abstract method task() that you'll override to define what your Task does. 
+
+<br><br>
+
+The TaskExecutor is managed by a Service, but accessible in a unique way. TaskExecutorActivity makes a static request to the Service requesting a callback with a reference to 
+the TaskExecutor. So it's a service, or is it a singleton, who know but it just feels right! :-)
+
+<br><br>
+Tasks have 8 public methods:<br>
 1) setCompleteCallback(TaskCompletedCallback completeCallback)<br>
 2) setTaskExecutor(TaskExecutor taskExecutor)<br>
-3) setRemoveOnException(Boolean removeOnException)<br>
-4) setRemoveOnSuccess(Boolen removeOnSuccess)<br>
-5) pause()<br>
-6) resume()<br>
-7) setBundle(Bundle bundle)<br>
-8) getBundle()<br>
-9) setTag(String TAG)<br>
-10) getTag()<br><br>
+3) pause()<br>
+4) resume()<br>
+5) setBundle(Bundle bundle)<br>
+6) getBundle()<br>
+7) setTag(String TAG)<br>
+80) getTag()<br><br>
 <b>Tips</b><br>
-1, 2, 4, and 5 are managed by the TaskExecutor and likely will not ever be used directly.
+The only method you'll likely want to use is setBundle(), all others are managed by the TaskExecutor and likely do not need to be used directly.
 <br><br>
-1) The TaskExecutor has a queue for you to bulk execute Tasks. You can use the addToQueue() and removeFromQueue() methods, 
+1) The TaskExecutor has a queue for you to bulk execute Tasks. You use the addToQueue() and removeFromQueue() methods, 
 followed by the executeQueue() method. <br>
-2) If you add items to the queue after calling executeQueue(), you'll have to call executeQueue() at a future time. You'll probably want to check the queue for existing items, as you may 
-want to double check your not executing items that have already been executed; this is pertinent depending on how you executed the Task (boolean removeOnException, boolean removeOnSuccess). <br>
-3) setRemoveOnException() may be useful; if your Task experiences an exception 
-during execution, and the Task is part of the queue, do you want it to be removed from the queue?<br>
-4) TaskExecutor has the findTaskByTag(String TAG) method.<br>
-5) Tasks also take a bundle in the constructor. This is to encourage proper design as your Task should be designed to perform a discrete operation on the Bundle's data.
+2) If you add items to the queue after calling executeQueue(), you'll have to call executeQueue() at a future time. <br>
+4) TaskExecutor has the findTaskByTag(String TAG) method, so you can keep a local List of Task TAGs, and locate them if they are in the queue<br>
+5) Tasks also take a bundle. I highly encourage proper design, your Task should be designed to perform a discrete operation on the Bundle's data.
 <br><br>
 
 COPYRIGHT
