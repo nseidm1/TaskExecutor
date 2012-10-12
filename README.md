@@ -21,7 +21,7 @@ Task is an abstract class you'll have to extend, and cannot be anonymous. Anonym
 there persisted state on disk. If Tasks are implemented properly, and the Service is killed by the system, all executed 
 Tasks will be restored from a persisted state on disk; and depending on the Service MODE can even continue execution 
 automatically or wait for an Activity to launch in turn providing a hard callback for the Task to post it's completion 
-results.
+results on the ui thread.
 
 The heart of Task is the abstract method task() that you'll override to define what your Task does. If designed as a 
 static inner class do not reference stuff outside of the Task's scope, keep everything within the Task itself to gracefully 
