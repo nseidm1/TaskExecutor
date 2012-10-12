@@ -18,8 +18,7 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements
      *         hard callback to accommodate onPause events; this allows for the
      *         hard callback to be reset when the activity is resumed. Be
      *         careful, what if your activity isn't resumed for a long time?
-     *         Tasks that are restored from a crashed Service are dependent on
-     *         the MODE of the Service.
+     *         Block your Task's execution wisely.
      */
     public abstract boolean allowTaskFiness();
 
