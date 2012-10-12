@@ -38,7 +38,7 @@ Tasks have 8 public methods:<br>
 5) setBundle(Bundle bundle)<br>
 6) getBundle()<br>
 7) setTag(String TAG)<br>
-80) getTag()<br>
+8) getTag()<br>
 The only method you'll likely want to use is setBundle(), all others are managed by the TaskExecutor and likely do not need to be used directly.
 
 <b>Tips</b><br>
