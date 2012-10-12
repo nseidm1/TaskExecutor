@@ -3,16 +3,29 @@ TaskExecutor
 
 <b>Task Executor Activity</b><br>
 The included abstract TaskExecutorActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. 
-TaskExecutorActivity has two abstract methods, allowTaskFiness() and specifyServiceMode(). Tasks can be finessed to maintain a callback to the currently visible Activity, and 
-the Service has two MODEs, CALLBACK_INCONSIDERATE and CALLBACK_DEPENDENT. The Service mode is intented to define how the Service 
+TaskExecutorActivity has two abstract methods, allowTaskFiness() and specifyServiceMode(). 
+Tasks can be finessed to maintain a callback to the currently visible Activity, and 
+the the Service has two MODEs, CALLBACK_INCONSIDERATE and CALLBACK_DEPENDENT. 
+The Service mode is intented to define how the Service 
 treaks Tasks restored from disk when the service goes through onCreate after being killed by the system.
 
-TaskExecutorActivity has a couple of interfaces. TasksRestoredCallback, TaskCompletedCallback, and TaskExecutorReferenceCallback. The names really say it all. They provide 
-a way for the Activity to get a reference of the TaskExecutor. The Service can inform the current Activity of Tasks have been restored from disk. And the most used callback is the 
-TaskCompleteCallback where you will receive information when a Task has completed execution either successfully or with exception.
+TaskExecutorActivity has a couple of interfaces used by the service. TasksRestoredCallback, TaskCompletedCallback, 
+and TaskExecutorReferenceCallback. The names really say it all. TaskRestoredCallback informs the current activity 
+that Tasks have been restored from disk. TaskCompletedCallback is a hard callback gracefully managed for each Task 
+to post back to the ui thread in the currently visible Activity. It doesn't matter if you start a new Activity, the callback 
+in all Tasks will always be the current visibile Activity. TaskExecutorReferenceCallback is how the service provides 
+a referece of TaskExecutor to the current Activity.
 
-Tasks Are runnables with additional helper methods to facilitate management by the TaskExecutor facility. Task is an abstract class you'll have to extend. 
-Task has an abstract method task() that you'll override to define what your Task does. 
+Tasks Are runnables with additional helper methods to facilitate management by the TaskExecutor facility. 
+Task is an abstract class you'll have to extend, and cannot be anonymous. Anonymous Tasks cannot be restored from 
+there persisted state on disk. If Tasks are implemented properly, and the Service is killed by the system, all executed 
+Tasks will be restored from a persisted state on disk; and depending on the Service MODE can even continue execution 
+automatically or wait for an Activity to launch in turn providing a hard callback for the Task to post it's completion 
+results.
+
+The heart of Task is the abstract method task() that you'll override to define what your Task does. If designed as a 
+static inner class do not reference stuff outside of the Task's scope, keep everything within the Task itself to gracefully 
+accommodate restoration from disk, the launching of new activities, and just for general good coding practice. 
 
 The TaskExecutor is managed by a Service, but accessible in a unique way. TaskExecutorActivity makes a static request to the Service requesting a callback with a reference to 
 the TaskExecutor. So it's a service, or is it a singleton, who know but it just feels right! :-)
