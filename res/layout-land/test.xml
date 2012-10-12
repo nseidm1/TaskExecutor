@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="top|center_horizontal" android:orientation="vertical">
-	<ScrollView android:layout_margin="12dip" android:layout_height="0dip" android:layout_weight=".4" android:layout_width="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="top|center_horizontal">
+	<ScrollView android:layout_margin="12dip" android:layout_height="match_parent" android:layout_weight=".5" android:layout_width="0dip">
 		<include layout="@layout/text"/>
     </ScrollView>
-    <ScrollView android:layout_margin="12dip" android:layout_height="0dip" android:layout_weight=".6" android:layout_width="match_parent">
+    <ScrollView android:layout_margin="12dip" android:layout_height="match_parent" android:layout_weight=".5" android:layout_width="0dip">
 		<LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center_horizontal">
 			<Button android:id="@+id/http_get_test_button" android:text="Http Get Request" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 			<Button android:id="@+id/http_exception_test_button" android:text="Http Exception Test" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
