@@ -25,7 +25,7 @@ public abstract class Task implements Runnable {
      * @throws Exception
      */
     public abstract void task() throws Exception;
-    
+
     public Task() {
 	TAG = Long.toString(mRandom.nextLong());
     }

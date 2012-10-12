@@ -27,6 +27,24 @@ public class TaskExecutor {
     }
 
     /**
+     * @param pool
+     *            By default Tasks are executed serially. You can execute Tasks
+     *            concurrently if you'd like, but please consider the
+     *            implications on finessing your Tasks to accommodate
+     *            configurationChanges if your implementation is configured as
+     *            such.
+     */
+    public void poolThreads(boolean pool) {
+	if (pool) {
+	    mTaskThreadExecutor = (ThreadPoolExecutor) Executors
+		    .newCachedThreadPool();
+	} else {
+	    mTaskThreadExecutor = (ThreadPoolExecutor) Executors
+		    .newFixedThreadPool(1);
+	}
+    }
+
+    /**
      * @return Return if the queue's execution is currently paused.
      */
     public boolean isPaused() {
@@ -38,13 +56,8 @@ public class TaskExecutor {
      *            Provide a Task to be added to the queue pending execution.
      * @param taskCompletedCallback
      *            Provide an interface to callback when the Task has completed
-     *            execution. You can pass null if no callback is needed.
-     * @param removeOnException
-     *            Should the Task be removed from the queue if it fails to
-     *            execute completely because of an exception?
-     * @param removeOnSuccess
-     *            Should the Task be removed from the queue if it completes
-     *            without exception?
+     *            execution, you may supply null, but if you have allowFiness()
+     *            enabled a callback will assigned at that time.
      */
     public void addTaskToQueue(Task task,
 	    TaskCompletedCallback taskCompletedCallback) {
@@ -72,8 +85,9 @@ public class TaskExecutor {
      * @throws NoQueuedTasksException
      */
     public void executeQueue() {
-	Log.d(TaskExecutor.class.getName(), "Execute " + mQueue.size() + " Tasks");
-	for (int i = 0; i < mQueue.size(); i++){
+	Log.d(TaskExecutor.class.getName(), "Execute " + mQueue.size()
+		+ " Tasks");
+	for (int i = 0; i < mQueue.size(); i++) {
 	    if (!mTaskThreadExecutor.getQueue().contains(mQueue.get(i)))
 		mTaskThreadExecutor.execute(mQueue.get(i));
 	}

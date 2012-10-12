@@ -61,7 +61,8 @@ public class TaskExecutorService extends Service implements
     public int onStartCommand(Intent intent, int flags, int startId) {
 	CURRENT_SERVICE_MODE = intent.getIntExtra(SERVICE_MODE_KEY,
 		CALLBACK_DEPENDENT);
-	Log.d(TaskExecutorService.class.getName(), "Current Service Mode: " + CURRENT_SERVICE_MODE);
+	Log.d(TaskExecutorService.class.getName(), "Current Service Mode: "
+		+ CURRENT_SERVICE_MODE);
 	if (mSoftCallback != null)
 	    mSoftCallback.getTaskExecutorReference(mTaskExecutor);
 	mSoftCallback = null;
@@ -69,7 +70,8 @@ public class TaskExecutorService extends Service implements
 	    mHaveTasksBeenRestored = false;
 	    switch (CURRENT_SERVICE_MODE) {
 	    case CALLBACK_INCONSIDERATE:
-		Log.d(TaskExecutorService.class.getName(), "Tasks Executing, Callback Inconsiderate Mode");
+		Log.d(TaskExecutorService.class.getName(),
+			"Tasks Executing, Callback Inconsiderate Mode");
 		mTaskExecutor.executeQueue();
 		break;
 	    case CALLBACK_DEPENDENT:

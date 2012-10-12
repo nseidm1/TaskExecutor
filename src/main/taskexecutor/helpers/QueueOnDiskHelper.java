@@ -64,9 +64,9 @@ public class QueueOnDiskHelper {
     // ////////////////////////////////////////////////////
     // //////////Private methods hereforth/////////////////
     // ////////////////////////////////////////////////////
-    private static Vector<Task> getTasks(Context context, TaskExecutor taskExecutor)
-	    throws FileNotFoundException, IOException,
-	    IllegalArgumentException, InstantiationException,
+    private static Vector<Task> getTasks(Context context,
+	    TaskExecutor taskExecutor) throws FileNotFoundException,
+	    IOException, IllegalArgumentException, InstantiationException,
 	    IllegalAccessException, InvocationTargetException,
 	    NoSuchMethodException, ClassNotFoundException {
 	Vector<Task> taskArray = new Vector<Task>();
