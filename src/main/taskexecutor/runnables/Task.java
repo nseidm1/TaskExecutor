@@ -19,16 +19,16 @@ public abstract class Task implements Runnable {
     private Bundle mBundle = new Bundle();
     private Random mRandom = new Random();
 
-    public Task() {
-	TAG = Long.toString(mRandom.nextLong());
-    }
-
     /**
      * Define the task you want to perform on the supplied bundle.
      * 
      * @throws Exception
      */
     public abstract void task() throws Exception;
+    
+    public Task() {
+	TAG = Long.toString(mRandom.nextLong());
+    }
 
     /**
      * @param uiHandler

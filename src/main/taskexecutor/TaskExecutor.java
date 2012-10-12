@@ -3,11 +3,13 @@ package main.taskexecutor;
 import java.util.Vector;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+
 import main.taskexecutor.callbacks.ServiceHelperCallback;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
 import main.taskexecutor.helpers.QueueInMemoryHelper;
 import main.taskexecutor.runnables.Task;
 import android.os.Handler;
+import android.util.Log;
 
 /**
  * @author nseidm1
@@ -70,9 +72,10 @@ public class TaskExecutor {
      * @throws NoQueuedTasksException
      */
     public void executeQueue() {
-	for (Task task : mQueue) {
-	    if (!mTaskThreadExecutor.getQueue().contains(task))
-		mTaskThreadExecutor.execute(task);
+	Log.d(TaskExecutor.class.getName(), "Execute " + mQueue.size() + " Tasks");
+	for (int i = 0; i < mQueue.size(); i++){
+	    if (!mTaskThreadExecutor.getQueue().contains(mQueue.get(i)))
+		mTaskThreadExecutor.execute(mQueue.get(i));
 	}
     }
 
@@ -162,6 +165,7 @@ public class TaskExecutor {
      */
     public void setQueue(Vector<Task> queue) {
 	mQueue = queue;
+	queueModified();
     }
 
     /**

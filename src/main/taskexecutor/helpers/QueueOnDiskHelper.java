@@ -39,7 +39,7 @@ public class QueueOnDiskHelper {
 	    IOException, IllegalArgumentException, InstantiationException,
 	    IllegalAccessException, InvocationTargetException,
 	    NoSuchMethodException, ClassNotFoundException {
-	Vector<Task> tasks = getTasks(context);
+	Vector<Task> tasks = getTasks(context, taskExecutor);
 	if (tasks.size() > 0) {
 	    taskExecutor.setQueue(tasks);
 	    return true;
@@ -64,7 +64,7 @@ public class QueueOnDiskHelper {
     // ////////////////////////////////////////////////////
     // //////////Private methods hereforth/////////////////
     // ////////////////////////////////////////////////////
-    private static Vector<Task> getTasks(Context context)
+    private static Vector<Task> getTasks(Context context, TaskExecutor taskExecutor)
 	    throws FileNotFoundException, IOException,
 	    IllegalArgumentException, InstantiationException,
 	    IllegalAccessException, InvocationTargetException,
@@ -97,6 +97,7 @@ public class QueueOnDiskHelper {
 	    Task task = (Task) constructor.newInstance();
 	    task.setBundle(persistenceObject.getBundle());
 	    task.setTag(persistenceObject.getTag());
+	    task.setTaskExecutor(taskExecutor);
 	    Log.d(QueueOnDiskHelper.class.getName(), task.getTag()
 		    + " restored");
 	    if (task != null)

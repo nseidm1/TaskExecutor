@@ -64,6 +64,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener {
 	} else if (v.getId() == R.id.execute) {
 	    mTaskExecutor.executeQueue();
 	} else if (v.getId() == R.id.kill_example) {
+	    System.runFinalization();
 	    System.exit(0);
 	}
     }
@@ -86,6 +87,6 @@ public class Example extends TaskExecutorActivity implements OnClickListener {
 
     @Override
     public int specifyServiceMode() {
-	return TaskExecutorService.CALLBACK_DEPENDENT;
+	return TaskExecutorService.CALLBACK_INCONSIDERATE;
     };
 }
