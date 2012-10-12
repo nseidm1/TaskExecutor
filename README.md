@@ -9,12 +9,12 @@ the the Service has two MODEs, CALLBACK_INCONSIDERATE and CALLBACK_DEPENDENT.
 The Service mode is intented to define how the Service 
 treaks Tasks restored from disk when the service goes through onCreate after being killed by the system.
 
-TaskExecutorActivity has a couple of interfaces used by the service. TasksRestoredCallback, TaskCompletedCallback, 
+TaskExecutorActivity has a couple of interfaces used by the Service. TasksRestoredCallback, TaskCompletedCallback, 
 and TaskExecutorReferenceCallback. The names really say it all. TaskRestoredCallback informs the current activity 
 that Tasks have been restored from disk. TaskCompletedCallback is a hard callback gracefully managed for each Task 
 to post back to the ui thread in the currently visible Activity. It doesn't matter if you start a new Activity, the callback 
 in all Tasks will always be the current visibile Activity. TaskExecutorReferenceCallback is how the service provides 
-a referece of TaskExecutor to the current Activity.
+a reference of TaskExecutor to the current Activity.
 
 Tasks Are runnables with additional helper methods to facilitate management by the TaskExecutor facility. 
 Task is an abstract class you'll have to extend, and cannot be anonymous. Anonymous Tasks cannot be restored from 
