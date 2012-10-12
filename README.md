@@ -9,19 +9,19 @@ the the Service has two MODEs, CALLBACK_INCONSIDERATE and CALLBACK_DEPENDENT.
 The Service mode is intented to define how the Service 
 treaks Tasks restored from disk when the service goes through onCreate after being killed by the system.
 
-TaskExecutorActivity has a couple of interfaces used by the service. TasksRestoredCallback, TaskCompletedCallback, 
+TaskExecutorActivity has a couple of interfaces used by the Service. TasksRestoredCallback, TaskCompletedCallback, 
 and TaskExecutorReferenceCallback. The names really say it all. TaskRestoredCallback informs the current activity 
 that Tasks have been restored from disk. TaskCompletedCallback is a hard callback gracefully managed for each Task 
 to post back to the ui thread in the currently visible Activity. It doesn't matter if you start a new Activity, the callback 
 in all Tasks will always be the current visibile Activity. TaskExecutorReferenceCallback is how the service provides 
-a referece of TaskExecutor to the current Activity.
+a reference of TaskExecutor to the current Activity.
 
 Tasks Are runnables with additional helper methods to facilitate management by the TaskExecutor facility. 
 Task is an abstract class you'll have to extend, and cannot be anonymous. Anonymous Tasks cannot be restored from 
 there persisted state on disk. If Tasks are implemented properly, and the Service is killed by the system, all executed 
 Tasks will be restored from a persisted state on disk; and depending on the Service MODE can even continue execution 
 automatically or wait for an Activity to launch in turn providing a hard callback for the Task to post it's completion 
-results.
+results on the ui thread.
 
 The heart of Task is the abstract method task() that you'll override to define what your Task does. If designed as a 
 static inner class do not reference stuff outside of the Task's scope, keep everything within the Task itself to gracefully 
@@ -38,7 +38,7 @@ Tasks have 8 public methods:<br>
 5) setBundle(Bundle bundle)<br>
 6) getBundle()<br>
 7) setTag(String TAG)<br>
-80) getTag()<br>
+8) getTag()<br>
 The only method you'll likely want to use is setBundle(), all others are managed by the TaskExecutor and likely do not need to be used directly.
 
 <b>Tips</b><br>
@@ -49,12 +49,17 @@ followed by the executeQueue() method. <br>
 5) Tasks also take a bundle. I highly encourage proper design, your Task should be designed to perform a discrete operation on the Bundle's data.
 <br><br>
 
-COPYRIGHT
+<pre><code>Copyright 2012 Noah Seidman
 
-Copyright 2012 Noah Seidman
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+   http://www.apache.org/licenses/LICENSE-2.0
 
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+</code></pre>
