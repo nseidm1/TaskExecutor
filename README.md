@@ -1,7 +1,7 @@
 TaskExecutor
 ===================
 
-<b>Task Executor Activity</b><br>
+<b>TaskExecutorActivity</b><br>
 The included abstract TaskExecutorActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. 
 TaskExecutorActivity has two abstract methods, allowTaskFiness() and specifyServiceMode(). 
 Tasks can be finessed to maintain a callback to the currently visible Activity, and 
