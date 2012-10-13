@@ -97,6 +97,10 @@ public class QueueOnDiskHelper {
 	    Task task = (Task) constructor.newInstance();
 	    task.setBundle(persistenceObject.getBundle());
 	    task.setTag(persistenceObject.getTag());
+	    task.setShouldRemoveFromQueueOnException(persistenceObject
+		    .getShouldRemoveFromQueueOnException());
+	    task.setShouldRemoveFromQueueOnSuccess(persistenceObject
+		    .getShouldRemoveFromQueueOnSuccess());
 	    task.setTaskExecutor(taskExecutor);
 	    Log.d(QueueOnDiskHelper.class.getName(), task.getTag()
 		    + " restored");

@@ -6,6 +6,7 @@ import main.taskexecutor.TaskExecutor;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 /**
  * @author nseidm1
@@ -15,6 +16,8 @@ public abstract class Task implements Runnable {
     private TaskCompletedCallback mCompleteCallback;
     private Handler mUiHandler;
     private String TAG = "";
+    private boolean mShouldRemoveFromQueueOnSuccess = true;
+    private boolean mShouldRemoveFromQueueOnException = true;
     private Semaphore mPause = new Semaphore(1);
     private Bundle mBundle = new Bundle();
     private Random mRandom = new Random();
@@ -28,6 +31,26 @@ public abstract class Task implements Runnable {
 
     public Task() {
 	TAG = Long.toString(mRandom.nextLong());
+    }
+
+    /**
+     * @param shouldRemoveFromQueueOnSuccess
+     *            Default is true, but the Task can remain in the queue on
+     *            success if desired. This means it can be re-executed again.
+     */
+    public void setShouldRemoveFromQueueOnSuccess(
+	    boolean shouldRemoveFromQueueOnSuccess) {
+	mShouldRemoveFromQueueOnSuccess = shouldRemoveFromQueueOnSuccess;
+    }
+
+    /**
+     * @param shouldRemoveFromQueueOnException
+     *            Default is true, but the Task can remain in the queue on
+     *            exception if desired. This means it can be re-executed again.
+     */
+    public void setShouldRemoveFromQueueOnException(
+	    boolean shouldRemoveFromQueueOnException) {
+	mShouldRemoveFromQueueOnException = shouldRemoveFromQueueOnException;
     }
 
     /**
@@ -55,6 +78,7 @@ public abstract class Task implements Runnable {
     /**
      * @param tag
      *            The TAG needs to be unique as it's used to persist the Task to
+     *            disk. If your tags duplicate they will overwrite each other on
      *            disk.
      */
     public void setTag(String tag) {
@@ -105,28 +129,41 @@ public abstract class Task implements Runnable {
 	try {
 	    task();
 	    mPause.acquire();
-	    mTaskExecutor.removeTaskFromQueue(this);
+	    if (mShouldRemoveFromQueueOnSuccess)
+		mTaskExecutor.removeTaskFromQueue(this);
 	    if (mUiHandler != null) {
 		mUiHandler.post(new Runnable() {
 		    @Override
 		    public void run() {
 			if (mCompleteCallback != null)
 			    mCompleteCallback.onTaskComplete(mBundle, null);
-			mCompleteCallback = null;
+			if (mShouldRemoveFromQueueOnSuccess)
+			    mCompleteCallback = null;
 		    }
 		});
+	    } else {
+		if (mShouldRemoveFromQueueOnSuccess)
+		    mCompleteCallback = null;
 	    }
 	} catch (final Exception e) {
-	    mTaskExecutor.removeTaskFromQueue(this);
+	    Log.d(Task.class.getName(),
+		    "Should Remove From Queue on Exception: "
+			    + mShouldRemoveFromQueueOnException);
+	    if (mShouldRemoveFromQueueOnException)
+		mTaskExecutor.removeTaskFromQueue(this);
 	    if (mUiHandler != null) {
 		mUiHandler.post(new Runnable() {
 		    @Override
 		    public void run() {
 			if (mCompleteCallback != null)
 			    mCompleteCallback.onTaskComplete(mBundle, e);
-			mCompleteCallback = null;
+			if (mShouldRemoveFromQueueOnException)
+			    mCompleteCallback = null;
 		    }
 		});
+	    } else {
+		if (mShouldRemoveFromQueueOnException)
+		    mCompleteCallback = null;
 	    }
 	}
     }

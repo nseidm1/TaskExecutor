@@ -7,15 +7,33 @@ import android.os.Parcelable;
 public class PersistenceObject implements Parcelable {
     private String className;
     private String TAG;
+    private boolean shouldRemoveFromQueueOnSuccess;
+    private boolean shouldRemoveFromQueueOnException;
     private Bundle bundle = new Bundle();
 
     public PersistenceObject() {
     }
 
     public PersistenceObject(Parcel parcel) {
-	this.className = parcel.readString();
-	this.TAG = parcel.readString();
-	this.bundle = parcel.readBundle();
+	className = parcel.readString();
+	TAG = parcel.readString();
+	switch (parcel.readInt()) {
+	case 0:
+	    shouldRemoveFromQueueOnException = false;
+	    break;
+	case 1:
+	    shouldRemoveFromQueueOnException = true;
+	    break;
+	}
+	switch (parcel.readInt()) {
+	case 0:
+	    shouldRemoveFromQueueOnSuccess = false;
+	    break;
+	case 1:
+	    shouldRemoveFromQueueOnSuccess = true;
+	    break;
+	}
+	bundle = parcel.readBundle();
     }
 
     public PersistenceObject(String className, Bundle bundle, String TAG) {
@@ -36,6 +54,14 @@ public class PersistenceObject implements Parcelable {
 	return TAG;
     }
 
+    public boolean getShouldRemoveFromQueueOnSuccess() {
+	return shouldRemoveFromQueueOnSuccess;
+    }
+
+    public boolean getShouldRemoveFromQueueOnException() {
+	return shouldRemoveFromQueueOnException;
+    }
+
     @Override
     public int describeContents() {
 	return 0;
@@ -45,6 +71,16 @@ public class PersistenceObject implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
 	dest.writeString(className);
 	dest.writeString(TAG);
+	if (shouldRemoveFromQueueOnException) {
+	    dest.writeInt(1);
+	} else {
+	    dest.writeInt(0);
+	}
+	if (shouldRemoveFromQueueOnSuccess) {
+	    dest.writeInt(1);
+	} else {
+	    dest.writeInt(0);
+	}
 	dest.writeBundle(bundle);
     }
 

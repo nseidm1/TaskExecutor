@@ -29,6 +29,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener {
 		.setOnClickListener(this);
 	((Button) findViewById(R.id.execute)).setOnClickListener(this);
 	((Button) findViewById(R.id.kill_example)).setOnClickListener(this);
+	((Button) findViewById(R.id.empty_queue)).setOnClickListener(this);
     }
 
     @Override
@@ -46,6 +47,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener {
 	    bundle.putInt(PostTask.DELAY, 0);
 	    bundle.putString(PostTask.URL, "null");
 	    postTask.setBundle(bundle);
+	    postTask.setShouldRemoveFromQueueOnException(false);
 	    mTaskExecutor.addTaskToQueue(postTask, this);
 	} else if (v.getId() == R.id.http_delayed_get_test_button) {
 	    PostTask postTask = new PostTask();
@@ -66,7 +68,11 @@ public class Example extends TaskExecutorActivity implements OnClickListener {
 	} else if (v.getId() == R.id.kill_example) {
 	    System.runFinalization();
 	    System.exit(0);
+	} else if (v.getId() == R.id.empty_queue) {
+	    mTaskExecutor.clearQueue();
+	    Toast.makeText(this, "Queue Emptied", Toast.LENGTH_SHORT).show();
 	}
+
     }
 
     @Override
