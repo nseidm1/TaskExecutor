@@ -6,7 +6,7 @@ import main.taskexecutor.TaskExecutor;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import main.taskexecutor.classes.Log;
 
 /**
  * @author nseidm1
