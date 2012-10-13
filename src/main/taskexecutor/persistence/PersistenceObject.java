@@ -41,9 +41,9 @@ public class PersistenceObject implements Parcelable {
 	    boolean shouldRemoveFromQueueOnException) {
 	this.className = className;
 	this.TAG = TAG;
-	this.bundle = bundle;
 	this.shouldRemoveFromQueueOnSuccess = shouldRemoveFromQueueOnSuccess;
 	this.shouldRemoveFromQueueOnException = shouldRemoveFromQueueOnException;
+	this.bundle = bundle;
     }
 
     public String getClassName() {
