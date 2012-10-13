@@ -5,16 +5,17 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import main.taskexecutor.callbacks.ServiceCallbackDependentHelperCallback;
 import main.taskexecutor.callbacks.ServiceHelperCallback;
 import main.taskexecutor.callbacks.TaskExecutorReferenceCallback;
-import main.taskexecutor.callbacks.TasksRestoredCallback;
+import main.taskexecutor.classes.Log;
 import main.taskexecutor.helpers.QueueOnDiskHelper;
 import main.taskexecutor.runnables.QueueToDiskTask;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import main.taskexecutor.classes.Log;
 
 /**
  * @author nseidm1
@@ -27,7 +28,7 @@ public class TaskExecutorService extends Service implements
     private QueueToDiskTask mQueueToDisk = new QueueToDiskTask(mTaskExecutor,
 	    this);
     private static TaskExecutorReferenceCallback mSoftCallback;
-    private static TasksRestoredCallback mTasksRestoredCallback;
+    private static ServiceCallbackDependentHelperCallback mServiceCallbackDependentHelperCallback;
     public static final int CALLBACK_INCONSIDERATE = 0;
     public static final int CALLBACK_DEPENDENT = 1;
     public static int CURRENT_SERVICE_MODE = CALLBACK_DEPENDENT;
@@ -48,11 +49,13 @@ public class TaskExecutorService extends Service implements
      *            The interface informing an activity if Tasks have been
      *            restored by the service after a restart.
      */
-    public static void requestExecutorReference(int MODE, Context context,
+    public static void requestExecutorReference(
+	    int MODE,
+	    Context context,
 	    TaskExecutorReferenceCallback serviceReferenceCallback,
-	    TasksRestoredCallback tasksRestoredCallback) {
+	    ServiceCallbackDependentHelperCallback serviceCallbackDependentHelperCallback) {
 	mSoftCallback = serviceReferenceCallback;
-	mTasksRestoredCallback = tasksRestoredCallback;
+	mServiceCallbackDependentHelperCallback = serviceCallbackDependentHelperCallback;
 	context.startService(new Intent(context, TaskExecutorService.class)
 		.putExtra(SERVICE_MODE_KEY, MODE));
     }
@@ -75,9 +78,10 @@ public class TaskExecutorService extends Service implements
 		mTaskExecutor.executeQueue();
 		break;
 	    case CALLBACK_DEPENDENT:
-		if (mTasksRestoredCallback != null)
-		    mTasksRestoredCallback.tasksHaveBeenRestored();
-		mTasksRestoredCallback = null;
+		if (mServiceCallbackDependentHelperCallback != null)
+		    mServiceCallbackDependentHelperCallback
+			    .tasksHaveBeenRestored();
+		mServiceCallbackDependentHelperCallback = null;
 		break;
 	    }
 	}

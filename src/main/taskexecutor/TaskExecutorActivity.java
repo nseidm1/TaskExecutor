@@ -1,15 +1,15 @@
 package main.taskexecutor;
 
+import main.taskexecutor.callbacks.ServiceCallbackDependentHelperCallback;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
 import main.taskexecutor.callbacks.TaskExecutorReferenceCallback;
-import main.taskexecutor.callbacks.TasksRestoredCallback;
 import android.support.v4.app.FragmentActivity;
 
 /**
  * @author nseidm1
  */
 public abstract class TaskExecutorActivity extends FragmentActivity implements
-	TasksRestoredCallback, TaskCompletedCallback,
+	ServiceCallbackDependentHelperCallback, TaskCompletedCallback,
 	TaskExecutorReferenceCallback {
     protected TaskExecutor mTaskExecutor;
 
@@ -33,6 +33,12 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements
      *         TaskExecutorService.CALLBACK_DEPENDENT.
      */
     public abstract int specifyServiceMode();
+    
+    /**
+     * @return When the Service is in CALLBACK_DEPENDENT mode, and Tasks are restored from a killed Service, should the queue 
+     * auto execute on the next Activity launch?
+     */
+    public abstract boolean autoExecuteOnTaskRestoreInCallbackDependentMode();
 
     @Override
     public void onPause() {
@@ -60,6 +66,7 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements
     @Override
     public void tasksHaveBeenRestored() {
 	mTaskExecutor.finessTasks(this);
-	mTaskExecutor.executeQueue();
+	if (autoExecuteOnTaskRestoreInCallbackDependentMode())
+	    mTaskExecutor.executeQueue();
     }
 }
