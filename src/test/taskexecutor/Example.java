@@ -47,7 +47,6 @@ public class Example extends TaskExecutorActivity implements OnClickListener {
 	    bundle.putInt(PostTask.DELAY, 0);
 	    bundle.putString(PostTask.URL, "null");
 	    postTask.setBundle(bundle);
-	    postTask.setShouldRemoveFromQueueOnException(false);
 	    mTaskExecutor.addTaskToQueue(postTask, this);
 	} else if (v.getId() == R.id.http_delayed_get_test_button) {
 	    PostTask postTask = new PostTask();
