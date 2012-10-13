@@ -37,7 +37,9 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements
     @Override
     public void onPause() {
 	super.onPause();
-	if (allowTaskFiness())
+	// Theoretically the activity can be finishing before the request for
+	// the executor reference is received.
+	if (allowTaskFiness() && mTaskExecutor != null)
 	    mTaskExecutor.restrainTasks();
     }
 
