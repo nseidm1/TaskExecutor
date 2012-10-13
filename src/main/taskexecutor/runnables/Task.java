@@ -43,6 +43,10 @@ public abstract class Task implements Runnable {
 	mShouldRemoveFromQueueOnSuccess = shouldRemoveFromQueueOnSuccess;
     }
 
+    public boolean getShouldRemoveFromQueueOnSuccess() {
+	return mShouldRemoveFromQueueOnSuccess;
+    }
+
     /**
      * @param shouldRemoveFromQueueOnException
      *            Default is true, but the Task can remain in the queue on
@@ -51,6 +55,10 @@ public abstract class Task implements Runnable {
     public void setShouldRemoveFromQueueOnException(
 	    boolean shouldRemoveFromQueueOnException) {
 	mShouldRemoveFromQueueOnException = shouldRemoveFromQueueOnException;
+    }
+
+    public boolean getShouldRemoveFromQueueOnException() {
+	return mShouldRemoveFromQueueOnException;
     }
 
     /**

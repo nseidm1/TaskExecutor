@@ -49,7 +49,6 @@ public class QueueOnDiskHelper {
 
     /**
      * @param context
-     *            Provide a context.
      * @param taskExecutor
      *            Provide a reference to the TaskExecutor.
      * @throws IOException
@@ -119,7 +118,9 @@ public class QueueOnDiskHelper {
 		FileOutputStream fos = new FileOutputStream(taskFile);
 		PersistenceObject persistenceObject = new PersistenceObject(
 			task.getClass().getName(), task.getBundle(),
-			task.getTag());
+			task.getTag(),
+			task.getShouldRemoveFromQueueOnSuccess(),
+			task.getShouldRemoveFromQueueOnException());
 		Parcel parcel = Parcel.obtain();
 		persistenceObject.writeToParcel(parcel, 0);
 		try {
