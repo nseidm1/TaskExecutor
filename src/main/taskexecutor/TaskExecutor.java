@@ -9,6 +9,7 @@ import main.taskexecutor.callbacks.TaskCompletedCallback;
 import main.taskexecutor.helpers.QueueInMemoryHelper;
 import main.taskexecutor.runnables.Task;
 import android.os.Handler;
+import android.os.Looper;
 import main.taskexecutor.classes.Log;
 
 /**
@@ -16,7 +17,7 @@ import main.taskexecutor.classes.Log;
  */
 public class TaskExecutor {
     private boolean mIsPaused = false;
-    private Handler mHandler = new Handler();
+    private Handler mHandler = new Handler(Looper.getMainLooper());
     private Vector<Task> mQueue = new Vector<Task>();
     private ServiceHelperCallback mServiceHelperCallback;
     private ThreadPoolExecutor mTaskThreadExecutor = (ThreadPoolExecutor) Executors
@@ -59,8 +60,7 @@ public class TaskExecutor {
      *            execution, you may supply null, but if you have allowFiness()
      *            enabled a callback will assigned at that time.
      */
-    public void addTaskToQueue(Task task,
-	    TaskCompletedCallback taskCompletedCallback) {
+    public void addTaskToQueue(Task task, TaskCompletedCallback taskCompletedCallback) {
 	task.setCompleteCallback(taskCompletedCallback);
 	task.setUiHandler(mHandler);
 	task.setTaskExecutor(this);
@@ -100,9 +100,7 @@ public class TaskExecutor {
     public void restrainTasks() {
 	// Clear the callbacks to prevent leaks.
 	// Pause all Tasks to block the next callback.
-	QueueInMemoryHelper.setTaskExecutorForAllQueuedTasks(mQueue, null);
-	QueueInMemoryHelper.setUIHandlerForAllQueuedTask(mQueue, null);
-//	QueueInMemoryHelper.setTaskExecutorForAllQueuedTasks(mQueue, null);
+	QueueInMemoryHelper.setCallbackForAllQueuedTasks(mQueue, null);
 	restrainAllQueuedTasks();
     }
 
@@ -124,13 +122,7 @@ public class TaskExecutor {
      *            to the activity.
      */
     public void finessTasks(TaskCompletedCallback taskCompleteCallback) {
-	// Reset the task complete callback.
-	// Reset the ui handler.
-	// Reset the reference to the TaskExecutor.
-	QueueInMemoryHelper.setCallbackForAllQueuedTasks(mQueue,
-		taskCompleteCallback);
-	QueueInMemoryHelper.setUIHandlerForAllQueuedTask(mQueue, mHandler);
-	QueueInMemoryHelper.setTaskExecutorForAllQueuedTasks(mQueue, this);//Likely not needed, but what the heck
+	QueueInMemoryHelper.setCallbackForAllQueuedTasks(mQueue, taskCompleteCallback);
 	unrestrainAllQueuedTasks();
     }
 
