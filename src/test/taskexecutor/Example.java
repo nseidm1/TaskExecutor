@@ -96,7 +96,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener {
     }
 
     @Override
-    public boolean autoExecuteOnTaskRestoreInCallbackDependentMode() {
-	return false;
+    public boolean autoExecuteAfterTasksRestored() {
+	return true;
     };
 }

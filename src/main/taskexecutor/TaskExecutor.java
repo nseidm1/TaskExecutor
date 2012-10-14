@@ -9,7 +9,7 @@ import main.taskexecutor.callbacks.TaskCompletedCallback;
 import main.taskexecutor.helpers.QueueInMemoryHelper;
 import main.taskexecutor.runnables.Task;
 import android.os.Handler;
-import android.util.Log;
+import main.taskexecutor.classes.Log;
 
 /**
  * @author nseidm1

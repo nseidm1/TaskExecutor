@@ -38,7 +38,7 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements
      * @return When the Service is in CALLBACK_DEPENDENT mode, and Tasks are restored from a killed Service, should the queue 
      * auto execute on the next Activity launch?
      */
-    public abstract boolean autoExecuteOnTaskRestoreInCallbackDependentMode();
+    public abstract boolean autoExecuteAfterTasksRestored();
 
     @Override
     public void onPause() {
@@ -66,7 +66,7 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements
     @Override
     public void tasksHaveBeenRestored() {
 	mTaskExecutor.finessTasks(this);
-	if (autoExecuteOnTaskRestoreInCallbackDependentMode())
+	if (autoExecuteAfterTasksRestored())
 	    mTaskExecutor.executeQueue();
     }
 }
