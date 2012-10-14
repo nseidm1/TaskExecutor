@@ -20,8 +20,8 @@ public class PostTask extends Task {
 	    HttpResponse response = client.execute(get);
 	    client.close();
 	    int responseCode = response.getStatusLine().getStatusCode();
-	    getBundle().putString("ResponseCode",
-		    "Response Code: " + responseCode);
+	    getBundle().putString("ResponseCode", "Response Code: "
+		    + responseCode);
 	} catch (IOException e) {
 	    client.close();
 	    throw e;

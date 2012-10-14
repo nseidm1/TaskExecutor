@@ -19,14 +19,10 @@ public class Example extends TaskExecutorActivity implements OnClickListener {
 	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 	    getActionBar().setTitle("TaskExector Demonstration");
 	}
-	((Button) findViewById(R.id.http_get_test_button))
-		.setOnClickListener(this);
-	((Button) findViewById(R.id.http_exception_test_button))
-		.setOnClickListener(this);
-	((Button) findViewById(R.id.http_delayed_get_test_button))
-		.setOnClickListener(this);
-	((Button) findViewById(R.id.twenty_sec_http_delayed_get_test_button))
-		.setOnClickListener(this);
+	((Button) findViewById(R.id.http_get_test_button)).setOnClickListener(this);
+	((Button) findViewById(R.id.http_exception_test_button)).setOnClickListener(this);
+	((Button) findViewById(R.id.http_delayed_get_test_button)).setOnClickListener(this);
+	((Button) findViewById(R.id.twenty_sec_http_delayed_get_test_button)).setOnClickListener(this);
 	((Button) findViewById(R.id.execute)).setOnClickListener(this);
 	((Button) findViewById(R.id.kill_example)).setOnClickListener(this);
 	((Button) findViewById(R.id.empty_queue)).setOnClickListener(this);
@@ -77,11 +73,9 @@ public class Example extends TaskExecutorActivity implements OnClickListener {
     @Override
     public void onTaskComplete(Bundle bundle, Exception exception) {
 	if (exception != null) {
-	    Toast.makeText(this, exception.toString(), Toast.LENGTH_SHORT)
-		    .show();
+	    Toast.makeText(this, exception.toString(), Toast.LENGTH_SHORT).show();
 	} else if (bundle != null) {
-	    Toast.makeText(this, bundle.getString("ResponseCode"),
-		    Toast.LENGTH_SHORT).show();
+	    Toast.makeText(this, bundle.getString("ResponseCode"), Toast.LENGTH_SHORT).show();
 	}
     }
 

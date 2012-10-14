@@ -23,12 +23,10 @@ public class QueueToDiskTask implements Runnable {
 
     private void updateTasksOnDisk() {
 	try {
-	    QueueOnDiskHelper.updateTasksOnDisk(mTaskExecutorService,
-		    mTaskExecutor);
+	    QueueOnDiskHelper.updateTasksOnDisk(mTaskExecutorService, mTaskExecutor);
 	} catch (IOException e) {
 	    e.printStackTrace();
-	    Log.e(TaskExecutorService.class.getName(),
-		    "Error saving existing queue.");
+	    Log.e(TaskExecutorService.class.getName(), "Error saving existing queue.");
 	}
     }
 }

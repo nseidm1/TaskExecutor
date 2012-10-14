@@ -35,11 +35,10 @@ public abstract class Task implements Runnable {
 
     /**
      * @param shouldRemoveFromQueueOnSuccess
-     *            Default is true, but the Task can remain in the queue on
-     *            success if desired. This means it can be re-executed again.
+     * Default is true, but the Task can remain in the queue on success if
+     * desired. This means it can be re-executed again.
      */
-    public void setShouldRemoveFromQueueOnSuccess(
-	    boolean shouldRemoveFromQueueOnSuccess) {
+    public void setShouldRemoveFromQueueOnSuccess(boolean shouldRemoveFromQueueOnSuccess) {
 	mShouldRemoveFromQueueOnSuccess = shouldRemoveFromQueueOnSuccess;
     }
 
@@ -49,11 +48,10 @@ public abstract class Task implements Runnable {
 
     /**
      * @param shouldRemoveFromQueueOnException
-     *            Default is true, but the Task can remain in the queue on
-     *            exception if desired. This means it can be re-executed again.
+     * Default is true, but the Task can remain in the queue on exception if
+     * desired. This means it can be re-executed again.
      */
-    public void setShouldRemoveFromQueueOnException(
-	    boolean shouldRemoveFromQueueOnException) {
+    public void setShouldRemoveFromQueueOnException(boolean shouldRemoveFromQueueOnException) {
 	mShouldRemoveFromQueueOnException = shouldRemoveFromQueueOnException;
     }
 
@@ -63,7 +61,7 @@ public abstract class Task implements Runnable {
 
     /**
      * @param uiHandler
-     *            Set the ui handler for this Task.
+     * Set the ui handler for this Task.
      */
     public void setUiHandler(Handler uiHandler) {
 	mUiHandler = uiHandler;
@@ -85,9 +83,8 @@ public abstract class Task implements Runnable {
 
     /**
      * @param tag
-     *            The TAG needs to be unique as it's used to persist the Task to
-     *            disk. If your tags duplicate they will overwrite each other on
-     *            disk.
+     * The TAG needs to be unique as it's used to persist the Task to disk. If
+     * your tags duplicate they will overwrite each other on disk.
      */
     public void setTag(String tag) {
 	TAG = tag;
@@ -102,8 +99,8 @@ public abstract class Task implements Runnable {
 
     /**
      * @param completeCallback
-     *            Aside from the constructor you can specify the callback using
-     *            this method.
+     * Aside from the constructor you can specify the callback using this
+     * method.
      */
     public void setCompleteCallback(TaskCompletedCallback completeCallback) {
 	mCompleteCallback = completeCallback;
@@ -111,8 +108,8 @@ public abstract class Task implements Runnable {
 
     /**
      * @param taskExecutor
-     *            If you want this Task to automatically retrieve itself from
-     *            the TaskExecutor's queue, a reference is needed.
+     * If you want this Task to automatically retrieve itself from the
+     * TaskExecutor's queue, a reference is needed.
      */
     public void setTaskExecutor(TaskExecutor taskExecutor) {
 	mTaskExecutor = taskExecutor;
@@ -156,25 +153,24 @@ public abstract class Task implements Runnable {
 	} catch (final Exception e) {
 	    try {
 		mPause.acquire();
-		    Log.d(Task.class.getName(),
-			    "Should Remove From Queue on Exception: "
-				    + mShouldRemoveFromQueueOnException);
+		Log.d(Task.class.getName(), "Should Remove From Queue on Exception: "
+			+ mShouldRemoveFromQueueOnException);
+		if (mShouldRemoveFromQueueOnException)
+		    mTaskExecutor.removeTaskFromQueue(this);
+		if (mUiHandler != null) {
+		    mUiHandler.post(new Runnable() {
+			@Override
+			public void run() {
+			    if (mCompleteCallback != null)
+				mCompleteCallback.onTaskComplete(mBundle, e);
+			    if (mShouldRemoveFromQueueOnException)
+				mCompleteCallback = null;
+			}
+		    });
+		} else {
 		    if (mShouldRemoveFromQueueOnException)
-			mTaskExecutor.removeTaskFromQueue(this);
-		    if (mUiHandler != null) {
-			mUiHandler.post(new Runnable() {
-			    @Override
-			    public void run() {
-				if (mCompleteCallback != null)
-				    mCompleteCallback.onTaskComplete(mBundle, e);
-				if (mShouldRemoveFromQueueOnException)
-				    mCompleteCallback = null;
-			    }
-			});
-		    } else {
-			if (mShouldRemoveFromQueueOnException)
-			    mCompleteCallback = null;
-		    }
+			mCompleteCallback = null;
+		}
 	    } catch (InterruptedException e1) {
 		e1.printStackTrace();
 	    }
