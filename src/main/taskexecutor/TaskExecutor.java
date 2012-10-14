@@ -109,8 +109,8 @@ public class TaskExecutor {
     private void restrainAllQueuedTasks() {
 	if (!mIsPaused) {
 	    mIsPaused = true;
-	    for (Task task : mQueue) {
-		task.pause();
+	    for (int i = 0; i < mQueue.size(); i++){
+		mQueue.get(i).pause();
 	    }
 	}
     }
@@ -137,8 +137,8 @@ public class TaskExecutor {
     private void unrestrainAllQueuedTasks() {
 	if (mIsPaused) {
 	    mIsPaused = false;
-	    for (Task task : mQueue) {
-		task.resume();
+	    for (int i = 0; i < mQueue.size(); i++){
+		mQueue.get(i).resume();
 	    }
 	}
     }
