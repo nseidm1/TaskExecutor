@@ -30,7 +30,7 @@ public class TaskExecutorService extends Service implements
     private static ServiceCallbackDependentHelperCallback mServiceCallbackDependentHelperCallback;
     public static final int CALLBACK_INCONSIDERATE = 0;
     public static final int CALLBACK_DEPENDENT = 1;
-    public static int CURRENT_SERVICE_MODE = CALLBACK_DEPENDENT;
+    public int CURRENT_SERVICE_MODE = CALLBACK_DEPENDENT;
     public static final String SERVICE_MODE_KEY = "SERVICE_MODE_KEY";
 
     /**

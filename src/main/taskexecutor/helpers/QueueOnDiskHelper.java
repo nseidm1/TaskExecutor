@@ -8,12 +8,13 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Vector;
+
+import main.taskexecutor.Task;
 import main.taskexecutor.TaskExecutor;
-import main.taskexecutor.persistence.PersistenceObject;
-import main.taskexecutor.runnables.Task;
+import main.taskexecutor.Task.PersistenceObject;
+import main.taskexecutor.classes.Log;
 import android.content.Context;
 import android.os.Parcel;
-import main.taskexecutor.classes.Log;
 
 /**
  * @author nseidm1
@@ -100,8 +101,7 @@ public class QueueOnDiskHelper {
 	    task.setTaskExecutor(taskExecutor);
 	    Log.d(QueueOnDiskHelper.class.getName(), task.getTag()
 		    + " restored");
-	    if (task != null)
-		taskArray.add(task);
+	    taskArray.add(task);
 	}
 	return taskArray;
     }

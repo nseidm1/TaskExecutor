@@ -6,20 +6,20 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import main.taskexecutor.callbacks.ServiceHelperCallback;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
+import main.taskexecutor.classes.Log;
 import main.taskexecutor.helpers.QueueInMemoryHelper;
-import main.taskexecutor.runnables.Task;
 import android.os.Handler;
 import android.os.Looper;
-import main.taskexecutor.classes.Log;
 
 /**
  * @author nseidm1
  */
 public class TaskExecutor {
-    private boolean mIsPaused = false;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private Vector<Task> mQueue = new Vector<Task>();
     private ServiceHelperCallback mServiceHelperCallback;
+    private boolean mPause = false;
+    Object mLock = new Object();
     private ThreadPoolExecutor mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
 
     public TaskExecutor(ServiceHelperCallback serviceHelperCallback) {
@@ -45,7 +45,7 @@ public class TaskExecutor {
      * @return Return if the queue's execution is currently paused.
      */
     public boolean isPaused() {
-	return mIsPaused;
+	return mPause;
     }
 
     /**
@@ -100,11 +100,9 @@ public class TaskExecutor {
     }
 
     private void restrainAllQueuedTasks() {
-	if (!mIsPaused) {
-	    mIsPaused = true;
-	    for (int i = 0; i < mQueue.size(); i++) {
-		mQueue.get(i).pause();
-	    }
+	synchronized(mLock){
+	    mPause = true;
+	    mLock.notify();
 	}
     }
 
@@ -117,17 +115,17 @@ public class TaskExecutor {
      * activity.
      */
     public void finessTasks(TaskCompletedCallback taskCompleteCallback) {
-	// Add the callback reference back to the Task
+	// Reset critial parameters of the Tasks.
+	QueueInMemoryHelper.setTaskExecutorForAllQueuedTasks(mQueue, this);
+	QueueInMemoryHelper.setUIHandlerForAllQueuedTask(mQueue, mHandler);
 	QueueInMemoryHelper.setCallbackForAllQueuedTasks(mQueue, taskCompleteCallback);
 	unrestrainAllQueuedTasks();
     }
 
     private void unrestrainAllQueuedTasks() {
-	if (mIsPaused) {
-	    mIsPaused = false;
-	    for (int i = 0; i < mQueue.size(); i++) {
-		mQueue.get(i).resume();
-	    }
+	synchronized(mLock){
+	    mPause = false;
+	    mLock.notify();
 	}
     }
 

@@ -65,8 +65,7 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements
 
     @Override
     public void tasksHaveBeenRestored() {
-	if (allowTaskFiness())
-	    mTaskExecutor.finessTasks(this);
+	mTaskExecutor.finessTasks(this);
 	if (autoExecuteAfterTasksRestored())
 	    mTaskExecutor.executeQueue();
     }

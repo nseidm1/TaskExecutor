@@ -39,6 +39,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener {
 	    mTaskExecutor.addTaskToQueue(postTask, this);
 	} else if (v.getId() == R.id.http_exception_test_button) {
 	    PostTask postTask = new PostTask();
+	    postTask.setShouldRemoveFromQueueOnException(false);
 	    Bundle bundle = new Bundle();
 	    bundle.putInt(PostTask.DELAY, 0);
 	    bundle.putString(PostTask.URL, "null");

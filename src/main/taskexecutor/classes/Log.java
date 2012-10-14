@@ -1,7 +1,7 @@
 package main.taskexecutor.classes;
 
 public class Log {
-    static boolean enabled = false;
+    static boolean enabled = true;
 
     public static void d(String tag, String msg) {
 	if (enabled) {

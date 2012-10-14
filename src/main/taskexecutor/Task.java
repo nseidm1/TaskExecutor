@@ -1,12 +1,13 @@
-package main.taskexecutor.runnables;
+package main.taskexecutor;
 
 import java.util.Random;
-import java.util.concurrent.Semaphore;
-import main.taskexecutor.TaskExecutor;
+
 import main.taskexecutor.callbacks.TaskCompletedCallback;
+import main.taskexecutor.classes.Log;
 import android.os.Bundle;
 import android.os.Handler;
-import main.taskexecutor.classes.Log;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * @author nseidm1
@@ -18,7 +19,6 @@ public abstract class Task implements Runnable {
     private String TAG = "";
     private boolean mShouldRemoveFromQueueOnSuccess = true;
     private boolean mShouldRemoveFromQueueOnException = true;
-    private Semaphore mPause = new Semaphore(1);
     private Bundle mBundle = new Bundle();
     private Random mRandom = new Random();
 
@@ -115,25 +115,11 @@ public abstract class Task implements Runnable {
 	mTaskExecutor = taskExecutor;
     }
 
-    /**
-     * Block this Task before the callback.
-     */
-    public void pause() {
-	mPause.tryAcquire();
-    }
-
-    /**
-     * Resume this task unblocking the callback.
-     */
-    public void resume() {
-	mPause.release();
-    }
-
     @Override
     public void run() {
 	try {
 	    task();
-	    mPause.acquire();
+	    checkPause();
 	    if (mShouldRemoveFromQueueOnSuccess)
 		mTaskExecutor.removeTaskFromQueue(this);
 	    if (mUiHandler != null) {
@@ -152,28 +138,110 @@ public abstract class Task implements Runnable {
 	    }
 	} catch (final Exception e) {
 	    try {
-		mPause.acquire();
-		Log.d(Task.class.getName(), "Should Remove From Queue on Exception: "
-			+ mShouldRemoveFromQueueOnException);
-		if (mShouldRemoveFromQueueOnException)
-		    mTaskExecutor.removeTaskFromQueue(this);
-		if (mUiHandler != null) {
-		    mUiHandler.post(new Runnable() {
-			@Override
-			public void run() {
-			    if (mCompleteCallback != null)
-				mCompleteCallback.onTaskComplete(mBundle, e);
-			    if (mShouldRemoveFromQueueOnException)
-				mCompleteCallback = null;
-			}
-		    });
-		} else {
-		    if (mShouldRemoveFromQueueOnException)
-			mCompleteCallback = null;
-		}
+		checkPause();
 	    } catch (InterruptedException e1) {
+		// TODO Auto-generated catch block
 		e1.printStackTrace();
 	    }
+	    Log.d(Task.class.getName(), "Should Remove From Queue on Exception: "
+		    + mShouldRemoveFromQueueOnException);
+	    if (mShouldRemoveFromQueueOnException)
+		mTaskExecutor.removeTaskFromQueue(this);
+	    if (mUiHandler != null) {
+		mUiHandler.post(new Runnable() {
+		    @Override
+		    public void run() {
+			if (mCompleteCallback != null)
+			    mCompleteCallback.onTaskComplete(mBundle, e);
+			if (mShouldRemoveFromQueueOnException)
+			    mCompleteCallback = null;
+		    }
+		});
+	    } else {
+		if (mShouldRemoveFromQueueOnException)
+		    mCompleteCallback = null;
+	    }
 	}
+    }
+
+    private void checkPause() throws InterruptedException {
+	synchronized(mTaskExecutor.mLock){
+	    mTaskExecutor.mLock.wait();
+	}
+    }
+
+    public static class PersistenceObject implements Parcelable {
+	private String className;
+	private String TAG;
+	private boolean shouldRemoveFromQueueOnSuccess;
+	private boolean shouldRemoveFromQueueOnException;
+	private Bundle bundle = new Bundle();
+
+	public PersistenceObject() {
+	}
+
+	public PersistenceObject(Parcel parcel) {
+	    className = parcel.readString();
+	    TAG = parcel.readString();
+	    shouldRemoveFromQueueOnSuccess = parcel.readInt() == 1 ? true : false;
+	    shouldRemoveFromQueueOnException = parcel.readInt() == 1 ? true : false;
+	    bundle = parcel.readBundle();
+	}
+
+	public PersistenceObject(String className, 
+				 Bundle bundle, 
+				 String TAG,
+				 boolean shouldRemoveFromQueueOnSuccess,
+				 boolean shouldRemoveFromQueueOnException) {
+	    this.className = className;
+	    this.TAG = TAG;
+	    this.shouldRemoveFromQueueOnSuccess = shouldRemoveFromQueueOnSuccess;
+	    this.shouldRemoveFromQueueOnException = shouldRemoveFromQueueOnException;
+	    this.bundle = bundle;
+	}
+
+	public String getClassName() {
+	    return className;
+	}
+
+	public Bundle getBundle() {
+	    return bundle;
+	}
+
+	public String getTag() {
+	    return TAG;
+	}
+
+	public boolean getShouldRemoveFromQueueOnSuccess() {
+	    return shouldRemoveFromQueueOnSuccess;
+	}
+
+	public boolean getShouldRemoveFromQueueOnException() {
+	    return shouldRemoveFromQueueOnException;
+	}
+
+	@Override
+	public int describeContents() {
+	    return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+	    dest.writeString(className);
+	    dest.writeString(TAG);
+	    dest.writeInt(shouldRemoveFromQueueOnSuccess ? 1 : 0);
+	    dest.writeInt(shouldRemoveFromQueueOnException ? 1 : 0);
+	    dest.writeBundle(bundle);
+	}
+
+	public static Parcelable.Creator<PersistenceObject> CREATOR = new Parcelable.Creator<PersistenceObject>() {
+	    public PersistenceObject createFromParcel(Parcel in) {
+		return new PersistenceObject(in);
+	    }
+
+	    public PersistenceObject[] newArray(int size) {
+		return new PersistenceObject[size];
+	    }
+	};
     }
 }

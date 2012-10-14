@@ -1,7 +1,9 @@
 package test.taskexecutor.tasks;
 
 import java.io.IOException;
-import main.taskexecutor.runnables.Task;
+
+import main.taskexecutor.Task;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import android.net.http.AndroidHttpClient;

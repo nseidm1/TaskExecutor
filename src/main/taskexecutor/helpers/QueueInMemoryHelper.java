@@ -1,9 +1,10 @@
 package main.taskexecutor.helpers;
 
 import java.util.Vector;
+
+import main.taskexecutor.Task;
 import main.taskexecutor.TaskExecutor;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
-import main.taskexecutor.runnables.Task;
 import android.os.Handler;
 
 /**
