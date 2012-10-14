@@ -122,7 +122,7 @@ public abstract class Task implements Runnable {
      * Block this Task before the callback.
      */
     public void pause() {
-	mPause.drainPermits();
+	mPause.tryAcquire();
     }
 
     /**
@@ -154,24 +154,29 @@ public abstract class Task implements Runnable {
 		    mCompleteCallback = null;
 	    }
 	} catch (final Exception e) {
-	    Log.d(Task.class.getName(),
-		    "Should Remove From Queue on Exception: "
-			    + mShouldRemoveFromQueueOnException);
-	    if (mShouldRemoveFromQueueOnException)
-		mTaskExecutor.removeTaskFromQueue(this);
-	    if (mUiHandler != null) {
-		mUiHandler.post(new Runnable() {
-		    @Override
-		    public void run() {
-			if (mCompleteCallback != null)
-			    mCompleteCallback.onTaskComplete(mBundle, e);
+	    try {
+		mPause.acquire();
+		    Log.d(Task.class.getName(),
+			    "Should Remove From Queue on Exception: "
+				    + mShouldRemoveFromQueueOnException);
+		    if (mShouldRemoveFromQueueOnException)
+			mTaskExecutor.removeTaskFromQueue(this);
+		    if (mUiHandler != null) {
+			mUiHandler.post(new Runnable() {
+			    @Override
+			    public void run() {
+				if (mCompleteCallback != null)
+				    mCompleteCallback.onTaskComplete(mBundle, e);
+				if (mShouldRemoveFromQueueOnException)
+				    mCompleteCallback = null;
+			    }
+			});
+		    } else {
 			if (mShouldRemoveFromQueueOnException)
 			    mCompleteCallback = null;
 		    }
-		});
-	    } else {
-		if (mShouldRemoveFromQueueOnException)
-		    mCompleteCallback = null;
+	    } catch (InterruptedException e1) {
+		e1.printStackTrace();
 	    }
 	}
     }

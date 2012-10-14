@@ -63,7 +63,7 @@ public class TaskExecutor {
 	    TaskCompletedCallback taskCompletedCallback) {
 	task.setCompleteCallback(taskCompletedCallback);
 	task.setUiHandler(mHandler);
-	task.setTaskExecutor(this);//Likely not needed, but what the heck
+	task.setTaskExecutor(this);
 	mQueue.add(task);
 	queueModified();
     }
@@ -130,7 +130,7 @@ public class TaskExecutor {
 	QueueInMemoryHelper.setCallbackForAllQueuedTasks(mQueue,
 		taskCompleteCallback);
 	QueueInMemoryHelper.setUIHandlerForAllQueuedTask(mQueue, mHandler);
-	QueueInMemoryHelper.setTaskExecutorForAllQueuedTasks(mQueue, this);
+	QueueInMemoryHelper.setTaskExecutorForAllQueuedTasks(mQueue, this);//Likely not needed, but what the heck
 	unrestrainAllQueuedTasks();
     }
 
