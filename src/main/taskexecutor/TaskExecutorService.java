@@ -11,7 +11,7 @@ import main.taskexecutor.callbacks.ServiceExecutorCallback;
 import main.taskexecutor.callbacks.ExecutorReferenceCallback;
 import main.taskexecutor.classes.Log;
 import main.taskexecutor.helpers.QueueOnDiskHelper;
-import main.taskexecutor.runnables.QueueToDiskTask;
+import main.taskexecutor.helpers.QueueToDiskTask;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;

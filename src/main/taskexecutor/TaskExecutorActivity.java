@@ -42,7 +42,7 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
     public abstract boolean autoExecuteRestoredTasks();
 
     @Override
-    public void onPause() {
+    public void onPause(){
 	super.onPause();
 	// Theoretically the activity can be finishing before the request for
 	// the executor reference is received.
@@ -51,20 +51,20 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
     }
 
     @Override
-    public void onResume() {
+    public void onResume(){
 	super.onResume();
 	TaskExecutorService.requestExecutorReference(specifyServiceMode(), this, this, this);
     }
 
     @Override
-    public void getTaskExecutorReference(TaskExecutor taskExecutor) {
+    public void getTaskExecutorReference(TaskExecutor taskExecutor){
 	mTaskExecutor = taskExecutor;
 	if (allowTaskFiness())
 	    mTaskExecutor.finessTasks(this);
     }
 
     @Override
-    public void tasksHaveBeenRestored() {
+    public void tasksHaveBeenRestored(){
 	mTaskExecutor.finessTasks(this);
 	if (autoExecuteRestoredTasks())
 	    mTaskExecutor.executeQueue();

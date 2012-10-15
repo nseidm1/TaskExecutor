@@ -4,15 +4,13 @@ import main.taskexecutor.R;
 import main.taskexecutor.TaskExecutorActivity;
 import main.taskexecutor.TaskExecutorService;
 import test.taskexecutor.tasks.GetTask;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -22,13 +20,11 @@ import android.widget.Toast;
 
 public class Example extends TaskExecutorActivity implements OnClickListener{
     
-    GetTask postTask;
-    private String mUrl = "http://m.google.com";
-    private boolean mRemoveOnSuccess = true;
+            GetTask postTask           = null;
+    private String  mUrl               = "http://m.google.com";
+    private boolean mRemoveOnSuccess   = true;
     private boolean mRemoveOnException = true;
-    private int mDefaultDelay = 0;
-    private EditText url;
-    private EditText delay;
+    private int     mDefaultDelay      = 0;
     @Override
     public void onCreate(Bundle bundle){
 	super.onCreate(bundle);
@@ -42,7 +38,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	((Button) findViewById(R.id.kill_example)).setOnClickListener(this);
 	((Button) findViewById(R.id.empty_queue)).setOnClickListener(this);
 	
-	url = ((EditText)findViewById(R.id.url));
+	EditText url = ((EditText)findViewById(R.id.url));
 	url.addTextChangedListener(new TextWatcher()
 	{
 	    @Override
@@ -58,7 +54,8 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 		mUrl = s.toString();
 	    }
 	});
-	delay = ((EditText)findViewById(R.id.delay));
+	EditText delay = ((EditText)findViewById(R.id.delay));
+	delay.setInputType(InputType.TYPE_CLASS_PHONE);
 	delay.addTextChangedListener(new TextWatcher(){
 	    @Override
 	    public void beforeTextChanged(CharSequence s, int start, int count, int after){}
@@ -89,14 +86,6 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 		mRemoveOnException = isChecked;
 	    }
 	});
-    }
-    @Override
-    public void onResume(){
-	super.onResume();
-	url.clearFocus();
-	closeKeyboard(url);
-	delay.clearFocus();
-	closeKeyboard(delay);
     }
     @Override
     public void onClick(View v){
@@ -143,13 +132,4 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
     public boolean autoExecuteRestoredTasks(){
 	return true;
     };
-    private void closeKeyboard(EditText editText){
-	try{
-	    IBinder token = editText.getWindowToken();
-	    if (token != null){
-		(((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE))).hideSoftInputFromWindow(token, 0);
-	    }
-	}
-	catch(Exception e){}
-    }
 }
