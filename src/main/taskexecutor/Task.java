@@ -128,19 +128,17 @@ public abstract class Task implements Runnable{
 	mTaskExecutor.mLock.block();
 	if (shouldRemove)
 	    mTaskExecutor.removeTaskFromQueue(this);
-	if (mUiHandler != null){
-	    mUiHandler.post(new Runnable(){
-		@Override
-		public void run(){
-		    if (mCompleteCallback != null)
+	if (mUiHandler != null && mCompleteCallback != null){
+	    synchronized(mCompleteCallback){
+		mUiHandler.post(new Runnable(){
+		    @Override
+		    public void run(){
 			mCompleteCallback.onTaskComplete(mBundle, e);
-		    if (shouldRemove)
-			mCompleteCallback = null;
-		}
-	    });
-	}else{
-	    if (mShouldRemoveFromQueueOnSuccess)
-		mCompleteCallback = null;
+			if (shouldRemove)
+			    mCompleteCallback = null;
+		    }
+		});
+	    }
 	}
     }
 
@@ -155,13 +153,11 @@ public abstract class Task implements Runnable{
 	}
 
 	public PersistenceObject(Parcel parcel){
-	    className = parcel.readString();
-	    TAG = parcel.readString();
-	    shouldRemoveFromQueueOnSuccess = parcel.readInt() == 1 ? true
-		    : false;
-	    shouldRemoveFromQueueOnException = parcel.readInt() == 1 ? true
-		    : false;
-	    bundle = parcel.readBundle();
+	    className                        = parcel.readString();
+	    TAG                              = parcel.readString();
+	    shouldRemoveFromQueueOnSuccess   = parcel.readInt() == 1 ? true : false;
+	    shouldRemoveFromQueueOnException = parcel.readInt() == 1 ? true : false;
+	    bundle                           = parcel.readBundle();
 	}
 
 	public PersistenceObject(String  className, 
@@ -169,11 +165,11 @@ public abstract class Task implements Runnable{
 				 String  TAG,
 				 boolean shouldRemoveFromQueueOnSuccess,
 				 boolean shouldRemoveFromQueueOnException){
-	    this.className = className;
-	    this.TAG = TAG;
-	    this.shouldRemoveFromQueueOnSuccess = shouldRemoveFromQueueOnSuccess;
+	    this.className                        = className;
+	    this.TAG                              = TAG;
+	    this.shouldRemoveFromQueueOnSuccess   = shouldRemoveFromQueueOnSuccess;
 	    this.shouldRemoveFromQueueOnException = shouldRemoveFromQueueOnException;
-	    this.bundle = bundle;
+	    this.bundle                           = bundle;
 	}
 
 	public String getClassName(){
@@ -203,11 +199,11 @@ public abstract class Task implements Runnable{
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags){
-	    dest.writeString(className);
-	    dest.writeString(TAG);
-	    dest.writeInt(shouldRemoveFromQueueOnSuccess ? 1 : 0);
-	    dest.writeInt(shouldRemoveFromQueueOnException ? 1 : 0);
-	    dest.writeBundle(bundle);
+	    dest.writeString(className                               );
+	    dest.writeString(TAG                                     );
+	    dest.writeInt   (shouldRemoveFromQueueOnSuccess ? 1 : 0  );
+	    dest.writeInt   (shouldRemoveFromQueueOnException ? 1 : 0);
+	    dest.writeBundle(bundle                                  );
 	}
 
 	public static Parcelable.Creator<PersistenceObject> CREATOR = new Parcelable.Creator<PersistenceObject>(){

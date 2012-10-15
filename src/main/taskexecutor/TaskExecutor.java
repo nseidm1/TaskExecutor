@@ -35,9 +35,9 @@ public class TaskExecutor{
      * implementation is configured as such.
      */
     public void poolThreads(boolean pool){
-	if (pool) {
+	if (pool){
 	    mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
-	} else {
+	} else{
 	    mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
 	}
     }
@@ -84,7 +84,7 @@ public class TaskExecutor{
     public void executeQueue(){
 	Log.d(TaskExecutor.class.getName(), "Execute " + mQueue.size()
 		+ " Tasks");
-	for (int i = 0; i < mQueue.size(); i++) {
+	for (int i = 0; i < mQueue.size(); i++){
 	    if (!mTaskThreadExecutor.getQueue().contains(mQueue.get(i)))
 		mTaskThreadExecutor.execute(mQueue.get(i));
 	}

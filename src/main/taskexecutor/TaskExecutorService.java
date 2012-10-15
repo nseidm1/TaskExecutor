@@ -27,9 +27,9 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
     private              QueueToDiskTask           mQueueToDisk              = new QueueToDiskTask(mTaskExecutor, this);
     private static       ServiceActivityCallback   mServiceActivityCallback  = null;
     private static       ExecutorReferenceCallback mSoftCallback             = null;
+    private              int                       CURRENT_SERVICE_MODE      = CALLBACK_DEPENDENT;
     public  static final int                       CALLBACK_INCONSIDERATE    = 0;
     public  static final int                       CALLBACK_DEPENDENT        = 1;
-    public               int                       CURRENT_SERVICE_MODE      = CALLBACK_DEPENDENT;
     public  static final String                    SERVICE_MODE_KEY          = "SERVICE_MODE_KEY";
 
     /**
@@ -50,7 +50,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	    					Context                   context, 
 	    					ExecutorReferenceCallback serviceReferenceCallback, 
 	    					ServiceActivityCallback   serviceActivityCallback) {
-	mSoftCallback = serviceReferenceCallback;
+	mSoftCallback            = serviceReferenceCallback;
 	mServiceActivityCallback = serviceActivityCallback;
 	context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY, MODE));
     }
@@ -63,7 +63,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	Log.d(TaskExecutorService.class.getName(), "Current Service Mode: " + CURRENT_SERVICE_MODE);
 	if (mSoftCallback != null)
 	    mSoftCallback.getTaskExecutorReference(mTaskExecutor);
-	if (mHaveTasksBeenRestored) {
+	if (mHaveTasksBeenRestored){
 	    mHaveTasksBeenRestored = false;
 	    switch (CURRENT_SERVICE_MODE){
 	    case CALLBACK_INCONSIDERATE:

@@ -9,9 +9,9 @@ public class QueueToDiskTask implements Runnable{
     private TaskExecutor        mTaskExecutor         = null;
     private TaskExecutorService mTaskExecutorService  = null;
 
-    public QueueToDiskTask(TaskExecutor taskExecutor,
-	    TaskExecutorService taskExecutorService){
-	mTaskExecutor = taskExecutor;
+    public QueueToDiskTask(TaskExecutor        taskExecutor,
+	    		   TaskExecutorService taskExecutorService){
+	mTaskExecutor        = taskExecutor;
 	mTaskExecutorService = taskExecutorService;
     }
 
