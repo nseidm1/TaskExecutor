@@ -4,6 +4,7 @@ import main.taskexecutor.R;
 import main.taskexecutor.TaskExecutorActivity;
 import main.taskexecutor.TaskExecutorService;
 import test.taskexecutor.tasks.GetTask;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Example extends TaskExecutorActivity implements OnClickListener{
@@ -119,8 +121,12 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	    mExecute.setEnabled(false);
 	}
 	if (exception != null){
-	    Toast.makeText(this, exception.toString(), Toast.LENGTH_SHORT).show();
+	    ((TextView)findViewById(R.id.hard_callback_beacon)).setBackgroundColor(Color.RED);
+	    ((TextView)findViewById(R.id.hard_callback_beacon)).setTextColor(Color.BLACK);
+
 	} else if (bundle != null){
+	    ((TextView)findViewById(R.id.hard_callback_beacon)).setBackgroundColor(Color.GREEN);
+	    ((TextView)findViewById(R.id.hard_callback_beacon)).setTextColor(Color.BLACK);
 	    Toast.makeText(this, bundle.getString("ResponseCode"), Toast.LENGTH_SHORT).show();
 	}
     }

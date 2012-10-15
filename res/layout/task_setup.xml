@@ -11,8 +11,10 @@
 	    </LinearLayout>
 	</LinearLayout>
 	<Button android:id="@+id/add_task_to_queue" android:text="Add Task to Queue" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+	<TextView android:id="@+id/hard_callback_beacon" android:textColor="#ffffff" android:gravity="center" android:text="Hard Callback Feedback Area" android:layout_marginTop="13dip" android:layout_marginBottom="13dip" android:layout_width="match_parent" android:layout_height="wrap_content"/>
 	
-	<LinearLayout android:layout_marginTop="25dip" android:layout_width="match_parent" android:layout_height="wrap_content">
+	<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
 		<Button android:enabled="false" android:id="@+id/execute" android:text="Execute Queued Tasks" android:layout_width="0dip" android:layout_weight="1" android:layout_height="wrap_content"/>
 		<Button android:id="@+id/empty_queue" android:text="Clear Queued Tasks" android:layout_width="0dip" android:layout_weight="1" android:layout_height="wrap_content"/>
 	</LinearLayout>
