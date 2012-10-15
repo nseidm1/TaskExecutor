@@ -3,6 +3,6 @@ package main.taskexecutor.callbacks;
 /**
  * @author nseidm1
  */
-public interface ServiceHelperCallback {
+public interface ServiceExecutorCallback {
     public void queueModified();
 }

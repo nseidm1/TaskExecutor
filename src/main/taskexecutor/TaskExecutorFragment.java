@@ -1,13 +1,13 @@
 package main.taskexecutor;
 
-import main.taskexecutor.callbacks.ServiceCallbackDependentHelperCallback;
+import main.taskexecutor.callbacks.ExecutorReferenceCallback;
+import main.taskexecutor.callbacks.ServiceActivityCallback;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
-import main.taskexecutor.callbacks.TaskExecutorReferenceCallback;
 import android.support.v4.app.Fragment;
 
-public abstract class TaskExecutorFragment extends Fragment implements
-	ServiceCallbackDependentHelperCallback, TaskCompletedCallback,
-	TaskExecutorReferenceCallback {
+public abstract class TaskExecutorFragment extends Fragment implements TaskCompletedCallback, 
+								       ServiceActivityCallback,
+								       ExecutorReferenceCallback{
 
     protected TaskExecutor mTaskExecutor;
 
@@ -40,7 +40,7 @@ public abstract class TaskExecutorFragment extends Fragment implements
     public abstract boolean autoExecuteAfterTasksRestored();
 
     @Override
-    public void onPause() {
+    public void onPause(){
 	super.onPause();
 	// Theoretically the activity can be finishing before the request for
 	// the executor reference is received.
@@ -49,22 +49,21 @@ public abstract class TaskExecutorFragment extends Fragment implements
     }
 
     @Override
-    public void onResume() {
+    public void onResume(){
 	super.onResume();
 	TaskExecutorService.requestExecutorReference(specifyServiceMode(), this.getActivity(), this, this);
     }
 
     @Override
-    public void getTaskExecutorReference(TaskExecutor taskExecutor) {
+    public void getTaskExecutorReference(TaskExecutor taskExecutor){
 	mTaskExecutor = taskExecutor;
 	if (allowTaskFiness())
 	    mTaskExecutor.finessTasks(this);
     }
 
     @Override
-    public void tasksHaveBeenRestored() {
-	if (allowTaskFiness())
-	    mTaskExecutor.finessTasks(this);
+    public void tasksHaveBeenRestored(){
+	mTaskExecutor.finessTasks(this);
 	if (autoExecuteAfterTasksRestored())
 	    mTaskExecutor.executeQueue();
     }

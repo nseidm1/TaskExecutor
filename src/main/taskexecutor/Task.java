@@ -3,7 +3,6 @@ package main.taskexecutor;
 import java.util.Random;
 
 import main.taskexecutor.callbacks.TaskCompletedCallback;
-import main.taskexecutor.classes.Log;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcel;
@@ -12,24 +11,24 @@ import android.os.Parcelable;
 /**
  * @author nseidm1
  */
-public abstract class Task implements Runnable {
-    private TaskExecutor mTaskExecutor;
-    private TaskCompletedCallback mCompleteCallback;
-    private Handler mUiHandler;
-    private String TAG = "";
-    private boolean mShouldRemoveFromQueueOnSuccess = true;
-    private boolean mShouldRemoveFromQueueOnException = true;
-    private Bundle mBundle = new Bundle();
-    private Random mRandom = new Random();
+public abstract class Task implements Runnable{
+    private TaskExecutor          mTaskExecutor                     = null;
+    private TaskCompletedCallback mCompleteCallback                 = null;
+    private Handler               mUiHandler                        = null; 
+    private String                TAG                               = "";
+    private boolean               mShouldRemoveFromQueueOnSuccess   = true;
+    private boolean               mShouldRemoveFromQueueOnException = true;
+    private Bundle                mBundle                           = new Bundle();
+    private Random                mRandom                           = new Random();
 
     /**
-     * Define the task you want to perform on the supplied bundle.
+     * Define the task you want to perform.
      * 
      * @throws Exception
      */
     public abstract void task() throws Exception;
 
-    public Task() {
+    public Task(){
 	TAG = Long.toString(mRandom.nextLong());
     }
 
@@ -38,11 +37,11 @@ public abstract class Task implements Runnable {
      * Default is true, but the Task can remain in the queue on success if
      * desired. This means it can be re-executed again.
      */
-    public void setShouldRemoveFromQueueOnSuccess(boolean shouldRemoveFromQueueOnSuccess) {
+    public void setShouldRemoveFromQueueOnSuccess(boolean shouldRemoveFromQueueOnSuccess){
 	mShouldRemoveFromQueueOnSuccess = shouldRemoveFromQueueOnSuccess;
     }
 
-    public boolean getShouldRemoveFromQueueOnSuccess() {
+    public boolean getShouldRemoveFromQueueOnSuccess(){
 	return mShouldRemoveFromQueueOnSuccess;
     }
 
@@ -51,11 +50,11 @@ public abstract class Task implements Runnable {
      * Default is true, but the Task can remain in the queue on exception if
      * desired. This means it can be re-executed again.
      */
-    public void setShouldRemoveFromQueueOnException(boolean shouldRemoveFromQueueOnException) {
+    public void setShouldRemoveFromQueueOnException(boolean shouldRemoveFromQueueOnException){
 	mShouldRemoveFromQueueOnException = shouldRemoveFromQueueOnException;
     }
 
-    public boolean getShouldRemoveFromQueueOnException() {
+    public boolean getShouldRemoveFromQueueOnException(){
 	return mShouldRemoveFromQueueOnException;
     }
 
@@ -63,21 +62,21 @@ public abstract class Task implements Runnable {
      * @param uiHandler
      * Set the ui handler for this Task.
      */
-    public void setUiHandler(Handler uiHandler) {
+    public void setUiHandler(Handler uiHandler){
 	mUiHandler = uiHandler;
     }
 
     /**
      * @param bundle
      */
-    public void setBundle(Bundle bundle) {
+    public void setBundle(Bundle bundle){
 	mBundle = bundle;
     }
 
     /**
      * @return The bundle.
      */
-    public Bundle getBundle() {
+    public Bundle getBundle(){
 	return mBundle;
     }
 
@@ -86,14 +85,14 @@ public abstract class Task implements Runnable {
      * The TAG needs to be unique as it's used to persist the Task to disk. If
      * your tags duplicate they will overwrite each other on disk.
      */
-    public void setTag(String tag) {
+    public void setTag(String tag){
 	TAG = tag;
     }
 
     /**
      * @return the TAG of this Task.
      */
-    public String getTag() {
+    public String getTag(){
 	return TAG;
     }
 
@@ -102,7 +101,7 @@ public abstract class Task implements Runnable {
      * Aside from the constructor you can specify the callback using this
      * method.
      */
-    public void setCompleteCallback(TaskCompletedCallback completeCallback) {
+    public void setCompleteCallback(TaskCompletedCallback completeCallback){
 	mCompleteCallback = completeCallback;
     }
 
@@ -111,88 +110,65 @@ public abstract class Task implements Runnable {
      * If you want this Task to automatically retrieve itself from the
      * TaskExecutor's queue, a reference is needed.
      */
-    public void setTaskExecutor(TaskExecutor taskExecutor) {
+    public void setTaskExecutor(TaskExecutor taskExecutor){
 	mTaskExecutor = taskExecutor;
     }
 
     @Override
-    public void run() {
-	try {
+    public void run(){
+	try{
 	    task();
-	    checkPause();
+	    post(null);
+	}catch (final Exception e){
+	    post(e);
+	}
+    }
+
+    private void post(final Exception e){
+	mTaskExecutor.mLock.block();
+	if (mShouldRemoveFromQueueOnSuccess)
+	    mTaskExecutor.removeTaskFromQueue(this);
+	if (mUiHandler != null){
+	    mUiHandler.post(new Runnable(){
+		@Override
+		public void run(){
+		    if (mCompleteCallback != null)
+			mCompleteCallback.onTaskComplete(mBundle, e);
+		    if (mShouldRemoveFromQueueOnSuccess)
+			mCompleteCallback = null;
+		}
+	    });
+	}else{
 	    if (mShouldRemoveFromQueueOnSuccess)
-		mTaskExecutor.removeTaskFromQueue(this);
-	    if (mUiHandler != null) {
-		mUiHandler.post(new Runnable() {
-		    @Override
-		    public void run() {
-			if (mCompleteCallback != null)
-			    mCompleteCallback.onTaskComplete(mBundle, null);
-			if (mShouldRemoveFromQueueOnSuccess)
-			    mCompleteCallback = null;
-		    }
-		});
-	    } else {
-		if (mShouldRemoveFromQueueOnSuccess)
-		    mCompleteCallback = null;
-	    }
-	} catch (final Exception e) {
-	    try {
-		checkPause();
-	    } catch (InterruptedException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	    }
-	    Log.d(Task.class.getName(), "Should Remove From Queue on Exception: "
-		    + mShouldRemoveFromQueueOnException);
-	    if (mShouldRemoveFromQueueOnException)
-		mTaskExecutor.removeTaskFromQueue(this);
-	    if (mUiHandler != null) {
-		mUiHandler.post(new Runnable() {
-		    @Override
-		    public void run() {
-			if (mCompleteCallback != null)
-			    mCompleteCallback.onTaskComplete(mBundle, e);
-			if (mShouldRemoveFromQueueOnException)
-			    mCompleteCallback = null;
-		    }
-		});
-	    } else {
-		if (mShouldRemoveFromQueueOnException)
-		    mCompleteCallback = null;
-	    }
+		mCompleteCallback = null;
 	}
     }
 
-    private void checkPause() throws InterruptedException {
-	synchronized(mTaskExecutor.mLock){
-	    mTaskExecutor.mLock.wait();
-	}
-    }
-
-    public static class PersistenceObject implements Parcelable {
-	private String className;
-	private String TAG;
-	private boolean shouldRemoveFromQueueOnSuccess;
-	private boolean shouldRemoveFromQueueOnException;
-	private Bundle bundle = new Bundle();
+    public static class PersistenceObject implements Parcelable{
+	private String  className                         = "";
+	private String  TAG                               = "";
+	private boolean shouldRemoveFromQueueOnSuccess    = true;
+	private boolean shouldRemoveFromQueueOnException  = true;
+	private Bundle  bundle                            = new Bundle();
 
 	public PersistenceObject() {
 	}
 
-	public PersistenceObject(Parcel parcel) {
+	public PersistenceObject(Parcel parcel){
 	    className = parcel.readString();
 	    TAG = parcel.readString();
-	    shouldRemoveFromQueueOnSuccess = parcel.readInt() == 1 ? true : false;
-	    shouldRemoveFromQueueOnException = parcel.readInt() == 1 ? true : false;
+	    shouldRemoveFromQueueOnSuccess = parcel.readInt() == 1 ? true
+		    : false;
+	    shouldRemoveFromQueueOnException = parcel.readInt() == 1 ? true
+		    : false;
 	    bundle = parcel.readBundle();
 	}
 
-	public PersistenceObject(String className, 
-				 Bundle bundle, 
-				 String TAG,
+	public PersistenceObject(String  className, 
+				 Bundle  bundle, 
+				 String  TAG,
 				 boolean shouldRemoveFromQueueOnSuccess,
-				 boolean shouldRemoveFromQueueOnException) {
+				 boolean shouldRemoveFromQueueOnException){
 	    this.className = className;
 	    this.TAG = TAG;
 	    this.shouldRemoveFromQueueOnSuccess = shouldRemoveFromQueueOnSuccess;
@@ -200,33 +176,33 @@ public abstract class Task implements Runnable {
 	    this.bundle = bundle;
 	}
 
-	public String getClassName() {
+	public String getClassName(){
 	    return className;
 	}
 
-	public Bundle getBundle() {
+	public Bundle getBundle(){
 	    return bundle;
 	}
 
-	public String getTag() {
+	public String getTag(){
 	    return TAG;
 	}
 
-	public boolean getShouldRemoveFromQueueOnSuccess() {
+	public boolean getShouldRemoveFromQueueOnSuccess(){
 	    return shouldRemoveFromQueueOnSuccess;
 	}
 
-	public boolean getShouldRemoveFromQueueOnException() {
+	public boolean getShouldRemoveFromQueueOnException(){
 	    return shouldRemoveFromQueueOnException;
 	}
 
 	@Override
-	public int describeContents() {
+	public int describeContents(){
 	    return 0;
 	}
 
 	@Override
-	public void writeToParcel(Parcel dest, int flags) {
+	public void writeToParcel(Parcel dest, int flags){
 	    dest.writeString(className);
 	    dest.writeString(TAG);
 	    dest.writeInt(shouldRemoveFromQueueOnSuccess ? 1 : 0);
@@ -234,12 +210,12 @@ public abstract class Task implements Runnable {
 	    dest.writeBundle(bundle);
 	}
 
-	public static Parcelable.Creator<PersistenceObject> CREATOR = new Parcelable.Creator<PersistenceObject>() {
-	    public PersistenceObject createFromParcel(Parcel in) {
+	public static Parcelable.Creator<PersistenceObject> CREATOR = new Parcelable.Creator<PersistenceObject>(){
+	    public PersistenceObject createFromParcel(Parcel in){
 		return new PersistenceObject(in);
 	    }
 
-	    public PersistenceObject[] newArray(int size) {
+	    public PersistenceObject[] newArray(int size){
 		return new PersistenceObject[size];
 	    }
 	};

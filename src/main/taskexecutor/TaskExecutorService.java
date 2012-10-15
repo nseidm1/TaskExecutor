@@ -6,9 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import main.taskexecutor.callbacks.ServiceCallbackDependentHelperCallback;
-import main.taskexecutor.callbacks.ServiceHelperCallback;
-import main.taskexecutor.callbacks.TaskExecutorReferenceCallback;
+import main.taskexecutor.callbacks.ServiceActivityCallback;
+import main.taskexecutor.callbacks.ServiceExecutorCallback;
+import main.taskexecutor.callbacks.ExecutorReferenceCallback;
 import main.taskexecutor.classes.Log;
 import main.taskexecutor.helpers.QueueOnDiskHelper;
 import main.taskexecutor.runnables.QueueToDiskTask;
@@ -20,18 +20,17 @@ import android.os.IBinder;
 /**
  * @author nseidm1
  */
-public class TaskExecutorService extends Service implements
-	ServiceHelperCallback {
-    private boolean mHaveTasksBeenRestored = false;
-    private TaskExecutor mTaskExecutor = new TaskExecutor(this);
-    private Executor mQueuePersister = Executors.newSingleThreadExecutor();
-    private QueueToDiskTask mQueueToDisk = new QueueToDiskTask(mTaskExecutor, this);
-    private static TaskExecutorReferenceCallback mSoftCallback;
-    private static ServiceCallbackDependentHelperCallback mServiceCallbackDependentHelperCallback;
-    public static final int CALLBACK_INCONSIDERATE = 0;
-    public static final int CALLBACK_DEPENDENT = 1;
-    public int CURRENT_SERVICE_MODE = CALLBACK_DEPENDENT;
-    public static final String SERVICE_MODE_KEY = "SERVICE_MODE_KEY";
+public class TaskExecutorService extends Service implements ServiceExecutorCallback{
+    private              boolean                   mHaveTasksBeenRestored    = false;
+    private              TaskExecutor              mTaskExecutor             = new TaskExecutor(this);
+    private              Executor                  mQueuePersister           = Executors.newSingleThreadExecutor();
+    private              QueueToDiskTask           mQueueToDisk              = new QueueToDiskTask(mTaskExecutor, this);
+    private static       ServiceActivityCallback   mServiceActivityCallback  = null;
+    private static       ExecutorReferenceCallback mSoftCallback             = null;
+    public  static final int                       CALLBACK_INCONSIDERATE    = 0;
+    public  static final int                       CALLBACK_DEPENDENT        = 1;
+    public               int                       CURRENT_SERVICE_MODE      = CALLBACK_DEPENDENT;
+    public  static final String                    SERVICE_MODE_KEY          = "SERVICE_MODE_KEY";
 
     /**
      * @param MODE
@@ -41,45 +40,49 @@ public class TaskExecutorService extends Service implements
      * activity for a hard callback to be available. CALLBACK_INCONSIDERATE will
      * execute the queue without a hard callback being available.
      * @param context
-     * @param serviceReferenceCallback
+     * @param ExecutorReferenceCallback
      * The interface that returns a reference to the TaskExecutor.
      * @param tasksRestoredCallback
      * The interface informing an activity if Tasks have been restored by the
      * service after a restart.
      */
-    public static void requestExecutorReference(int MODE, Context context, TaskExecutorReferenceCallback serviceReferenceCallback, ServiceCallbackDependentHelperCallback serviceCallbackDependentHelperCallback) {
+    public static void requestExecutorReference(int                       MODE, 
+	    					Context                   context, 
+	    					ExecutorReferenceCallback serviceReferenceCallback, 
+	    					ServiceActivityCallback   serviceActivityCallback) {
 	mSoftCallback = serviceReferenceCallback;
-	mServiceCallbackDependentHelperCallback = serviceCallbackDependentHelperCallback;
+	mServiceActivityCallback = serviceActivityCallback;
 	context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY, MODE));
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, 
+	    		      int    flags, 
+	    		      int    startId){
 	CURRENT_SERVICE_MODE = intent.getIntExtra(SERVICE_MODE_KEY, CALLBACK_DEPENDENT);
-	Log.d(TaskExecutorService.class.getName(), "Current Service Mode: "
-		+ CURRENT_SERVICE_MODE);
+	Log.d(TaskExecutorService.class.getName(), "Current Service Mode: " + CURRENT_SERVICE_MODE);
 	if (mSoftCallback != null)
 	    mSoftCallback.getTaskExecutorReference(mTaskExecutor);
-	mSoftCallback = null;
 	if (mHaveTasksBeenRestored) {
 	    mHaveTasksBeenRestored = false;
-	    switch (CURRENT_SERVICE_MODE) {
+	    switch (CURRENT_SERVICE_MODE){
 	    case CALLBACK_INCONSIDERATE:
 		Log.d(TaskExecutorService.class.getName(), "Tasks Executing, Callback Inconsiderate Mode");
 		mTaskExecutor.executeQueue();
 		break;
 	    case CALLBACK_DEPENDENT:
-		if (mServiceCallbackDependentHelperCallback != null)
-		    mServiceCallbackDependentHelperCallback.tasksHaveBeenRestored();
-		mServiceCallbackDependentHelperCallback = null;
+		if (mServiceActivityCallback != null)
+		    mServiceActivityCallback.tasksHaveBeenRestored();
 		break;
 	    }
 	}
+	mSoftCallback = null;
+	mServiceActivityCallback = null;
 	return Service.START_REDELIVER_INTENT;
     }
 
     @Override
-    public void onCreate() {
+    public void onCreate(){
 	super.onCreate();
 	try {
 	    if (QueueOnDiskHelper.retrieveTasksFromDisk(this, mTaskExecutor))
@@ -112,13 +115,13 @@ public class TaskExecutorService extends Service implements
     }
 
     @Override
-    public void queueModified() {
+    public void queueModified(){
 	mQueuePersister.execute(mQueueToDisk);
     }
 
     // Reserved for IPC, Binder Shminder
     @Override
-    public IBinder onBind(Intent arg0) {
+    public IBinder onBind(Intent arg0){
 	return null;
     }
 }

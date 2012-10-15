@@ -4,25 +4,26 @@ import java.util.Vector;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import main.taskexecutor.callbacks.ServiceHelperCallback;
+import main.taskexecutor.callbacks.ServiceExecutorCallback;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
 import main.taskexecutor.classes.Log;
 import main.taskexecutor.helpers.QueueInMemoryHelper;
+import android.os.ConditionVariable;
 import android.os.Handler;
 import android.os.Looper;
 
 /**
  * @author nseidm1
  */
-public class TaskExecutor {
-    private Handler mHandler = new Handler(Looper.getMainLooper());
-    private Vector<Task> mQueue = new Vector<Task>();
-    private ServiceHelperCallback mServiceHelperCallback;
-    private boolean mPause = false;
-    Object mLock = new Object();
-    private ThreadPoolExecutor mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+public class TaskExecutor{
+    private Handler                 mHandler                = new Handler(Looper.getMainLooper());
+    private Vector<Task>            mQueue                  = new Vector<Task>();
+    private ServiceExecutorCallback mServiceHelperCallback  = null;
+    private boolean                 mPause                  = false;
+            ConditionVariable       mLock                   = new ConditionVariable(true);
+    private ThreadPoolExecutor      mTaskThreadExecutor     = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
 
-    public TaskExecutor(ServiceHelperCallback serviceHelperCallback) {
+    public TaskExecutor(ServiceExecutorCallback serviceHelperCallback){
 	mServiceHelperCallback = serviceHelperCallback;
     }
 
@@ -33,7 +34,7 @@ public class TaskExecutor {
      * finessing your Tasks to accommodate configurationChanges if your
      * implementation is configured as such.
      */
-    public void poolThreads(boolean pool) {
+    public void poolThreads(boolean pool){
 	if (pool) {
 	    mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 	} else {
@@ -44,7 +45,7 @@ public class TaskExecutor {
     /**
      * @return Return if the queue's execution is currently paused.
      */
-    public boolean isPaused() {
+    public boolean isPaused(){
 	return mPause;
     }
 
@@ -56,7 +57,7 @@ public class TaskExecutor {
      * you may supply null, but if you have allowFiness() enabled a callback
      * will assigned at that time.
      */
-    public void addTaskToQueue(Task task, TaskCompletedCallback taskCompletedCallback) {
+    public void addTaskToQueue(Task task, TaskCompletedCallback taskCompletedCallback){
 	task.setCompleteCallback(taskCompletedCallback);
 	task.setUiHandler(mHandler);
 	task.setTaskExecutor(this);
@@ -70,7 +71,7 @@ public class TaskExecutor {
      * findTaskForTag to locate a particular Task. This will not stop a Task
      * from executing if you've already called executeQueue().
      */
-    public void removeTaskFromQueue(Task task) {
+    public void removeTaskFromQueue(Task task){
 	mQueue.remove(task);
 	queueModified();
     }
@@ -80,7 +81,7 @@ public class TaskExecutor {
      * 
      * @throws NoQueuedTasksException
      */
-    public void executeQueue() {
+    public void executeQueue(){
 	Log.d(TaskExecutor.class.getName(), "Execute " + mQueue.size()
 		+ " Tasks");
 	for (int i = 0; i < mQueue.size(); i++) {
@@ -93,40 +94,27 @@ public class TaskExecutor {
      * Block the current running Task prior to the hard callback until
      * finessTasks() is called.
      */
-    public void restrainTasks() {
+    public void restrainTasks(){
 	// Clear the Task callback to prevent leaks.
 	QueueInMemoryHelper.setCallbackForAllQueuedTasks(mQueue, null);
-	restrainAllQueuedTasks();
-    }
-
-    private void restrainAllQueuedTasks() {
-	synchronized(mLock){
-	    mPause = true;
-	    mLock.notify();
-	}
+	mPause = true;
+	mLock.close();
     }
 
     /**
-     * Resume Task execution. Provide a fresh taskCompleteCallback and a fresh
-     * UI handler if desired.
+     * Resume Task execution from a restrained state.
      * 
      * @param callCompleteCallback
      * Provide the taskCompleteCallback so your Tasks can report back to the
      * activity.
      */
-    public void finessTasks(TaskCompletedCallback taskCompleteCallback) {
+    public void finessTasks(TaskCompletedCallback taskCompleteCallback){
 	// Reset critial parameters of the Tasks.
 	QueueInMemoryHelper.setTaskExecutorForAllQueuedTasks(mQueue, this);
 	QueueInMemoryHelper.setUIHandlerForAllQueuedTask(mQueue, mHandler);
 	QueueInMemoryHelper.setCallbackForAllQueuedTasks(mQueue, taskCompleteCallback);
-	unrestrainAllQueuedTasks();
-    }
-
-    private void unrestrainAllQueuedTasks() {
-	synchronized(mLock){
-	    mPause = false;
-	    mLock.notify();
-	}
+	mPause = false;
+	mLock.open();
     }
 
     /**
@@ -136,7 +124,7 @@ public class TaskExecutor {
      * found. This is useful is you want to specifically set a callback for a
      * particular Task that is queued.
      */
-    public Task findTaskForTag(String TAG) {
+    public Task findTaskForTag(String TAG){
 	for (Task task : mQueue) {
 	    if (task.getTag().equals(TAG))
 		return task;
@@ -147,14 +135,14 @@ public class TaskExecutor {
     /**
      * @return return a count of items currently in the queue.
      */
-    public int getQueueCount() {
+    public int getQueueCount(){
 	return mQueue.size();
     }
 
     /**
      * @return A reference to the existing Task queue.
      */
-    public Vector<Task> getQueue() {
+    public Vector<Task> getQueue(){
 	return mQueue;
     }
 
@@ -163,7 +151,7 @@ public class TaskExecutor {
      * Set the Task queue. Typically used when restoring the TaskExecutor for
      * the persisted instance on disk.
      */
-    public void setQueue(Vector<Task> queue) {
+    public void setQueue(Vector<Task> queue){
 	mQueue = queue;
 	queueModified();
     }
@@ -172,12 +160,12 @@ public class TaskExecutor {
      * Clear all items from the queue. If tasks are currently being executed
      * this will not prevent tasks from being executed.
      */
-    public void clearQueue() {
+    public void clearQueue(){
 	mQueue.clear();
 	queueModified();
     }
 
-    private void queueModified() {
+    private void queueModified(){
 	if (mServiceHelperCallback != null)
 	    mServiceHelperCallback.queueModified();
     }

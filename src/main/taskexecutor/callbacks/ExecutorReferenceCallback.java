@@ -5,6 +5,6 @@ import main.taskexecutor.TaskExecutor;
 /**
  * @author nseidm1
  */
-public interface TaskExecutorReferenceCallback {
+public interface ExecutorReferenceCallback {
     public void getTaskExecutorReference(TaskExecutor taskExecutor);
 }

@@ -72,7 +72,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener {
     }
 
     @Override
-    public void onTaskComplete(Bundle bundle, Exception exception) {
+    public void onTaskComplete(Bundle bundle, Exception exception){
 	if (exception != null) {
 	    Toast.makeText(this, exception.toString(), Toast.LENGTH_SHORT).show();
 	} else if (bundle != null) {
@@ -91,7 +91,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener {
     }
 
     @Override
-    public boolean autoExecuteAfterTasksRestored() {
+    public boolean autoExecuteRestoredTasks() {
 	return true;
     };
 }

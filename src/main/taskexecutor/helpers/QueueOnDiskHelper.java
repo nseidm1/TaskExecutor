@@ -35,11 +35,14 @@ public class QueueOnDiskHelper {
      * @throws NoSuchMethodException
      * @throws ClassNotFoundException
      */
-    public static boolean retrieveTasksFromDisk(Context context, TaskExecutor taskExecutor)
-	    throws FileNotFoundException, IOException,
-	    IllegalArgumentException, InstantiationException,
-	    IllegalAccessException, InvocationTargetException,
-	    NoSuchMethodException, ClassNotFoundException {
+    public static boolean retrieveTasksFromDisk(Context context, TaskExecutor taskExecutor) throws FileNotFoundException, 
+    												   IOException, 
+    												   IllegalArgumentException, 
+    												   InstantiationException, 
+    												   IllegalAccessException, 
+    												   InvocationTargetException, 
+    												   NoSuchMethodException, 
+    												   ClassNotFoundException{
 	Vector<Task> tasks = getTasks(context, taskExecutor);
 	if (tasks.size() > 0) {
 	    taskExecutor.setQueue(tasks);
@@ -54,8 +57,7 @@ public class QueueOnDiskHelper {
      * Provide a reference to the TaskExecutor.
      * @throws IOException
      */
-    public static void updateTasksOnDisk(Context context, TaskExecutor taskExecutor)
-	    throws IOException {
+    public static void updateTasksOnDisk(Context context, TaskExecutor taskExecutor) throws IOException {
 	Vector<Task> localQueueCopy = new Vector<Task>(taskExecutor.getQueue());
 	addFilesInQueue(localQueueCopy, context);
 	deleteFilesNotIntQueue(localQueueCopy, context);
@@ -64,11 +66,7 @@ public class QueueOnDiskHelper {
     // ////////////////////////////////////////////////////
     // //////////Private methods hereforth/////////////////
     // ////////////////////////////////////////////////////
-    private static Vector<Task> getTasks(Context context, TaskExecutor taskExecutor)
-	    throws FileNotFoundException, IOException,
-	    IllegalArgumentException, InstantiationException,
-	    IllegalAccessException, InvocationTargetException,
-	    NoSuchMethodException, ClassNotFoundException {
+    private static Vector<Task> getTasks(Context context, TaskExecutor taskExecutor) throws FileNotFoundException, IOException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
 	Vector<Task> taskArray = new Vector<Task>();
 	File[] tasks = getTaskExecutorFilesDir(context).listFiles();
 	Log.d(QueueOnDiskHelper.class.getName(), "Number of Tasks being restored: "
@@ -106,8 +104,7 @@ public class QueueOnDiskHelper {
 	return taskArray;
     }
 
-    private static void addFilesInQueue(Vector<Task> localQueueCopy, Context context)
-	    throws IOException {
+    private static void addFilesInQueue(Vector<Task> localQueueCopy, Context context) throws IOException {
 	for (Task task : localQueueCopy) {
 	    File taskFile = new File(getTaskExecutorFilesDir(context), task.getTag());
 	    if (!taskFile.exists()) {
