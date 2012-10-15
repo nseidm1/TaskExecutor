@@ -1,8 +1,8 @@
 package main.taskexecutor;
 
+import main.taskexecutor.callbacks.ExecutorReferenceCallback;
 import main.taskexecutor.callbacks.ServiceActivityCallback;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
-import main.taskexecutor.callbacks.ExecutorReferenceCallback;
 import android.support.v4.app.FragmentActivity;
 
 /**

@@ -25,6 +25,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
     private boolean mRemoveOnSuccess   = true;
     private boolean mRemoveOnException = true;
     private int     mDefaultDelay      = 0;
+    private Button  mExecute           = null;
     @Override
     public void onCreate(Bundle bundle){
 	super.onCreate(bundle);
@@ -34,7 +35,8 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	}
 
 	((Button) findViewById(R.id.add_task_to_queue)).setOnClickListener(this);
-	((Button) findViewById(R.id.execute)).setOnClickListener(this);
+	mExecute = ((Button) findViewById(R.id.execute));
+	mExecute.setOnClickListener(this);
 	((Button) findViewById(R.id.kill_example)).setOnClickListener(this);
 	((Button) findViewById(R.id.empty_queue)).setOnClickListener(this);
 	
@@ -98,6 +100,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	    bundle.putString(GetTask.URL, mUrl);
 	    postTask.setBundle(bundle);
 	    mTaskExecutor.addTaskToQueue(postTask, this);
+	    mExecute.setEnabled(true);
 	} else if (v.getId() == R.id.execute){
 	    mTaskExecutor.executeQueue();
 	} else if (v.getId() == R.id.kill_example){
@@ -105,12 +108,16 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	    System.exit(0);
 	} else if (v.getId() == R.id.empty_queue){
 	    mTaskExecutor.clearQueue();
+	    mExecute.setEnabled(false);
 	}
 
     }
 
     @Override
     public void onTaskComplete(Bundle bundle, Exception exception){
+	if (mTaskExecutor.getQueueCount() == 0){
+	    mExecute.setEnabled(false);
+	}
 	if (exception != null){
 	    Toast.makeText(this, exception.toString(), Toast.LENGTH_SHORT).show();
 	} else if (bundle != null){
@@ -131,5 +138,14 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
     @Override
     public boolean autoExecuteRestoredTasks(){
 	return true;
-    };
+    }
+    @Override
+    public void tasksHaveBeenRestored(){
+	super.tasksHaveBeenRestored();
+	if (mTaskExecutor.getQueueCount() == 0){
+	    mExecute.setEnabled(false);
+	} else{
+	    mExecute.setEnabled(true);
+	}
+    }
 }

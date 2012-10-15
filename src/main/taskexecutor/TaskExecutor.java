@@ -16,12 +16,12 @@ import android.os.Looper;
  * @author nseidm1
  */
 public class TaskExecutor{
-    private Handler                 mHandler                = new Handler(Looper.getMainLooper());
-    private Vector<Task>            mQueue                  = new Vector<Task>();
-    private ServiceExecutorCallback mServiceHelperCallback  = null;
-    private boolean                 mPause                  = false;
-            ConditionVariable       mLock                   = new ConditionVariable(true);
-    private ThreadPoolExecutor      mTaskThreadExecutor     = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+    private Handler                   mHandler                   = new Handler(Looper.getMainLooper());
+    private Vector<Task>              mQueue                     = new Vector<Task>();
+    private ServiceExecutorCallback   mServiceHelperCallback     = null;
+    private boolean                   mPause                     = false;
+            ConditionVariable         mLock                      = new ConditionVariable(true);
+    private ThreadPoolExecutor        mTaskThreadExecutor        = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
 
     public TaskExecutor(ServiceExecutorCallback serviceHelperCallback){
 	mServiceHelperCallback = serviceHelperCallback;
@@ -48,7 +48,7 @@ public class TaskExecutor{
     public boolean isPaused(){
 	return mPause;
     }
-
+    
     /**
      * @param task
      * Provide a Task to be added to the queue pending execution.
