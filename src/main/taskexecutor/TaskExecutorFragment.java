@@ -37,7 +37,7 @@ public abstract class TaskExecutorFragment extends Fragment implements TaskCompl
      * restored from a killed Service, should the queue auto execute on the next
      * Activity launch?
      */
-    public abstract boolean autoExecuteAfterTasksRestored();
+    public abstract boolean autoExecuteRestoredTasks();
 
     @Override
     public void onPause(){
@@ -63,8 +63,9 @@ public abstract class TaskExecutorFragment extends Fragment implements TaskCompl
 
     @Override
     public void tasksHaveBeenRestored(){
-	mTaskExecutor.finessTasks(this);
-	if (autoExecuteAfterTasksRestored())
+	if (allowTaskFiness())
+	    mTaskExecutor.finessTasks(this);
+	if (autoExecuteRestoredTasks())
 	    mTaskExecutor.executeQueue();
     }
 }
