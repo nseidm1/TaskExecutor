@@ -19,7 +19,7 @@ import android.os.Parcel;
 /**
  * @author nseidm1
  */
-public class QueueOnDiskHelper {
+public class QueueOnDiskHelper{
     /**
      * @param context
      * Provide a context.
@@ -44,7 +44,7 @@ public class QueueOnDiskHelper {
     												   NoSuchMethodException, 
     												   ClassNotFoundException{
 	Vector<Task> tasks = getTasks(context, taskExecutor);
-	if (tasks.size() > 0) {
+	if (tasks.size() > 0){
 	    taskExecutor.setQueue(tasks);
 	    return true;
 	}
@@ -57,7 +57,7 @@ public class QueueOnDiskHelper {
      * Provide a reference to the TaskExecutor.
      * @throws IOException
      */
-    public static void updateTasksOnDisk(Context context, TaskExecutor taskExecutor) throws IOException {
+    public static void updateTasksOnDisk(Context context, TaskExecutor taskExecutor) throws IOException{
 	Vector<Task> localQueueCopy = new Vector<Task>(taskExecutor.getQueue());
 	addFilesInQueue(localQueueCopy, context);
 	deleteFilesNotIntQueue(localQueueCopy, context);
@@ -66,12 +66,19 @@ public class QueueOnDiskHelper {
     // ////////////////////////////////////////////////////
     // //////////Private methods hereforth/////////////////
     // ////////////////////////////////////////////////////
-    private static Vector<Task> getTasks(Context context, TaskExecutor taskExecutor) throws FileNotFoundException, IOException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+    private static Vector<Task> getTasks(Context context, TaskExecutor taskExecutor) throws FileNotFoundException, 
+    											    IOException, 
+    											    IllegalArgumentException, 
+    											    InstantiationException, 
+    											    IllegalAccessException, 
+    											    InvocationTargetException, 
+    											    NoSuchMethodException, 
+    											    ClassNotFoundException{
 	Vector<Task> taskArray = new Vector<Task>();
 	File[] tasks = getTaskExecutorFilesDir(context).listFiles();
 	Log.d(QueueOnDiskHelper.class.getName(), "Number of Tasks being restored: "
 		+ tasks.length);
-	for (File file : tasks) {
+	for (File file : tasks){
 	    FileInputStream fIn = new FileInputStream(file);
 	    byte[] buffer = new byte[(int) file.length()];
 	    int length = fIn.read(buffer);
@@ -104,19 +111,23 @@ public class QueueOnDiskHelper {
 	return taskArray;
     }
 
-    private static void addFilesInQueue(Vector<Task> localQueueCopy, Context context) throws IOException {
-	for (Task task : localQueueCopy) {
+    private static void addFilesInQueue(Vector<Task> localQueueCopy, Context context) throws IOException{
+	for (Task task : localQueueCopy){
 	    File taskFile = new File(getTaskExecutorFilesDir(context), task.getTag());
-	    if (!taskFile.exists()) {
+	    if (!taskFile.exists()){
 		FileOutputStream fos = new FileOutputStream(taskFile);
-		PersistenceObject persistenceObject = new PersistenceObject(task.getClass().getName(), task.getBundle(), task.getTag(), task.getShouldRemoveFromQueueOnSuccess(), task.getShouldRemoveFromQueueOnException());
+		PersistenceObject persistenceObject = new PersistenceObject(task.getClass().getName(), 
+									    task.getBundle(), 
+									    task.getTag(), 
+									    task.getShouldRemoveFromQueueOnSuccess(), 
+									    task.getShouldRemoveFromQueueOnException());
 		Parcel parcel = Parcel.obtain();
 		persistenceObject.writeToParcel(parcel, 0);
-		try {
+		try{
 		    fos.write(parcel.marshall());
 		    Log.d(QueueOnDiskHelper.class.getName(), task.getTag()
 			    + " written to disk");
-		} finally {
+		}finally{
 		    fos.flush();
 		    fos.close();
 		    parcel.recycle();
@@ -125,15 +136,15 @@ public class QueueOnDiskHelper {
 	}
     }
 
-    private static void deleteFilesNotIntQueue(Vector<Task> queue, Context context) {
+    private static void deleteFilesNotIntQueue(Vector<Task> queue, Context context){
 	File[] tasks = getTaskExecutorFilesDir(context).listFiles();
-	for (int i = 0; i < tasks.length; i++) {
+	for (int i = 0; i < tasks.length; i++){
 	    boolean delete = true;
-	    for (Task task : queue) {
+	    for (Task task : queue){
 		if (task.getTag().equalsIgnoreCase(tasks[i].getName()))
 		    delete = false;
 	    }
-	    if (delete) {
+	    if (delete){
 		Log.d(QueueOnDiskHelper.class.getName(), tasks[i].getName()
 			+ " deleted from disk");
 		tasks[i].delete();
@@ -141,7 +152,7 @@ public class QueueOnDiskHelper {
 	}
     }
 
-    private static File getTaskExecutorFilesDir(Context context) {
+    private static File getTaskExecutorFilesDir(Context context){
 	File projDir = new File(context.getFilesDir().getAbsolutePath()
 		+ File.separator + "TaskExecutor");
 	if (!projDir.exists())
