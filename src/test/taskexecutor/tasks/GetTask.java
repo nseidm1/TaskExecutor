@@ -9,7 +9,7 @@ import org.apache.http.client.methods.HttpGet;
 import android.net.http.AndroidHttpClient;
 import android.os.SystemClock;
 
-public class PostTask extends Task {
+public class GetTask extends Task {
     public static final String DELAY = "DELAY";
     public static final String URL = "URL";
 

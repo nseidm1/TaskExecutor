@@ -3,95 +3,153 @@ package test.taskexecutor;
 import main.taskexecutor.R;
 import main.taskexecutor.TaskExecutorActivity;
 import main.taskexecutor.TaskExecutorService;
-import test.taskexecutor.tasks.PostTask;
+import test.taskexecutor.tasks.GetTask;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.Toast;
 
-public class Example extends TaskExecutorActivity implements OnClickListener {
+public class Example extends TaskExecutorActivity implements OnClickListener{
+    
+    GetTask postTask;
+    private String mUrl = "http://m.google.com";
+    private boolean mRemoveOnSuccess = true;
+    private boolean mRemoveOnException = true;
+    private int mDefaultDelay = 0;
+    private EditText url;
+    private EditText delay;
     @Override
-    public void onCreate(Bundle bundle) {
+    public void onCreate(Bundle bundle){
 	super.onCreate(bundle);
 	setContentView(R.layout.test);
-	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
 	    getActionBar().setTitle("TaskExector Demonstration");
 	}
-	((Button) findViewById(R.id.http_get_test_button)).setOnClickListener(this);
-	((Button) findViewById(R.id.http_exception_test_button)).setOnClickListener(this);
-	((Button) findViewById(R.id.http_delayed_get_test_button)).setOnClickListener(this);
-	((Button) findViewById(R.id.twenty_sec_http_delayed_get_test_button)).setOnClickListener(this);
+
+	((Button) findViewById(R.id.add_task_to_queue)).setOnClickListener(this);
 	((Button) findViewById(R.id.execute)).setOnClickListener(this);
 	((Button) findViewById(R.id.kill_example)).setOnClickListener(this);
 	((Button) findViewById(R.id.empty_queue)).setOnClickListener(this);
+	
+	url = ((EditText)findViewById(R.id.url));
+	url.addTextChangedListener(new TextWatcher()
+	{
+	    @Override
+	    public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+	    @Override
+	    public void onTextChanged(CharSequence s, int start, int before, int count){}
+	    @Override
+	    public void afterTextChanged(Editable s){
+		if (s.toString() == null || s.toString().equals("")){
+		    mUrl = "http://m.google.com";
+		    return;
+		}
+		mUrl = s.toString();
+	    }
+	});
+	delay = ((EditText)findViewById(R.id.delay));
+	delay.addTextChangedListener(new TextWatcher(){
+	    @Override
+	    public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+	    @Override
+	    public void onTextChanged(CharSequence s, int start, int before, int count){}
+	    @Override
+	    public void afterTextChanged(Editable s){
+		if (s.toString() == null || s.toString().equalsIgnoreCase("")){
+		    mDefaultDelay = 0;
+		    return;
+		}
+		mDefaultDelay = Integer.parseInt(s.toString());
+	    }
+	});
+	CheckBox shouldRemoveOnSuccess = ((CheckBox)findViewById(R.id.remove_on_success));
+	shouldRemoveOnSuccess.setChecked(mRemoveOnSuccess);
+	shouldRemoveOnSuccess.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+	    @Override
+	    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
+		mRemoveOnSuccess = isChecked;
+	    }
+	});
+	CheckBox shouldRemoveOnException = ((CheckBox)findViewById(R.id.remove_on_exception));
+	shouldRemoveOnException.setChecked(mRemoveOnException);
+	shouldRemoveOnException.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+	    @Override
+	    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
+		mRemoveOnException = isChecked;
+	    }
+	});
     }
-
     @Override
-    public void onClick(View v) {
-	if (v.getId() == R.id.http_get_test_button) {
-	    PostTask postTask = new PostTask();
+    public void onResume(){
+	super.onResume();
+	url.clearFocus();
+	closeKeyboard(url);
+	delay.clearFocus();
+	closeKeyboard(delay);
+    }
+    @Override
+    public void onClick(View v){
+	if (v.getId() == R.id.add_task_to_queue){
+	    postTask = new GetTask();
+	    postTask.setShouldRemoveFromQueueOnException(mRemoveOnException);
+	    postTask.setShouldRemoveFromQueueOnSuccess(mRemoveOnSuccess);
 	    Bundle bundle = new Bundle();
-	    bundle.putInt(PostTask.DELAY, 0);
-	    bundle.putString(PostTask.URL, "http://m.google.com");
+	    bundle.putInt(GetTask.DELAY, mDefaultDelay);
+	    bundle.putString(GetTask.URL, mUrl);
 	    postTask.setBundle(bundle);
 	    mTaskExecutor.addTaskToQueue(postTask, this);
-	} else if (v.getId() == R.id.http_exception_test_button) {
-	    PostTask postTask = new PostTask();
-	    postTask.setShouldRemoveFromQueueOnException(false);
-	    Bundle bundle = new Bundle();
-	    bundle.putInt(PostTask.DELAY, 0);
-	    bundle.putString(PostTask.URL, "null");
-	    postTask.setBundle(bundle);
-	    mTaskExecutor.addTaskToQueue(postTask, this);
-	} else if (v.getId() == R.id.http_delayed_get_test_button) {
-	    PostTask postTask = new PostTask();
-	    Bundle bundle = new Bundle();
-	    bundle.putInt(PostTask.DELAY, 3000);
-	    bundle.putString(PostTask.URL, "http://m.google.com");
-	    postTask.setBundle(bundle);
-	    mTaskExecutor.addTaskToQueue(postTask, this);
-	} else if (v.getId() == R.id.twenty_sec_http_delayed_get_test_button) {
-	    PostTask postTask = new PostTask();
-	    Bundle bundle = new Bundle();
-	    bundle.putInt(PostTask.DELAY, 20000);
-	    bundle.putString(PostTask.URL, "http://m.google.com");
-	    postTask.setBundle(bundle);
-	    mTaskExecutor.addTaskToQueue(postTask, this);
-	} else if (v.getId() == R.id.execute) {
+	} else if (v.getId() == R.id.execute){
 	    mTaskExecutor.executeQueue();
-	} else if (v.getId() == R.id.kill_example) {
+	} else if (v.getId() == R.id.kill_example){
 	    System.runFinalization();
 	    System.exit(0);
-	} else if (v.getId() == R.id.empty_queue) {
+	} else if (v.getId() == R.id.empty_queue){
 	    mTaskExecutor.clearQueue();
-	    Toast.makeText(this, "Queue Emptied", Toast.LENGTH_SHORT).show();
 	}
 
     }
 
     @Override
     public void onTaskComplete(Bundle bundle, Exception exception){
-	if (exception != null) {
+	if (exception != null){
 	    Toast.makeText(this, exception.toString(), Toast.LENGTH_SHORT).show();
-	} else if (bundle != null) {
+	} else if (bundle != null){
 	    Toast.makeText(this, bundle.getString("ResponseCode"), Toast.LENGTH_SHORT).show();
 	}
     }
 
     @Override
-    public boolean allowTaskFiness() {
+    public boolean allowTaskFiness(){
 	return true;
     }
 
     @Override
-    public int specifyServiceMode() {
+    public int specifyServiceMode(){
 	return TaskExecutorService.CALLBACK_DEPENDENT;
     }
 
     @Override
-    public boolean autoExecuteRestoredTasks() {
+    public boolean autoExecuteRestoredTasks(){
 	return true;
     };
+    private void closeKeyboard(EditText editText){
+	try{
+	    IBinder token = editText.getWindowToken();
+	    if (token != null){
+		(((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE))).hideSoftInputFromWindow(token, 0);
+	    }
+	}
+	catch(Exception e){}
+    }
 }
