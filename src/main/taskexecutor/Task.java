@@ -207,10 +207,12 @@ public abstract class Task implements Runnable{
 	}
 
 	public static Parcelable.Creator<PersistenceObject> CREATOR = new Parcelable.Creator<PersistenceObject>(){
+	    @Override
 	    public PersistenceObject createFromParcel(Parcel in){
 		return new PersistenceObject(in);
 	    }
 
+	    @Override
 	    public PersistenceObject[] newArray(int size){
 		return new PersistenceObject[size];
 	    }

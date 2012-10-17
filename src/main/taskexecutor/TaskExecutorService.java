@@ -21,16 +21,16 @@ import android.os.IBinder;
  * @author nseidm1
  */
 public class TaskExecutorService extends Service implements ServiceExecutorCallback{
-    private              boolean                   mHaveTasksBeenRestored    = false;
-    private              TaskExecutor              mTaskExecutor             = new TaskExecutor(this);
-    private              Executor                  mQueuePersister           = Executors.newSingleThreadExecutor();
-    private              QueueToDiskTask           mQueueToDisk              = new QueueToDiskTask(mTaskExecutor, this);
-    private static       ServiceActivityCallback   mServiceActivityCallback  = null;
-    private static       ExecutorReferenceCallback mSoftCallback             = null;
-    private              int                       CURRENT_SERVICE_MODE      = CALLBACK_DEPENDENT;
-    public  static final int                       CALLBACK_INCONSIDERATE    = 0;
-    public  static final int                       CALLBACK_DEPENDENT        = 1;
-    public  static final String                    SERVICE_MODE_KEY          = "SERVICE_MODE_KEY";
+    private              boolean                   mHaveTasksBeenRestored     = false;
+    private              TaskExecutor              mTaskExecutor              = new TaskExecutor(this);
+    private              Executor                  mQueuePersister            = Executors.newSingleThreadExecutor();
+    private              QueueToDiskTask           mQueueToDisk               = new QueueToDiskTask(mTaskExecutor, this);
+    private static       ServiceActivityCallback   mServiceActivityCallback   = null;
+    private static       ExecutorReferenceCallback mExecutorReferenceCallback = null;
+    private              int                       CURRENT_SERVICE_MODE       = CALLBACK_DEPENDENT;
+    public  static final int                       CALLBACK_INCONSIDERATE     = 0;
+    public  static final int                       CALLBACK_DEPENDENT         = 1;
+    public  static final String                    SERVICE_MODE_KEY           = "SERVICE_MODE_KEY";
 
     /**
      * @param MODE
@@ -51,7 +51,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	    					Context                   context, 
 	    					ExecutorReferenceCallback serviceReferenceCallback, 
 	    					ServiceActivityCallback   serviceActivityCallback) {
-	mSoftCallback            = serviceReferenceCallback;
+	mExecutorReferenceCallback            = serviceReferenceCallback;
 	mServiceActivityCallback = serviceActivityCallback;
 	context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY, MODE));
     }
@@ -62,8 +62,8 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	    		      int    startId){
 	CURRENT_SERVICE_MODE = intent.getIntExtra(SERVICE_MODE_KEY, CALLBACK_DEPENDENT);
 	Log.d(TaskExecutorService.class.getName(), "Current Service Mode: " + CURRENT_SERVICE_MODE);
-	if (mSoftCallback != null)
-	    mSoftCallback.getTaskExecutorReference(mTaskExecutor);
+	if (mExecutorReferenceCallback != null)
+	    mExecutorReferenceCallback.getTaskExecutorReference(mTaskExecutor);
 	if (mHaveTasksBeenRestored){
 	    mHaveTasksBeenRestored = false;
 	    switch (CURRENT_SERVICE_MODE){
@@ -77,7 +77,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 		break;
 	    }
 	}
-	mSoftCallback = null;
+	mExecutorReferenceCallback = null;
 	mServiceActivityCallback = null;
 	return Service.START_REDELIVER_INTENT;
     }
