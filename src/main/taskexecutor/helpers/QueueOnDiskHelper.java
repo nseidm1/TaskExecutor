@@ -35,14 +35,15 @@ public class QueueOnDiskHelper{
      * @throws NoSuchMethodException
      * @throws ClassNotFoundException
      */
-    public static boolean retrieveTasksFromDisk(Context context, TaskExecutor taskExecutor) throws FileNotFoundException, 
-    												   IOException, 
-    												   IllegalArgumentException, 
-    												   InstantiationException, 
-    												   IllegalAccessException, 
-    												   InvocationTargetException, 
-    												   NoSuchMethodException, 
-    												   ClassNotFoundException{
+    public static boolean retrieveTasksFromDisk(Context      context, 
+	    					TaskExecutor taskExecutor) throws FileNotFoundException, 
+	    									  IOException, 
+    										  IllegalArgumentException, 
+    										  InstantiationException, 
+    										  IllegalAccessException, 
+    										  InvocationTargetException, 
+    										  NoSuchMethodException, 
+    										  ClassNotFoundException{
 	Vector<Task> tasks = getTasks(context, taskExecutor);
 	if (tasks.size() > 0){
 	    taskExecutor.setQueue(tasks);
@@ -76,8 +77,7 @@ public class QueueOnDiskHelper{
     											    ClassNotFoundException{
 	Vector<Task> taskArray = new Vector<Task>();
 	File[] tasks = getTaskExecutorFilesDir(context).listFiles();
-	Log.d(QueueOnDiskHelper.class.getName(), "Number of Tasks being restored: "
-		+ tasks.length);
+	Log.d(QueueOnDiskHelper.class.getName(), "Number of Tasks being restored: " + tasks.length);
 	for (File file : tasks){
 	    FileInputStream fIn = new FileInputStream(file);
 	    byte[] buffer = new byte[(int) file.length()];
@@ -89,10 +89,8 @@ public class QueueOnDiskHelper{
 	    Parcel parcel = Parcel.obtain();
 	    parcel.unmarshall(buffer, 0, buffer.length);
 	    parcel.setDataPosition(0);
-	    Log.d(QueueOnDiskHelper.class.getName(), "Data Available: "
-		    + parcel.dataAvail());
-	    Log.d(QueueOnDiskHelper.class.getName(), "Data Size: "
-		    + parcel.dataSize());
+	    Log.d(QueueOnDiskHelper.class.getName(), "Data Available: " + parcel.dataAvail());
+	    Log.d(QueueOnDiskHelper.class.getName(), "Data Size: " + parcel.dataSize());
 	    PersistenceObject persistenceObject = PersistenceObject.CREATOR.createFromParcel(parcel);
 	    parcel.recycle();
 	    String className = persistenceObject.getClassName();
@@ -104,8 +102,7 @@ public class QueueOnDiskHelper{
 	    task.setShouldRemoveFromQueueOnException(persistenceObject.getShouldRemoveFromQueueOnException());
 	    task.setShouldRemoveFromQueueOnSuccess(persistenceObject.getShouldRemoveFromQueueOnSuccess());
 	    task.setTaskExecutor(taskExecutor);
-	    Log.d(QueueOnDiskHelper.class.getName(), task.getTag()
-		    + " restored");
+	    Log.d(QueueOnDiskHelper.class.getName(), task.getTag()+ " restored");
 	    taskArray.add(task);
 	}
 	return taskArray;
@@ -125,8 +122,7 @@ public class QueueOnDiskHelper{
 		persistenceObject.writeToParcel(parcel, 0);
 		try{
 		    fos.write(parcel.marshall());
-		    Log.d(QueueOnDiskHelper.class.getName(), task.getTag()
-			    + " written to disk");
+		    Log.d(QueueOnDiskHelper.class.getName(), task.getTag() + " written to disk");
 		}finally{
 		    fos.flush();
 		    fos.close();
@@ -145,16 +141,14 @@ public class QueueOnDiskHelper{
 		    delete = false;
 	    }
 	    if (delete){
-		Log.d(QueueOnDiskHelper.class.getName(), tasks[i].getName()
-			+ " deleted from disk");
+		Log.d(QueueOnDiskHelper.class.getName(), tasks[i].getName() + " deleted from disk");
 		tasks[i].delete();
 	    }
 	}
     }
 
     private static File getTaskExecutorFilesDir(Context context){
-	File projDir = new File(context.getFilesDir().getAbsolutePath()
-		+ File.separator + "TaskExecutor");
+	File projDir = new File(context.getFilesDir().getAbsolutePath() + File.separator + "TaskExecutor");
 	if (!projDir.exists())
 	    projDir.mkdirs();
 	return projDir;

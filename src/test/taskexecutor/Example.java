@@ -4,6 +4,8 @@ import main.taskexecutor.R;
 import main.taskexecutor.TaskExecutorActivity;
 import main.taskexecutor.TaskExecutorService;
 import test.taskexecutor.tasks.GetTask;
+import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +30,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
     private boolean mRemoveOnException = true;
     private int     mDefaultDelay      = 0;
     private Button  mExecute           = null;
+    @TargetApi(11)
     @Override
     public void onCreate(Bundle bundle){
 	super.onCreate(bundle);
@@ -41,6 +44,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	mExecute.setOnClickListener(this);
 	((Button) findViewById(R.id.kill_example)).setOnClickListener(this);
 	((Button) findViewById(R.id.empty_queue)).setOnClickListener(this);
+	((Button) findViewById(R.id.new_activity)).setOnClickListener(this);
 	
 	EditText url = ((EditText)findViewById(R.id.url));
 	url.addTextChangedListener(new TextWatcher()
@@ -111,6 +115,10 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	} else if (v.getId() == R.id.empty_queue){
 	    mTaskExecutor.clearQueue();
 	    mExecute.setEnabled(false);
+	} else if (v.getId() == R.id.new_activity){
+	    Intent intent = new Intent(this, Example.class);
+	    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+	    startActivity(intent);
 	}
 
     }
