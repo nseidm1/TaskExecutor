@@ -44,7 +44,8 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
      * The interface that returns a reference to the TaskExecutor.
      * @param tasksRestoredCallback
      * The interface informing an activity if Tasks have been restored by the
-     * service after a restart.
+     * service after a restart. This interface is ONLY called when the service 
+     * is in CALLBACK_DEPENDENT mode.
      */
     public static void requestExecutorReference(int                       MODE, 
 	    					Context                   context, 
