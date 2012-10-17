@@ -16,9 +16,9 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
     /**
      * @return Task finess will pause currently running Tasks prior to their
      * hard callback to accommodate onPause events; this allows for the hard
-     * callback to be reset when the activity is resumed. Be careful, what if
-     * your activity isn't resumed for a long time? Block your Task's execution
-     * wisely.
+     * callback to be reset when the activity is resumed, or a new one is 
+     * being created. Be careful, what if your activity isn't resumed for a 
+     * long time? Block your Task's execution wisely.
      */
     public abstract boolean allowTaskFiness();
 

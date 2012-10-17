@@ -24,12 +24,13 @@ import android.widget.Toast;
 
 public class Example extends TaskExecutorActivity implements OnClickListener{
     
-            GetTask postTask           = null;
-    private String  mUrl               = "http://m.google.com";
-    private boolean mRemoveOnSuccess   = true;
-    private boolean mRemoveOnException = true;
-    private int     mDefaultDelay      = 0;
-    private Button  mExecute           = null;
+            	 	 GetTask postTask           = null;
+    private static final String mDefaultUrl 	    = "http://m.google.com";
+    private 		 String  mUrl               = mDefaultUrl;
+    private 		 boolean mRemoveOnSuccess   = true;
+    private 		 boolean mRemoveOnException = true;
+    private 		 int     mDefaultDelay      = 0;
+    private 		 Button  mExecute           = null;
     @TargetApi(11)
     @Override
     public void onCreate(Bundle bundle){
@@ -62,6 +63,10 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 		mUrl = s.toString();
 	    }
 	});
+	if (!mUrl.equalsIgnoreCase(mDefaultUrl)){
+	    url.setText(mUrl);
+	}
+	
 	EditText delay = ((EditText)findViewById(R.id.delay));
 	delay.setInputType(InputType.TYPE_CLASS_PHONE);
 	delay.addTextChangedListener(new TextWatcher(){
@@ -78,22 +83,27 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 		mDefaultDelay = Integer.parseInt(s.toString());
 	    }
 	});
+	if (mDefaultDelay != 0){
+	    delay.setText(Integer.toString(mDefaultDelay));
+	}
+	
 	CheckBox shouldRemoveOnSuccess = ((CheckBox)findViewById(R.id.remove_on_success));
-	shouldRemoveOnSuccess.setChecked(mRemoveOnSuccess);
 	shouldRemoveOnSuccess.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 	    @Override
 	    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
 		mRemoveOnSuccess = isChecked;
 	    }
 	});
+	shouldRemoveOnSuccess.setChecked(mRemoveOnSuccess);
+
 	CheckBox shouldRemoveOnException = ((CheckBox)findViewById(R.id.remove_on_exception));
-	shouldRemoveOnException.setChecked(mRemoveOnException);
 	shouldRemoveOnException.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 	    @Override
 	    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
 		mRemoveOnException = isChecked;
 	    }
 	});
+	shouldRemoveOnException.setChecked(mRemoveOnException);
     }
     @Override
     public void onClick(View v){
@@ -151,6 +161,11 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 
     @Override
     public boolean autoExecuteRestoredTasks(){
+	//Aside from the javadoc it's worthwhile to mention here the following. 
+	//Returning true here is only useful when the Service is in CALLBACK_DEPENDENT 
+	//mode. Otherwise this callback will not be hit, and the Service will simply 
+	//execute the Tasks automatically, without waiting, when Tasks are restore after 
+	//a killed Service.
 	return true;
     }
     @Override
