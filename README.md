@@ -35,7 +35,7 @@ accommodate restoration from disk, the launching of new activities, and just for
 The TaskExecutor is managed by a Service, but accessible in a unique way. TaskExecutorActivity makes a static request to the Service requesting a callback with a reference to 
 the TaskExecutor. So it's a service, or is it a singleton, who know but it looks cool! :-)
 
-Tasks have 10 public methods:<br>
+Tasks have 12 public methods:<br>
 1) setCompleteCallback(TaskCompletedCallback completeCallback)<br>
 2) setTaskExecutor(TaskExecutor taskExecutor)<br>
 3) pause()<br>
@@ -45,8 +45,9 @@ Tasks have 10 public methods:<br>
 7) setTag(String TAG)<br>
 8) getTag()<br>
 9) setShouldRemoveFromQueueOnSuccess(boolean shouldRemoveFromQueueOnSuccess)<br>
-10) setShouldRemoveFromQueueOnException(boolean shouldRemoveFromQueueOnException)<br>
-
+10) The getter for 9.<br>
+11) setShouldRemoveFromQueueOnException(boolean shouldRemoveFromQueueOnException)<br>
+12) The getter for 11.<br>
 The only method you may want to use is setBundle(), all others are managed by the TaskExecutor and likely do not need to be used directly. 
 9, and 10 may come in handy, and are self explanatory in the method name.
 
