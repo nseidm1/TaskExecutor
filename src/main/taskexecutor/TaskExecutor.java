@@ -2,6 +2,7 @@ package main.taskexecutor;
 
 import java.util.Vector;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import main.taskexecutor.callbacks.ServiceExecutorCallback;
@@ -21,7 +22,8 @@ public class TaskExecutor{
     private ServiceExecutorCallback   mServiceHelperCallback     = null;
     private boolean                   mPause                     = false;
             ConditionVariable         mLock                      = new ConditionVariable(true);
-    private ThreadPoolExecutor        mTaskThreadExecutor        = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+    private ThreadPoolExecutor        mTaskExecutor              = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+    private int                       mInterruptThreadsAfter     = -1;
 
     public TaskExecutor(ServiceExecutorCallback serviceHelperCallback){
 	mServiceHelperCallback = serviceHelperCallback;
@@ -36,9 +38,9 @@ public class TaskExecutor{
      */
     public void poolThreads(boolean pool){
 	if (pool){
-	    mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+	    mTaskExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 	} else{
-	    mTaskThreadExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+	    mTaskExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
 	}
     }
 
@@ -78,15 +80,38 @@ public class TaskExecutor{
 
     /**
      * Execute all tasks in the queue that haven't been executed already.
-     * 
-     * @throws NoQueuedTasksException
      */
     public void executeQueue(){
-	Log.d(TaskExecutor.class.getName(), "Execute " + mQueue.size()
-		+ " Tasks");
+	Log.d(TaskExecutor.class.getName(), "Execute " + mQueue.size() + " Tasks");
 	for (int i = 0; i < mQueue.size(); i++){
-	    if (!mTaskThreadExecutor.getQueue().contains(mQueue.get(i)))
-		mTaskThreadExecutor.execute(mQueue.get(i));
+	    if (!mTaskExecutor.getQueue().contains(mQueue.get(i))){
+		Future<?> future = mTaskExecutor.submit(mQueue.get(i));
+		setInterruptorIfActive(future);
+	    }
+	}
+    }
+    
+    /**
+     * @param seconds
+     * -1 disables this feature, and it's disabled by default. Set this value 
+     * to milliseconds of time. After that amount of time elapses your Task 
+     * will be interrupted. If it has yet to execute it will not execute. If the 
+     * Task has already begun executing it will be interrupted, which may prove 
+     * useful if the Task has a blocking operation like network communication.
+     */
+    public void setInterruptTaskAfter(int interruptThreadsAfter){
+	mInterruptThreadsAfter = interruptThreadsAfter;
+    }
+    
+
+    private void setInterruptorIfActive(final Future<?> future){
+	if (mInterruptThreadsAfter != -1){
+	    mHandler.postDelayed(new Runnable(){
+		@Override
+		public void run(){
+		    future.cancel(true);
+		}
+	    }, mInterruptThreadsAfter);
 	}
     }
 
