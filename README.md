@@ -5,8 +5,10 @@ TaskExecutor
 The included abstract TaskExecutorActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. 
 TaskExecutorActivity has three abstract methods, allowTaskFiness() and specifyServiceMode(), autoExecuteRestoredTasks(). 
 Tasks can be finessed to maintain a callback to the currently visible Activity, 
-the the Service has two MODEs, CALLBACK_INCONSIDERATE and CALLBACK_DEPENDENT. When the Servie is in CALLBACK_INCONSIDERATE mode 
-the Service will auto execute the Tasks without a valid ui callback. In CALLBACK_DEPENDENT mode the Service 
+the the Service has two MODEs, CALLBACK_INCONSIDERATE and CALLBACK_DEPENDENT which are pertinent when Tasks are restored from disk 
+after the Service is killed by the os; oh did I mention that Tasks survive process termintion and automatically restore your Tasks :-) 
+When the Service is in CALLBACK_INCONSIDERATE mode 
+the Service will auto execute restored Tasks without a valid ui callback. In CALLBACK_DEPENDENT mode the Service 
 wait for the the next activity to assign a callback, and if you set autoExecuteRestoredTasks to true the restore 
 Tasks will be auto executed.
 
@@ -23,7 +25,8 @@ their persisted state on disk. If Tasks are implemented properly, and the Servic
 Tasks will be restored from a persisted state on disk; and depending on the Service MODE can even continue execution 
 automatically or wait for an Activity to launch to provide a ui callback.
 
-The heart of Task is the abstract method task() that you'll override to define what your Task does. If designed as a 
+The heart of Task is the abstract method task() that you'll override to define what your Task does. The same pattern as defining 
+a Runnable. If designed as a 
 static inner class do not reference stuff outside of the Task's scope, keep everything within the Task itself to gracefully 
 accommodate restoration from disk, the launching of new activities, and just for general good coding practice. 
 
@@ -42,7 +45,7 @@ Tasks have 10 public methods:<br>
 9) setShouldRemoveFromQueueOnSuccess(boolean shouldRemoveFromQueueOnSuccess)<br>
 10) setShouldRemoveFromQueueOnException(boolean shouldRemoveFromQueueOnException)<br>
 
-The only method you'll likely want to use is setBundle(), all others are managed by the TaskExecutor and likely do not need to be used directly. 
+The only method you may want to use is setBundle(), all others are managed by the TaskExecutor and likely do not need to be used directly. 
 9, and 10 may come in handy, and are self explanatory in the method name.
 
 <b>Tips</b><br>
