@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 public class Example extends TaskExecutorActivity implements OnClickListener{
     
-            	 	 GetTask  postTask                  = null;
+    private   	 	 GetTask  postTask                  = null;
     private static final String   mDefaultUrl 	            = "http://m.google.com";
     private 		 String   mUrl                      = mDefaultUrl;
     private 		 boolean  mRemoveOnSuccess          = true;
