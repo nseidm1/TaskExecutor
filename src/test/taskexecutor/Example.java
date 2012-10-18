@@ -1,6 +1,7 @@
 package test.taskexecutor;
 
 import main.taskexecutor.R;
+import main.taskexecutor.TaskExecutor;
 import main.taskexecutor.TaskExecutorActivity;
 import main.taskexecutor.TaskExecutorService;
 import test.taskexecutor.tasks.GetTask;
@@ -111,6 +112,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	});
 	shouldRemoveOnException.setChecked(mRemoveOnException);
     }
+    
     @Override
     public void onClick(View v){
 	if (v.getId() == R.id.add_task_to_queue){
@@ -138,10 +140,22 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	}
 
     }
-
+    @Override
+    public void getTaskExecutorReference(TaskExecutor taskExecutor){
+	super.getTaskExecutorReference(taskExecutor);
+	if (mTaskExecutor.getQueueCount() != 0){
+	    mExecute.setEnabled(true);
+	} else{
+	    mExecute.setEnabled(false);
+	}
+    }
+    
+    
     @Override
     public void onTaskComplete(Bundle bundle, Exception exception){
-	if (mTaskExecutor.getQueueCount() == 0){
+	if (mTaskExecutor.getQueueCount() != 0){
+	    mExecute.setEnabled(true);
+	} else{
 	    mExecute.setEnabled(false);
 	}
 	if (exception != null){
