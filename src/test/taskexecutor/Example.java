@@ -124,7 +124,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	    bundle.putString(GetTask.URL, mUrl);
 	    postTask.setBundle(bundle);
 	    mTaskExecutor.addTaskToQueue(postTask, this);
-	    mExecute.setEnabled(true);
+	    manageExecuteTasksButton();
 	} else if (v.getId() == R.id.execute){
 	    mTaskExecutor.executeQueue();
 	} else if (v.getId() == R.id.kill_example){
@@ -132,7 +132,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	    System.exit(0);
 	} else if (v.getId() == R.id.empty_queue){
 	    mTaskExecutor.clearQueue();
-	    mExecute.setEnabled(false);
+	    manageExecuteTasksButton();
 	} else if (v.getId() == R.id.new_activity){
 	    Intent intent = new Intent(this, Example.class);
 	    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
@@ -140,24 +140,16 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	}
 
     }
+
     @Override
     public void getTaskExecutorReference(TaskExecutor taskExecutor){
 	super.getTaskExecutorReference(taskExecutor);
-	if (mTaskExecutor.getQueueCount() != 0){
-	    mExecute.setEnabled(true);
-	} else{
-	    mExecute.setEnabled(false);
-	}
+	manageExecuteTasksButton();
     }
-    
     
     @Override
     public void onTaskComplete(Bundle bundle, Exception exception){
-	if (mTaskExecutor.getQueueCount() != 0){
-	    mExecute.setEnabled(true);
-	} else{
-	    mExecute.setEnabled(false);
-	}
+	manageExecuteTasksButton();
 	if (exception != null){
 	    mHardCallbackFeedbackArea.setBackgroundColor(Color.RED);
 	    mHardCallbackFeedbackArea.setTextColor(Color.BLACK);
@@ -203,6 +195,9 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
     @Override
     public void tasksHaveBeenRestored(){
 	super.tasksHaveBeenRestored();
+	manageExecuteTasksButton();
+    }
+    private void manageExecuteTasksButton(){
 	if (mTaskExecutor.getQueueCount() == 0){
 	    mExecute.setEnabled(false);
 	} else{
