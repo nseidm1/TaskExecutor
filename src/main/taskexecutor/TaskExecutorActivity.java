@@ -18,7 +18,9 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
      * hard callback to accommodate onPause events; this allows for the hard
      * callback to be reset when the activity is resumed, or a new one is 
      * being created. Be careful, what if your activity isn't resumed for a 
-     * long time? Block your Task's execution wisely.
+     * long time? Block your Task's execution wisely. Please consider using 
+     * setInterruptTaskAfter(int milliseconds) in the TaskExecutor if you 
+     * set this to false
      */
     public abstract boolean allowTaskFiness();
 
