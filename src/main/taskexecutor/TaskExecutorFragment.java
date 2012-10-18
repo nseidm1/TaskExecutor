@@ -57,14 +57,12 @@ public abstract class TaskExecutorFragment extends Fragment implements TaskCompl
     @Override
     public void getTaskExecutorReference(TaskExecutor taskExecutor){
 	mTaskExecutor = taskExecutor;
-	if (allowTaskFiness())
-	    mTaskExecutor.finessTasks(this);
+	mTaskExecutor.finessTasks(this);
     }
 
     @Override
     public void tasksHaveBeenRestored(){
-	if (allowTaskFiness())
-	    mTaskExecutor.finessTasks(this);
+	mTaskExecutor.finessTasks(this);
 	if (autoExecuteRestoredTasks())
 	    mTaskExecutor.executeQueue();
     }
