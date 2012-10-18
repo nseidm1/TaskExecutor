@@ -118,12 +118,17 @@ public class TaskExecutor{
     /**
      * Block the current running Task prior to the hard callback until
      * finessTasks() is called.
+     * @param finessMode 
+     * Should Tasks pause waiting for the callback to be re-assigned 
+     * in an onResume()?
      */
-    public void restrainTasks(){
+    public void restrainTasks(boolean finessMode){
 	// Clear the Task callback to prevent leaks.
 	QueueInMemoryHelper.setCallbackForAllQueuedTasks(mQueue, null);
-	mPause = true;
-	mLock.close();
+	if (finessMode){
+	    mPause = true;
+	    mLock.close();
+	}
     }
 
     /**
