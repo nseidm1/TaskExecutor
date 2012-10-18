@@ -47,7 +47,8 @@ Tasks have 12 public methods:<br>
 9) setShouldRemoveFromQueueOnSuccess(boolean shouldRemoveFromQueueOnSuccess)<br>
 10) The getter for 9.<br>
 11) setShouldRemoveFromQueueOnException(boolean shouldRemoveFromQueueOnException)<br>
-12) The getter for 11.<br>
+12) The getter for 11.
+
 The only method you may want to use is setBundle(), all others are managed by the TaskExecutor and likely do not need to be used directly. 
 9, and 10 may come in handy, and are self explanatory in the method name.
 
