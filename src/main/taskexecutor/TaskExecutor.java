@@ -125,6 +125,7 @@ public class TaskExecutor{
     public void restrainTasks(boolean finessMode){
 	// Clear the Task callback to prevent leaks.
 	QueueInMemoryHelper.setCallbackForAllQueuedTasks(mQueue, null);
+	QueueInMemoryHelper.setUIHandlerForAllQueuedTask(mQueue, null);
 	if (finessMode){
 	    mPause = true;
 	    mLock.close();
