@@ -128,17 +128,16 @@ public abstract class Task implements Runnable{
 	mTaskExecutor.mLock.block();
 	if (shouldRemove)
 	    mTaskExecutor.removeTaskFromQueue(this);
-	if (mUiHandler != null && mCompleteCallback != null){
-	    synchronized(mCompleteCallback){
-		mUiHandler.post(new Runnable(){
-		    @Override
-		    public void run(){
+	if (mUiHandler != null){
+	    mUiHandler.post(new Runnable(){
+		@Override
+		public void run(){
+		    if (mCompleteCallback != null)
 			mCompleteCallback.onTaskComplete(mBundle, e);
-			if (shouldRemove)
-			    mCompleteCallback = null;
-		    }
-		});
-	    }
+		    if (shouldRemove)
+			mCompleteCallback = null;
+		}
+	    });
 	}
     }
 
