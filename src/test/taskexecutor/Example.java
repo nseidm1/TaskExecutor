@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -24,13 +26,15 @@ import android.widget.Toast;
 
 public class Example extends TaskExecutorActivity implements OnClickListener{
     
-            	 	 GetTask postTask           = null;
-    private static final String mDefaultUrl 	    = "http://m.google.com";
-    private 		 String  mUrl               = mDefaultUrl;
-    private 		 boolean mRemoveOnSuccess   = true;
-    private 		 boolean mRemoveOnException = true;
-    private 		 int     mDefaultDelay      = 0;
-    private 		 Button  mExecute           = null;
+            	 	 GetTask  postTask                  = null;
+    private static final String   mDefaultUrl 	            = "http://m.google.com";
+    private 		 String   mUrl                      = mDefaultUrl;
+    private 		 boolean  mRemoveOnSuccess          = true;
+    private 		 boolean  mRemoveOnException        = true;
+    private 		 int      mDefaultDelay             = 0;
+    private 		 Button   mExecute                  = null;
+    private              Handler  mHandler                  = new Handler(Looper.getMainLooper());
+    private              TextView mHardCallbackFeedbackArea = null;
     @TargetApi(11)
     @Override
     public void onCreate(Bundle bundle){
@@ -39,6 +43,8 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
 	    getActionBar().setTitle("TaskExector Demonstration");
 	}
+	
+	mHardCallbackFeedbackArea = (TextView)findViewById(R.id.hard_callback_beacon);
 
 	((Button) findViewById(R.id.add_task_to_queue)).setOnClickListener(this);
 	mExecute = ((Button) findViewById(R.id.execute));
@@ -139,15 +145,27 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	    mExecute.setEnabled(false);
 	}
 	if (exception != null){
-	    ((TextView)findViewById(R.id.hard_callback_beacon)).setBackgroundColor(Color.RED);
-	    ((TextView)findViewById(R.id.hard_callback_beacon)).setTextColor(Color.BLACK);
+	    mHardCallbackFeedbackArea.setBackgroundColor(Color.RED);
+	    mHardCallbackFeedbackArea.setTextColor(Color.BLACK);
+	    mHandler.postDelayed(clearHardCallbackFeedbackArea, 1250);
 
 	} else if (bundle != null){
-	    ((TextView)findViewById(R.id.hard_callback_beacon)).setBackgroundColor(Color.GREEN);
-	    ((TextView)findViewById(R.id.hard_callback_beacon)).setTextColor(Color.BLACK);
+	    mHardCallbackFeedbackArea.setBackgroundColor(Color.GREEN);
+	    mHardCallbackFeedbackArea.setTextColor(Color.BLACK);
 	    Toast.makeText(this, bundle.getString("ResponseCode"), Toast.LENGTH_SHORT).show();
+	    mHandler.postDelayed(clearHardCallbackFeedbackArea, 1250);
 	}
     }
+    
+    private Runnable clearHardCallbackFeedbackArea = new Runnable(){
+	@Override
+	public void run() {
+	    if (mHardCallbackFeedbackArea != null){
+		mHardCallbackFeedbackArea.setBackgroundColor(Color.BLACK);
+		mHardCallbackFeedbackArea.setTextColor(Color.WHITE);
+	    }
+	}
+    };
 
     @Override
     public boolean allowTaskFiness(){
