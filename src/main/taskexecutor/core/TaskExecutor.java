@@ -92,7 +92,7 @@ public class TaskExecutor{
     /**
      * This method directly executes the Task, bypassing the queue. Useful for the 
      * abstract TaskLoader as no callback is needed for the method params. No callback 
-     * will be supplied to the Activity!
+     * will be posted to the Activity as the TaskLoader manages the ui callback!
      * @param task
      * 
      */
