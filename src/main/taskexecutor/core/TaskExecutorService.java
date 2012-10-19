@@ -27,9 +27,10 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
     private              	  QueueToDiskTask           mQueueToDisk               = new QueueToDiskTask(mTaskExecutor, this);
     private volatile static       ServiceActivityCallback   mServiceActivityCallback   = null;
     private volatile static       ExecutorReferenceCallback mExecutorReferenceCallback = null;
-    private              	  int                       CURRENT_SERVICE_MODE       = CALLBACK_DEPENDENT;
     public  	     static final int                       CALLBACK_INCONSIDERATE     = 0;
     public  	     static final int                       CALLBACK_DEPENDENT         = 1;
+    public 	     static final int                       LOADER_IGNORE              = 2;
+    private          static    	  int                       CURRENT_SERVICE_MODE       = CALLBACK_DEPENDENT;
     public  	     static final String                    SERVICE_MODE_KEY           = "SERVICE_MODE_KEY";
 
     /**
@@ -53,7 +54,11 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	    					ServiceActivityCallback   serviceActivityCallback) {
 	mExecutorReferenceCallback = executorReferenceCallback;
 	mServiceActivityCallback   = serviceActivityCallback;
-	context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY, MODE));
+	if (MODE == LOADER_IGNORE){
+	    context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY, CURRENT_SERVICE_MODE));
+	} else{
+	    context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY, MODE));
+	}
     }
 
     @Override
