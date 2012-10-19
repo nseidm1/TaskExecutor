@@ -167,7 +167,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	@Override
 	public void run() {
 	    if (mHardCallbackFeedbackArea != null){
-		mHardCallbackFeedbackArea.setBackgroundColor(Color.BLACK);
+		mHardCallbackFeedbackArea.setBackgroundColor(Color.TRANSPARENT);
 		mHardCallbackFeedbackArea.setTextColor(Color.WHITE);
 	    }
 	}
