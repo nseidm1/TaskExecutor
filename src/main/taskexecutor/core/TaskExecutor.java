@@ -204,7 +204,6 @@ public class TaskExecutor{
     }
 
     private void queueModified(){
-	if (mServiceHelperCallback != null)
-	    mServiceHelperCallback.queueModified();
+	mServiceHelperCallback.queueModified();
     }
 }
