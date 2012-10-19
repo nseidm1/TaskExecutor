@@ -77,10 +77,10 @@ public abstract class TaskLoader<D> extends Loader<D> implements ExecutorReferen
     
     private final void requestTaskExecutorReference(){
 	TaskExecutorService.requestExecutorReference(TaskExecutorService.RETAIN_CURRENT_SERVICE_MODE, 
-		     TaskExecutorService.RETAIN_CURRENT_AUTOEXEC_MODE, 
-		     getContext(), 
-		     this, 
-		     null);
+		                                     TaskExecutorService.RETAIN_CURRENT_AUTOEXEC_MODE, 
+		                                     getContext(), 
+		                                     this, 
+		                                     null);
     }
 
     @Override
