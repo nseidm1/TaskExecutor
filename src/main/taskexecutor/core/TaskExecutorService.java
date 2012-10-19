@@ -43,7 +43,6 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
      * Provide an auto execute mode, either AUTOEXEC_MODE_ENABLED, or AUTOEXEC_MODE_DISABLED. The service 
      * will auto execute queued Tasks every five seconds automatically without needing to manually call 
      * executeTasks().
-     * Provide
      * @param context
      * @param ExecutorReferenceCallback
      * The interface that returns a reference to the TaskExecutor.
