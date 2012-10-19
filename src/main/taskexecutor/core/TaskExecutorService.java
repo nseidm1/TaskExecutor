@@ -49,9 +49,9 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
      */
     public static void requestExecutorReference(int                       MODE, 
 	    					Context                   context, 
-	    					ExecutorReferenceCallback serviceReferenceCallback, 
+	    					ExecutorReferenceCallback executorReferenceCallback, 
 	    					ServiceActivityCallback   serviceActivityCallback) {
-	mExecutorReferenceCallback = serviceReferenceCallback;
+	mExecutorReferenceCallback = executorReferenceCallback;
 	mServiceActivityCallback   = serviceActivityCallback;
 	context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY, MODE));
     }
