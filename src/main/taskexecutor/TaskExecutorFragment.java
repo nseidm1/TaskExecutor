@@ -3,6 +3,8 @@ package main.taskexecutor;
 import main.taskexecutor.callbacks.ExecutorReferenceCallback;
 import main.taskexecutor.callbacks.ServiceActivityCallback;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
+import main.taskexecutor.core.TaskExecutor;
+import main.taskexecutor.core.TaskExecutorService;
 import android.support.v4.app.Fragment;
 
 public abstract class TaskExecutorFragment extends Fragment implements TaskCompletedCallback, 

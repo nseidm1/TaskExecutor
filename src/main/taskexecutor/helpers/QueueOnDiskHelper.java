@@ -9,10 +9,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Vector;
 
-import main.taskexecutor.Task;
-import main.taskexecutor.TaskExecutor;
-import main.taskexecutor.Task.PersistenceObject;
 import main.taskexecutor.classes.Log;
+import main.taskexecutor.core.Task;
+import main.taskexecutor.core.TaskExecutor;
+import main.taskexecutor.core.Task.PersistenceObject;
 import android.content.Context;
 import android.os.Parcel;
 

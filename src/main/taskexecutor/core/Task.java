@@ -1,4 +1,4 @@
-package main.taskexecutor;
+package main.taskexecutor.core;
 
 import java.util.Random;
 

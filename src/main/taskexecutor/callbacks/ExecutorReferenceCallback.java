@@ -1,6 +1,6 @@
 package main.taskexecutor.callbacks;
 
-import main.taskexecutor.TaskExecutor;
+import main.taskexecutor.core.TaskExecutor;
 
 /**
  * @author nseidm1

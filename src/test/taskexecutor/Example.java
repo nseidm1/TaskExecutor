@@ -1,9 +1,9 @@
 package test.taskexecutor;
 
 import main.taskexecutor.R;
-import main.taskexecutor.TaskExecutor;
 import main.taskexecutor.TaskExecutorActivity;
-import main.taskexecutor.TaskExecutorService;
+import main.taskexecutor.core.TaskExecutor;
+import main.taskexecutor.core.TaskExecutorService;
 import test.taskexecutor.tasks.GetTask;
 import android.annotation.TargetApi;
 import android.content.Intent;

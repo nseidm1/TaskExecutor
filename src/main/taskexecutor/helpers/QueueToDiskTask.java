@@ -1,9 +1,9 @@
 package main.taskexecutor.helpers;
 
 import java.io.IOException;
-import main.taskexecutor.TaskExecutor;
-import main.taskexecutor.TaskExecutorService;
 import main.taskexecutor.classes.Log;
+import main.taskexecutor.core.TaskExecutor;
+import main.taskexecutor.core.TaskExecutorService;
 
 public class QueueToDiskTask implements Runnable{
     private TaskExecutor        mTaskExecutor         = null;

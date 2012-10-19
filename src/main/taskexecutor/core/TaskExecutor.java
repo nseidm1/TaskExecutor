@@ -1,4 +1,4 @@
-package main.taskexecutor;
+package main.taskexecutor.core;
 
 import java.util.Vector;
 import java.util.concurrent.Executors;

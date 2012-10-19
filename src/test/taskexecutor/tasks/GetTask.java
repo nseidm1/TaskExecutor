@@ -2,7 +2,7 @@ package test.taskexecutor.tasks;
 
 import java.io.IOException;
 
-import main.taskexecutor.Task;
+import main.taskexecutor.core.Task;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
