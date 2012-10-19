@@ -1,7 +1,7 @@
 package main.taskexecutor;
 
 import main.taskexecutor.callbacks.ExecutorReferenceCallback;
-import main.taskexecutor.callbacks.ServiceActivityCallback;
+import main.taskexecutor.callbacks.TasksRestoredCallback;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
 import main.taskexecutor.core.TaskExecutor;
 import main.taskexecutor.core.TaskExecutorService;
@@ -11,7 +11,7 @@ import android.support.v4.app.FragmentActivity;
  * @author Noah Seidman
  */
 public abstract class TaskExecutorActivity extends FragmentActivity implements TaskCompletedCallback, 
-									       ServiceActivityCallback,
+									       TasksRestoredCallback,
 									       ExecutorReferenceCallback{
     protected TaskExecutor mTaskExecutor;
 
@@ -67,7 +67,7 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
     }
 
     @Override
-    public void tasksHaveBeenRestored(){
+    public void notifyTasksHaveBeenRestored(){
 	mTaskExecutor.finessTasks(this);
 	if (autoExecuteRestoredTasks())
 	    mTaskExecutor.executeQueue();

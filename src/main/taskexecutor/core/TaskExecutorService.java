@@ -6,7 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import main.taskexecutor.callbacks.ServiceActivityCallback;
+import main.taskexecutor.callbacks.TasksRestoredCallback;
 import main.taskexecutor.callbacks.ServiceExecutorCallback;
 import main.taskexecutor.callbacks.ExecutorReferenceCallback;
 import main.taskexecutor.classes.Log;
@@ -25,11 +25,11 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
     private              	  TaskExecutor              mTaskExecutor              = new TaskExecutor(this);
     private              	  Executor                  mQueuePersister            = Executors.newSingleThreadExecutor();
     private              	  QueueToDiskTask           mQueueToDisk               = new QueueToDiskTask(mTaskExecutor, this);
-    private volatile static       ServiceActivityCallback   mServiceActivityCallback   = null;
+    private volatile static       TasksRestoredCallback     mTasksRestoredCallback     = null;
     private volatile static       ExecutorReferenceCallback mExecutorReferenceCallback = null;
     public  	     static final int                       CALLBACK_INCONSIDERATE     = 0;
     public  	     static final int                       CALLBACK_DEPENDENT         = 1;
-    public 	     static final int                       LOADER_IGNORE              = 2;
+    public 	     static final int                       RETAIN_CURRENT_MODE        = 2;
     private          static    	  int                       CURRENT_SERVICE_MODE       = CALLBACK_DEPENDENT;
     public  	     static final String                    SERVICE_MODE_KEY           = "SERVICE_MODE_KEY";
 
@@ -51,10 +51,10 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
     public static void requestExecutorReference(int                       MODE, 
 	    					Context                   context, 
 	    					ExecutorReferenceCallback executorReferenceCallback, 
-	    					ServiceActivityCallback   serviceActivityCallback) {
+	    					TasksRestoredCallback     tasksRestoredCallback) {
 	mExecutorReferenceCallback = executorReferenceCallback;
-	mServiceActivityCallback   = serviceActivityCallback;
-	if (MODE == LOADER_IGNORE){
+	mTasksRestoredCallback   = tasksRestoredCallback;
+	if (MODE == RETAIN_CURRENT_MODE){
 	    context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY, CURRENT_SERVICE_MODE));
 	} else{
 	    context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY, MODE));
@@ -77,13 +77,13 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 		mTaskExecutor.executeQueue();
 		break;
 	    case CALLBACK_DEPENDENT:
-		if (mServiceActivityCallback != null)
-		    mServiceActivityCallback.tasksHaveBeenRestored();
+		if (mTasksRestoredCallback != null)
+		    mTasksRestoredCallback.notifyTasksHaveBeenRestored();
 		break;
 	    }
 	}
 	mExecutorReferenceCallback = null;
-	mServiceActivityCallback = null;
+	mTasksRestoredCallback = null;
 	return Service.START_REDELIVER_INTENT;
     }
 

@@ -193,8 +193,8 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	return true;
     }
     @Override
-    public void tasksHaveBeenRestored(){
-	super.tasksHaveBeenRestored();
+    public void notifyTasksHaveBeenRestored(){
+	super.notifyTasksHaveBeenRestored();
 	manageExecuteTasksButton();
     }
     private void manageExecuteTasksButton(){

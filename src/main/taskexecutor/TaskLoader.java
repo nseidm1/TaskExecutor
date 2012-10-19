@@ -76,7 +76,7 @@ public abstract class TaskLoader<D> extends Loader<D> implements ExecutorReferen
     }
     
     private final void requestTaskExecutorReference(){
-	TaskExecutorService.requestExecutorReference(TaskExecutorService.LOADER_IGNORE, this.getContext(), this, null);
+	TaskExecutorService.requestExecutorReference(TaskExecutorService.RETAIN_CURRENT_MODE, this.getContext(), this, null);
     }
 
     @Override
