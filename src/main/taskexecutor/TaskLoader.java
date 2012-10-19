@@ -42,12 +42,12 @@ public abstract class TaskLoader<D> extends Loader<D> implements ExecutorReferen
 	//asynchronous Task execution, but we want the callback to be here specific to the Loader 
 	//design pattern.
 	@Override
-	public void task() throws Exception {}
+	public void task() throws Exception{}
 	@Override
 	public void run(){
 	    try{
 		result = loaderTask();
-	    } catch (Exception e) {
+	    }catch (Exception e){
 		e.printStackTrace();
 	    }
 	    //No matter what post the results even if it's null.
@@ -59,7 +59,7 @@ public abstract class TaskLoader<D> extends Loader<D> implements ExecutorReferen
 	mHandler.post(new Runnable()
 	{
 	    @Override
-	    public void run() {
+	    public void run(){
 		deliverResult(result);
 	    }
 	});
