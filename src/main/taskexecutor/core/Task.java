@@ -107,14 +107,12 @@ public abstract class Task implements Runnable{
 	mTaskExecutor.mLock.block();
 	if (shouldRemove)
 	    mTaskExecutor.removeTaskFromQueue(this);
-	if (mTaskExecutor.mHandler != null){
-	    mTaskExecutor.mHandler.postAtFrontOfQueue(new Runnable(){
-		@Override
-		public void run(){
-		    mTaskExecutor.mTaskCompletedCallback.onTaskComplete(mBundle, e);
-		}
-	    });
-	}
+	mTaskExecutor.mHandler.postAtFrontOfQueue(new Runnable(){
+	    @Override
+	    public void run(){
+		mTaskExecutor.mTaskCompletedCallback.onTaskComplete(mBundle, e);
+	    };
+	});
     }
 
     public static class PersistenceObject implements Parcelable{
