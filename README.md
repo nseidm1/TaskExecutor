@@ -3,6 +3,15 @@ TaskExecutor
 
 <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Highway_401_by_401-DVP.jpg/320px-Highway_401_by_401-DVP.jpg"/>
 
+<b>What problem does the TaskExecutor solve?</b></br><br>
+When you typically implement an AsyncTask the ui callback is going to be in that particular instance of the Activity, huh? So your doing something in the background, and if it takes a fair amount of time the user may go to a new Activity, what happen in the onPostExecute()? No matter what the "onPostExecute()" of Tasks will always be in the current Activity. TaskExecutor is an AsyncTask on sterroids.
+
+Too many projects I've seen where AsyncTask, and threading is done without consideration. I've even seen anonymous AyncTask implementations that make me throw up a little in my mouth. The TaskExecutor consolidates ALL asynchronous activity into a single Executor service accessible on ALL Activities application wide. You can even set a custom ThreadPoolExecutor if you want to define exactly how your Tasks are asynchronously executed. No more anonymous threading, no more starting a thread in one Activity, and having to think about what happens when it's completes if the user opened a new Activity. 
+
+With countless options, TaskExecutor really changes the game of asynchronous execution of code. You know exactly where your Tasks are, and you know exactly where the callback of the result will be!
+
+The TaskExecutor is overwhelmingly superior to AsyncTask. It's a super custom, rock solid, awesome implementation of a robust, consolidated, and centralized asynchronous Task execution mechanism.
+
 <b>TaskExecutorActivity</b><br>
 The included abstract TaskExecutorActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. 
 TaskExecutorActivity has three abstract methods, allowTaskFiness() and specifyServiceMode(), autoExecuteRestoredTasks(). 
