@@ -35,7 +35,7 @@ public abstract class TaskLoader<D> extends Loader<D> implements ExecutorReferen
     
     private final class LoaderTask extends Task{
 	private D result = null;
-	//Were not going to use the abstract task method
+	//Were not going to use the abstract task method.
 	//We override the run method so the Task doesn't call the internal post() method; there's 
 	//reasoning to this that follows. We will not be using the Task's callback that is managed 
 	//by the TaskExecutor. We want to use the Task and the TaskExecutor to consolidate all 
