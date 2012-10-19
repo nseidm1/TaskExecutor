@@ -27,7 +27,7 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
     protected abstract boolean allowTaskFiness();
 
     /**
-     * Provide a mode, either SERVICE_MODE_CALLBACK_INCONSIDERATE, or SERVICE_MODE_CALLBACK_DEPENDENT.
+     * Provide a Service mode, either SERVICE_MODE_CALLBACK_INCONSIDERATE, or SERVICE_MODE_CALLBACK_DEPENDENT.
      * This tells the service how to behave if it's restarted.
      * SERVICE_MODE_CALLBACK_DEPENDENT will not execute the queue and will wait for an
      * activity for a hard callback to be available. SERVICE_MODE_CALLBACK_INCONSIDERATE will
@@ -39,7 +39,9 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
     protected abstract int specifyServiceMode();
     
     /**
-     *
+     * Provide an auto execuge mode, either AUTOEXEC_MODE_ENABLED, or AUTOEXEC_MODE_DISABLED. The service 
+     * will auto execute queued Tasks every five seconds automatically without needing to manually call 
+     * executeTasks().
      */
     protected abstract int specifyAutoexecMode();
 

@@ -56,7 +56,10 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	mTasksRestoredCallback   = tasksRestoredCallback;
 	if (SERVICE_MODE == RETAIN_CURRENT_SERVICE_MODE)	   
 	    SERVICE_MODE = CURRENT_SERVICE_MODE;
-	context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY, SERVICE_MODE).putExtra(AUTOEXEC_MODE_KEY, AUTOEXEC_MODE));
+	if (AUTOEXEC_MODE == RETAIN_CURRENT_AUTOEXEC_MODE)
+	    AUTOEXEC_MODE = CURRENT_AUTOEXEC_MODE;
+	context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY, SERVICE_MODE).
+	                                                                    putExtra(AUTOEXEC_MODE_KEY, AUTOEXEC_MODE));
     }
 
     @Override
