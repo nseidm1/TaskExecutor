@@ -130,6 +130,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	} else if (v.getId() == R.id.kill_example){
 	    System.runFinalization();
 	    System.exit(0);
+	    android.os.Process.killProcess(android.os.Process.myPid());
 	} else if (v.getId() == R.id.empty_queue){
 	    mTaskExecutor.clearQueue();
 	    manageExecuteTasksButton();

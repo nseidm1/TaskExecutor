@@ -151,9 +151,6 @@ public class TaskExecutor{
 	//Set the callback, finess() will always be called essential on
 	//or after an Activity's onResume().
 	mTaskCompletedCallback = taskCompletedCallback;
-	//FIXME This is likely paranoia? Will test with this commented, and 
-	//the QueueInMemoryHelper will be removed if things behave as expected
-//	QueueInMemoryHelper.setTaskExecutorForAllQueuedTasks(mQueue, this);
 	mPause = false;
 	mLock.open();
     }
