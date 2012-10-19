@@ -16,13 +16,16 @@ import android.support.v4.content.Loader;
 public abstract class TaskLoader<D> extends Loader<D> implements ExecutorReferenceCallback{
     
     private TaskExecutor mTaskExecutor  = null;
+    //We need a handler so deliverResults is called on the ui thread.
     private Handler	 mHandler 	= new Handler(Looper.getMainLooper());
 
     /**
      * Just like Tasks, define your asynchronous code needed to generate the data you want 
      * the Loader to manage. Return the data from the method you define.
      * @return
+     * The specified type defined in the subclass paraterization.
      * @throws Exception
+     * Throw exception so the loader callback always gets hit even with null.
      */
     protected abstract D loaderTask() throws Exception;
     
@@ -39,8 +42,7 @@ public abstract class TaskLoader<D> extends Loader<D> implements ExecutorReferen
 	//asynchronous Task execution, but we want the callback to be here specific to the Loader 
 	//design pattern.
 	@Override
-	public void task() throws Exception {
-	}
+	public void task() throws Exception {}
 	@Override
 	public void run(){
 	    try{
@@ -65,15 +67,15 @@ public abstract class TaskLoader<D> extends Loader<D> implements ExecutorReferen
     
     @Override
     protected void onStartLoading(){
-	requestExecutorStartTask();
+	requestTaskExecutorReference();
     }
     
     @Override
     protected void onForceLoad(){
-	requestExecutorStartTask();
+        requestTaskExecutorReference();
     }
     
-    private final void requestExecutorStartTask(){
+    private final void requestTaskExecutorReference(){
 	TaskExecutorService.requestExecutorReference(TaskExecutorService.LOADER_IGNORE, this.getContext(), this, null);
     }
 
