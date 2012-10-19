@@ -24,7 +24,7 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
      * setInterruptTaskAfter(int milliseconds) in the TaskExecutor if you 
      * set this to false
      */
-    public abstract boolean allowTaskFiness();
+    protected abstract boolean allowTaskFiness();
 
     /**
      * Provide a mode, either CALLBACK_INCONSIDERATE, or CALLBACK_DEPENDENT.
@@ -36,14 +36,14 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
      * @return return either TaskExecutorService.CALLBACK_INCONSIDERATE or
      * TaskExecutorService.CALLBACK_DEPENDENT.
      */
-    public abstract int specifyServiceMode();
+    protected abstract int specifyServiceMode();
 
     /**
      * @return When the Service is in CALLBACK_DEPENDENT mode, and Tasks are
      * restored from a killed Service, should the queue auto execute on the next
      * Activity launch?
      */
-    public abstract boolean autoExecuteRestoredTasks();
+    protected abstract boolean autoExecuteRestoredTasks();
 
     @Override
     public void onPause(){
