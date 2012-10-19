@@ -22,7 +22,7 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
      * being created. Be careful, what if your activity isn't resumed for a 
      * long time? Block your Task's execution wisely. Please consider using 
      * setInterruptTaskAfter(int milliseconds) in the TaskExecutor if you 
-     * set this to false
+     * set this to true.
      */
     protected abstract boolean allowTaskFiness();
 
