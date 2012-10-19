@@ -105,14 +105,13 @@ public abstract class Task implements Runnable{
 
     private void post(final Exception e, final boolean shouldRemove){
 	mTaskExecutor.mLock.block();
-	if (shouldRemove && mTaskExecutor != null)
+	if (shouldRemove)
 	    mTaskExecutor.removeTaskFromQueue(this);
 	if (mTaskExecutor.mHandler != null){
 	    mTaskExecutor.mHandler.postAtFrontOfQueue(new Runnable(){
 		@Override
 		public void run(){
-		    if (mTaskExecutor.mTaskCompletedCallback != null)
-			mTaskExecutor.mTaskCompletedCallback.onTaskComplete(mBundle, e);
+		    mTaskExecutor.mTaskCompletedCallback.onTaskComplete(mBundle, e);
 		}
 	    });
 	}

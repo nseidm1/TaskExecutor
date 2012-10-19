@@ -65,8 +65,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	    		      int    startId){
 	CURRENT_SERVICE_MODE = intent.getIntExtra(SERVICE_MODE_KEY, CALLBACK_DEPENDENT);
 	Log.d(TaskExecutorService.class.getName(), "Current Service Mode: " + CURRENT_SERVICE_MODE);
-	if (mExecutorReferenceCallback != null)
-	    mExecutorReferenceCallback.getTaskExecutorReference(mTaskExecutor);
+	mExecutorReferenceCallback.getTaskExecutorReference(mTaskExecutor);
 	if (mHaveTasksBeenRestored){
 	    mHaveTasksBeenRestored = false;
 	    switch (CURRENT_SERVICE_MODE){
@@ -75,8 +74,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 		mTaskExecutor.executeQueue();
 		break;
 	    case CALLBACK_DEPENDENT:
-		if (mTasksRestoredCallback != null)
-		    mTasksRestoredCallback.notifyTasksHaveBeenRestored();
+	        mTasksRestoredCallback.notifyTasksHaveBeenRestored();
 		break;
 	    }
 	}
