@@ -35,7 +35,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 
     /**
      * @param MODE
-     * Provide a mode, either CALLBACK_INCONSIDERATE, or CALLBACK_DEPENDENT.
+     * Provide a mode, either CALLBACK_INCONSIDERATE, CALLBACK_DEPENDENT, or RETAIN_CURRENT_MODE.
      * This tells the service how to behave if it's restarted.
      * CALLBACK_DEPENDENT will not execute the queue and will wait for an
      * activity for a hard callback to be available. CALLBACK_INCONSIDERATE will
