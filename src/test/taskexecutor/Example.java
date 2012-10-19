@@ -123,7 +123,7 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 	    bundle.putInt(GetTask.DELAY, mDefaultDelay);
 	    bundle.putString(GetTask.URL, mUrl);
 	    postTask.setBundle(bundle);
-	    mTaskExecutor.addTaskToQueue(postTask, this);
+	    mTaskExecutor.addTaskToQueue(postTask);
 	    manageExecuteTasksButton();
 	} else if (v.getId() == R.id.execute){
 	    mTaskExecutor.executeQueue();

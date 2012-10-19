@@ -51,7 +51,7 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
 	// Theoretically the activity can be finishing before the request for
 	// the executor reference is received.
 	if (mTaskExecutor != null)
-	    mTaskExecutor.restrainTasks(allowTaskFiness());
+	    mTaskExecutor.restrain(allowTaskFiness());
     }
 
     @Override
@@ -63,12 +63,12 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
     @Override
     public void getTaskExecutorReference(TaskExecutor taskExecutor){
 	mTaskExecutor = taskExecutor;
-	mTaskExecutor.finessTasks(this);
+	mTaskExecutor.finess(this);
     }
 
     @Override
     public void notifyTasksHaveBeenRestored(){
-	mTaskExecutor.finessTasks(this);
+	mTaskExecutor.finess(this);
 	if (autoExecuteRestoredTasks())
 	    mTaskExecutor.executeQueue();
     }

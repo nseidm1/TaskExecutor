@@ -8,7 +8,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import main.taskexecutor.callbacks.ServiceExecutorCallback;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
 import main.taskexecutor.classes.Log;
-import main.taskexecutor.helpers.QueueInMemoryHelper;
 import android.os.ConditionVariable;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,13 +16,14 @@ import android.os.Looper;
  * @author Noah Seidman
  */
 public class TaskExecutor{
-    private Handler                   mHandler                   = new Handler(Looper.getMainLooper());
+            Handler                   mHandler                   = new Handler(Looper.getMainLooper());
+            TaskCompletedCallback     mTaskCompletedCallback     = null;
+            ConditionVariable         mLock                      = new ConditionVariable(true);
+    private boolean                   mPause                     = false;
+    private int                       mInterruptThreadsAfter     = -1;
     private Vector<Task>              mQueue                     = new Vector<Task>();
     private ServiceExecutorCallback   mServiceHelperCallback     = null;
-    private boolean                   mPause                     = false;
-            ConditionVariable         mLock                      = new ConditionVariable(true);
     private ThreadPoolExecutor        mTaskExecutor              = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
-    private int                       mInterruptThreadsAfter     = -1;
 
     public TaskExecutor(ServiceExecutorCallback serviceHelperCallback){
 	mServiceHelperCallback = serviceHelperCallback;
@@ -59,9 +59,7 @@ public class TaskExecutor{
      * you may supply null, but if you have allowFiness() enabled a callback
      * will assigned at that time.
      */
-    public void addTaskToQueue(Task task, TaskCompletedCallback taskCompletedCallback){
-	task.setCompleteCallback(taskCompletedCallback);
-	task.setUiHandler(mHandler);
+    public void addTaskToQueue(Task task){
 	task.setTaskExecutor(this);
 	mQueue.add(task);
 	queueModified();
@@ -134,10 +132,9 @@ public class TaskExecutor{
      * Should Tasks pause waiting for the callback to be re-assigned 
      * in an onResume()?
      */
-    public void restrainTasks(boolean finessMode){
-	// Clear the Task callback to prevent leaks.
-	QueueInMemoryHelper.setCallbackForAllQueuedTasks(mQueue, null);
-	QueueInMemoryHelper.setUIHandlerForAllQueuedTask(mQueue, null);
+    public void restrain(boolean finessMode){
+	// Clear the callback to prevent leaks.
+	mTaskCompletedCallback = null;
 	if (finessMode){
 	    mPause = true;
 	    mLock.close();
@@ -146,16 +143,17 @@ public class TaskExecutor{
 
     /**
      * Resume Task execution from a restrained state.
-     * 
      * @param callCompleteCallback
      * Provide the taskCompleteCallback so your Tasks can report back to the
      * activity.
      */
-    public void finessTasks(TaskCompletedCallback taskCompleteCallback){
-	// Reset critial parameters of the Tasks.
-	QueueInMemoryHelper.setTaskExecutorForAllQueuedTasks(mQueue, this);
-	QueueInMemoryHelper.setUIHandlerForAllQueuedTask(mQueue, mHandler);
-	QueueInMemoryHelper.setCallbackForAllQueuedTasks(mQueue, taskCompleteCallback);
+    public void finess(TaskCompletedCallback taskCompletedCallback){
+	//Set the callback, finess() will always be called essential on
+	//or after an Activity's onResume().
+	mTaskCompletedCallback = taskCompletedCallback;
+	//FIXME This is likely paranoia? Will test with this commented, and 
+	//the QueueInMemoryHelper will be removed if things behave as expected
+//	QueueInMemoryHelper.setTaskExecutorForAllQueuedTasks(mQueue, this);
 	mPause = false;
 	mLock.open();
     }

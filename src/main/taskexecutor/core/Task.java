@@ -2,9 +2,7 @@ package main.taskexecutor.core;
 
 import java.util.Random;
 
-import main.taskexecutor.callbacks.TaskCompletedCallback;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -13,8 +11,6 @@ import android.os.Parcelable;
  */
 public abstract class Task implements Runnable{
     private TaskExecutor          mTaskExecutor                     = null;
-    private TaskCompletedCallback mCompleteCallback                 = null;
-    private Handler               mUiHandler                        = null; 
     private String                TAG                               = "";
     private boolean               mShouldRemoveFromQueueOnSuccess   = true;
     private boolean               mShouldRemoveFromQueueOnException = true;
@@ -59,14 +55,6 @@ public abstract class Task implements Runnable{
     }
 
     /**
-     * @param uiHandler
-     * Set the ui handler for this Task.
-     */
-    public void setUiHandler(Handler uiHandler){
-	mUiHandler = uiHandler;
-    }
-
-    /**
      * @param bundle
      */
     public void setBundle(Bundle bundle){
@@ -97,15 +85,6 @@ public abstract class Task implements Runnable{
     }
 
     /**
-     * @param completeCallback
-     * Aside from the constructor you can specify the callback using this
-     * method.
-     */
-    public void setCompleteCallback(TaskCompletedCallback completeCallback){
-	mCompleteCallback = completeCallback;
-    }
-
-    /**
      * @param taskExecutor
      * If you want this Task to automatically retrieve itself from the
      * TaskExecutor's queue, a reference is needed.
@@ -128,14 +107,12 @@ public abstract class Task implements Runnable{
 	mTaskExecutor.mLock.block();
 	if (shouldRemove && mTaskExecutor != null)
 	    mTaskExecutor.removeTaskFromQueue(this);
-	if (mUiHandler != null){
-	    mUiHandler.postAtFrontOfQueue(new Runnable(){
+	if (mTaskExecutor.mHandler != null){
+	    mTaskExecutor.mHandler.postAtFrontOfQueue(new Runnable(){
 		@Override
 		public void run(){
-		    if (mCompleteCallback != null)
-			mCompleteCallback.onTaskComplete(mBundle, e);
-		    if (shouldRemove)
-			mCompleteCallback = null;
+		    if (mTaskExecutor.mTaskCompletedCallback != null)
+			mTaskExecutor.mTaskCompletedCallback.onTaskComplete(mBundle, e);
 		}
 	    });
 	}
