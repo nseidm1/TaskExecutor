@@ -126,10 +126,10 @@ public abstract class Task implements Runnable{
 
     private void post(final Exception e, final boolean shouldRemove){
 	mTaskExecutor.mLock.block();
-	if (shouldRemove)
+	if (shouldRemove && mTaskExecutor != null)
 	    mTaskExecutor.removeTaskFromQueue(this);
 	if (mUiHandler != null){
-	    mUiHandler.post(new Runnable(){
+	    mUiHandler.postAtFrontOfQueue(new Runnable(){
 		@Override
 		public void run(){
 		    if (mCompleteCallback != null)
