@@ -39,9 +39,12 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
     protected abstract int specifyServiceMode();
     
     /**
-     * Provide an auto execuge mode, either AUTOEXEC_MODE_ENABLED, or AUTOEXEC_MODE_DISABLED. The service 
+     * Provide an auto execute mode, either AUTOEXEC_MODE_ENABLED, or AUTOEXEC_MODE_DISABLED. The service 
      * will auto execute queued Tasks every five seconds automatically without needing to manually call 
      * executeTasks().
+
+     * @return return either TaskExecutorService.AUTOEXEC_MODE_ENABLED or
+     * TaskExecutorService.AUTOEXEC_MODE_DISABLED.
      */
     protected abstract int specifyAutoexecMode();
 
@@ -75,7 +78,6 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
 
     @Override
     public void notifyTasksHaveBeenRestored(){
-	mTaskExecutor.finess(this);
 	if (autoExecuteRestoredTasks())
 	    mTaskExecutor.executeQueue();
     }

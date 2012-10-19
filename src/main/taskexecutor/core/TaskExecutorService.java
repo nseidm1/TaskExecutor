@@ -24,21 +24,26 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
     public  	     static final int                       SERVICE_MODE_CALLBACK_INCONSIDERATE = 0;
     public  	     static final int                       SERVICE_MODE_CALLBACK_DEPENDENT     = 1;
     public 	     static final int                       RETAIN_CURRENT_SERVICE_MODE         = 2;
-    private          static    	  int                       CURRENT_SERVICE_MODE                = SERVICE_MODE_CALLBACK_DEPENDENT;
+    private volatile static    	  int                       CURRENT_SERVICE_MODE                = SERVICE_MODE_CALLBACK_DEPENDENT;
     public           static final int                       AUTOEXEC_MODE_DISABLED              = 0;
     public           static final int                       AUTOEXEC_MODE_ENABLED               = 1;
     public           static final int                       RETAIN_CURRENT_AUTOEXEC_MODE        = 2;
-    private          static       int                       CURRENT_AUTOEXEC_MODE               = AUTOEXEC_MODE_DISABLED;
+    private volatile static       int                       CURRENT_AUTOEXEC_MODE               = AUTOEXEC_MODE_DISABLED;
     public  	     static final String                    SERVICE_MODE_KEY                    = "SERVICE_MODE_KEY";
     public           static final String                    AUTOEXEC_MODE_KEY                   = "AUTO_EXECUTE_MODE_KEY";
   
     /**
-     * @param MODE
-     * Provide a mode, either CALLBACK_INCONSIDERATE, CALLBACK_DEPENDENT, or RETAIN_CURRENT_MODE.
+     * @param SERVICE_MODE
+     * Provide a Service mode, either SERVICE_MODE_CALLBACK_INCONSIDERATE, or SERVICE_MODE_CALLBACK_DEPENDENT.
      * This tells the service how to behave if it's restarted.
-     * CALLBACK_DEPENDENT will not execute the queue and will wait for an
-     * activity for a hard callback to be available. CALLBACK_INCONSIDERATE will
+     * SERVICE_MODE_CALLBACK_DEPENDENT will not execute the queue and will wait for an
+     * activity for a hard callback to be available. SERVICE_MODE_CALLBACK_INCONSIDERATE will
      * execute the queue without a hard callback being available.
+     * @param AUTOEXEC_MODE
+     * Provide an auto execute mode, either AUTOEXEC_MODE_ENABLED, or AUTOEXEC_MODE_DISABLED. The service 
+     * will auto execute queued Tasks every five seconds automatically without needing to manually call 
+     * executeTasks().
+     * Provide
      * @param context
      * @param ExecutorReferenceCallback
      * The interface that returns a reference to the TaskExecutor.
@@ -53,12 +58,10 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	    					ExecutorReferenceCallback executorReferenceCallback, 
 	    					TasksRestoredCallback     tasksRestoredCallback) {
 	mExecutorReferenceCallback = executorReferenceCallback;
-	mTasksRestoredCallback   = tasksRestoredCallback;
-	if (SERVICE_MODE == RETAIN_CURRENT_SERVICE_MODE)	   
-	    SERVICE_MODE = CURRENT_SERVICE_MODE;
-	if (AUTOEXEC_MODE == RETAIN_CURRENT_AUTOEXEC_MODE)
-	    AUTOEXEC_MODE = CURRENT_AUTOEXEC_MODE;
-	context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY, SERVICE_MODE).
+	mTasksRestoredCallback     = tasksRestoredCallback;
+	SERVICE_MODE      	   = SERVICE_MODE == RETAIN_CURRENT_SERVICE_MODE ? CURRENT_SERVICE_MODE : SERVICE_MODE;
+	AUTOEXEC_MODE 		   = AUTOEXEC_MODE == RETAIN_CURRENT_AUTOEXEC_MODE ? CURRENT_AUTOEXEC_MODE : AUTOEXEC_MODE;    
+	context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY , SERVICE_MODE ).
 	                                                                    putExtra(AUTOEXEC_MODE_KEY, AUTOEXEC_MODE));
     }
 
@@ -68,11 +71,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	    		      int    startId){
 	CURRENT_SERVICE_MODE = intent.getIntExtra(SERVICE_MODE_KEY, SERVICE_MODE_CALLBACK_DEPENDENT);
 	CURRENT_AUTOEXEC_MODE = intent.getIntExtra(AUTOEXEC_MODE_KEY, AUTOEXEC_MODE_DISABLED);
-	if(CURRENT_AUTOEXEC_MODE == AUTOEXEC_MODE_ENABLED){
-	    startAutoExec();
-	} else{
-	    stopAutoExec();
-	}
+	processAutoExec();
 	Log.d(TaskExecutorService.class.getName(), "Current Service Mode: " + CURRENT_SERVICE_MODE);
 	if (mExecutorReferenceCallback != null)
 	    mExecutorReferenceCallback.getTaskExecutorReference(mTaskExecutor);
@@ -96,8 +95,13 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	return Service.START_REDELIVER_INTENT;
     }
     
-    private void startAutoExec(){
-        mHandler.post(autoexecTask);
+    private void processAutoExec(){
+	if(CURRENT_AUTOEXEC_MODE == AUTOEXEC_MODE_ENABLED){
+	    mHandler.removeCallbacks(autoexecTask);
+	    mHandler.post(autoexecTask);
+	} else{
+	    mHandler.removeCallbacks(autoexecTask);
+	}	
     }
     
     private Runnable autoexecTask = new Runnable(){
@@ -108,10 +112,6 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	}
     };
     
-    private void stopAutoExec(){
-	mHandler.removeCallbacks(autoexecTask);
-    }
-
     @Override
     public void onCreate(){
 	super.onCreate();
