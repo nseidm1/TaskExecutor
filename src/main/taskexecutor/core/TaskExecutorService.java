@@ -68,15 +68,17 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	if (mExecutorReferenceCallback != null)
 	    mExecutorReferenceCallback.getTaskExecutorReference(mTaskExecutor);
 	if (mHaveTasksBeenRestored){
-	    mHaveTasksBeenRestored = false;
 	    switch (CURRENT_SERVICE_MODE){
 	    case CALLBACK_INCONSIDERATE:
 		Log.d(TaskExecutorService.class.getName(), "Tasks Executing, Callback Inconsiderate Mode");
 		mTaskExecutor.executeQueue();
+		mHaveTasksBeenRestored = false;
 		break;
 	    case CALLBACK_DEPENDENT:
-		if (mTasksRestoredCallback != null)
+		if (mTasksRestoredCallback != null){
 		    mTasksRestoredCallback.notifyTasksHaveBeenRestored();
+		    mHaveTasksBeenRestored = false;  
+		}
 		break;
 	    }
 	}
