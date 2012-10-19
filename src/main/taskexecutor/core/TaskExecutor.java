@@ -92,6 +92,18 @@ public class TaskExecutor{
     }
     
     /**
+     * This method directly executes the Task, bypassing the queue. Useful for the 
+     * abstract TaskLoader as no callback is needed for the method params. No callback 
+     * will be supplied to the Activity!
+     * @param task
+     * 
+     */
+    public void executeTask(Task task){
+	Future<?> future = mTaskExecutor.submit(task);
+	setInterruptorIfActive(future);
+    }
+    
+    /**
      * @param seconds
      * -1 disables this feature, and it's disabled by default. Set this value 
      * to milliseconds of time. After that amount of time elapses your Task 
