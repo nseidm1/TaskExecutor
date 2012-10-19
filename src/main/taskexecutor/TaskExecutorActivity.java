@@ -27,16 +27,21 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
     protected abstract boolean allowTaskFiness();
 
     /**
-     * Provide a mode, either CALLBACK_INCONSIDERATE, or CALLBACK_DEPENDENT.
+     * Provide a mode, either SERVICE_MODE_CALLBACK_INCONSIDERATE, or SERVICE_MODE_CALLBACK_DEPENDENT.
      * This tells the service how to behave if it's restarted.
-     * CALLBACK_DEPENDENT will not execute the queue and will wait for an
-     * activity for a hard callback to be available. CALLBACK_INCONSIDERATE will
+     * SERVICE_MODE_CALLBACK_DEPENDENT will not execute the queue and will wait for an
+     * activity for a hard callback to be available. SERVICE_MODE_CALLBACK_INCONSIDERATE will
      * execute the queue without a hard callback being available.
      * 
-     * @return return either TaskExecutorService.CALLBACK_INCONSIDERATE or
-     * TaskExecutorService.CALLBACK_DEPENDENT.
+     * @return return either TaskExecutorService.SERVICE_MODE_CALLBACK_INCONSIDERATE or
+     * TaskExecutorService.SERVICE_MODE_CALLBACK_DEPENDENT.
      */
     protected abstract int specifyServiceMode();
+    
+    /**
+     *
+     */
+    protected abstract int specifyAutoexecMode();
 
     /**
      * @return When the Service is in CALLBACK_DEPENDENT mode, and Tasks are
@@ -57,7 +62,7 @@ public abstract class TaskExecutorActivity extends FragmentActivity implements T
     @Override
     public void onResume(){
 	super.onResume();
-	TaskExecutorService.requestExecutorReference(specifyServiceMode(), this, this, this);
+	TaskExecutorService.requestExecutorReference(specifyServiceMode(), specifyAutoexecMode(), this, this, this);
     }
 
     @Override

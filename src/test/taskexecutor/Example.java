@@ -181,9 +181,14 @@ public class Example extends TaskExecutorActivity implements OnClickListener{
 
     @Override
     public int specifyServiceMode(){
-	return TaskExecutorService.CALLBACK_DEPENDENT;
+	return TaskExecutorService.SERVICE_MODE_CALLBACK_DEPENDENT;
     }
 
+    @Override
+    public int specifyAutoexecMode(){
+	return TaskExecutorService.AUTOEXEC_MODE_DISABLED;
+    }
+    
     @Override
     public boolean autoExecuteRestoredTasks(){
 	//Aside from the javadoc it's worthwhile to mention here the following. 

@@ -1,38 +1,37 @@
 package main.taskexecutor.core;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
-import main.taskexecutor.callbacks.TasksRestoredCallback;
-import main.taskexecutor.callbacks.ServiceExecutorCallback;
-import main.taskexecutor.callbacks.ExecutorReferenceCallback;
-import main.taskexecutor.classes.Log;
-import main.taskexecutor.helpers.QueueOnDiskHelper;
-import main.taskexecutor.helpers.QueueToDiskTask;
-import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.os.IBinder;
+import android.app.*;
+import android.content.*;
+import android.os.*;
+import java.io.*;
+import java.lang.reflect.*;
+import java.util.concurrent.*;
+import main.taskexecutor.callbacks.*;
+import main.taskexecutor.classes.*;
+import main.taskexecutor.helpers.*;
 
 /**
  * @author Noah Seidman
  */
 public class TaskExecutorService extends Service implements ServiceExecutorCallback{
-    private              	  boolean                   mHaveTasksBeenRestored     = false;
-    private              	  TaskExecutor              mTaskExecutor              = new TaskExecutor(this);
-    private              	  Executor                  mQueuePersister            = Executors.newSingleThreadExecutor();
-    private              	  QueueToDiskTask           mQueueToDisk               = new QueueToDiskTask(mTaskExecutor, this);
-    private volatile static       TasksRestoredCallback     mTasksRestoredCallback     = null;
-    private volatile static       ExecutorReferenceCallback mExecutorReferenceCallback = null;
-    public  	     static final int                       CALLBACK_INCONSIDERATE     = 0;
-    public  	     static final int                       CALLBACK_DEPENDENT         = 1;
-    public 	     static final int                       RETAIN_CURRENT_MODE        = 2;
-    private          static    	  int                       CURRENT_SERVICE_MODE       = CALLBACK_DEPENDENT;
-    public  	     static final String                    SERVICE_MODE_KEY           = "SERVICE_MODE_KEY";
-
+    private                       Handler                   mHandler                            = new Handler(Looper.getMainLooper());
+    private              	  boolean                   mHaveTasksBeenRestored              = false;
+    private              	  TaskExecutor              mTaskExecutor                       = new TaskExecutor(this);
+    private              	  Executor                  mQueuePersister                     = Executors.newSingleThreadExecutor();
+    private              	  QueueToDiskTask           mQueueToDisk                        = new QueueToDiskTask(mTaskExecutor, this);
+    private volatile static       TasksRestoredCallback     mTasksRestoredCallback              = null;
+    private volatile static       ExecutorReferenceCallback mExecutorReferenceCallback          = null;
+    public  	     static final int                       SERVICE_MODE_CALLBACK_INCONSIDERATE = 0;
+    public  	     static final int                       SERVICE_MODE_CALLBACK_DEPENDENT     = 1;
+    public 	     static final int                       RETAIN_CURRENT_SERVICE_MODE         = 2;
+    private          static    	  int                       CURRENT_SERVICE_MODE                = SERVICE_MODE_CALLBACK_DEPENDENT;
+    public           static final int                       AUTOEXEC_MODE_DISABLED              = 0;
+    public           static final int                       AUTOEXEC_MODE_ENABLED               = 1;
+    public           static final int                       RETAIN_CURRENT_AUTOEXEC_MODE        = 2;
+    private          static       int                       CURRENT_AUTOEXEC_MODE               = AUTOEXEC_MODE_DISABLED;
+    public  	     static final String                    SERVICE_MODE_KEY                    = "SERVICE_MODE_KEY";
+    public           static final String                    AUTOEXEC_MODE_KEY                   = "AUTO_EXECUTE_MODE_KEY";
+  
     /**
      * @param MODE
      * Provide a mode, either CALLBACK_INCONSIDERATE, CALLBACK_DEPENDENT, or RETAIN_CURRENT_MODE.
@@ -48,33 +47,40 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
      * service after a restart. This interface is ONLY called when the service 
      * is in CALLBACK_DEPENDENT mode.
      */
-    public static void requestExecutorReference(int                       MODE, 
+    public static void requestExecutorReference(int                       SERVICE_MODE, 
+                                                int                       AUTOEXEC_MODE,
 	    					Context                   context, 
 	    					ExecutorReferenceCallback executorReferenceCallback, 
 	    					TasksRestoredCallback     tasksRestoredCallback) {
 	mExecutorReferenceCallback = executorReferenceCallback;
 	mTasksRestoredCallback   = tasksRestoredCallback;
-	if (MODE == RETAIN_CURRENT_MODE)	   
-	    MODE = CURRENT_SERVICE_MODE;
-	context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY, MODE));
+	if (SERVICE_MODE == RETAIN_CURRENT_SERVICE_MODE)	   
+	    SERVICE_MODE = CURRENT_SERVICE_MODE;
+	context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY, SERVICE_MODE).putExtra(AUTOEXEC_MODE_KEY, AUTOEXEC_MODE));
     }
 
     @Override
     public int onStartCommand(Intent intent, 
 	    		      int    flags, 
 	    		      int    startId){
-	CURRENT_SERVICE_MODE = intent.getIntExtra(SERVICE_MODE_KEY, CALLBACK_DEPENDENT);
+	CURRENT_SERVICE_MODE = intent.getIntExtra(SERVICE_MODE_KEY, SERVICE_MODE_CALLBACK_DEPENDENT);
+	CURRENT_AUTOEXEC_MODE = intent.getIntExtra(AUTOEXEC_MODE_KEY, AUTOEXEC_MODE_DISABLED);
+	if(CURRENT_AUTOEXEC_MODE == AUTOEXEC_MODE_ENABLED){
+	    startAutoExec();
+	} else{
+	    stopAutoExec();
+	}
 	Log.d(TaskExecutorService.class.getName(), "Current Service Mode: " + CURRENT_SERVICE_MODE);
 	if (mExecutorReferenceCallback != null)
 	    mExecutorReferenceCallback.getTaskExecutorReference(mTaskExecutor);
 	if (mHaveTasksBeenRestored){
 	    switch (CURRENT_SERVICE_MODE){
-	    case CALLBACK_INCONSIDERATE:
+	    case SERVICE_MODE_CALLBACK_INCONSIDERATE:
 		Log.d(TaskExecutorService.class.getName(), "Tasks Executing, Callback Inconsiderate Mode");
 		mTaskExecutor.executeQueue();
 		mHaveTasksBeenRestored = false;
 		break;
-	    case CALLBACK_DEPENDENT:
+	    case SERVICE_MODE_CALLBACK_DEPENDENT:
 		if (mTasksRestoredCallback != null){
 		    mTasksRestoredCallback.notifyTasksHaveBeenRestored();
 		    mHaveTasksBeenRestored = false;  
@@ -85,6 +91,22 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	mExecutorReferenceCallback = null;
 	mTasksRestoredCallback = null;
 	return Service.START_REDELIVER_INTENT;
+    }
+    
+    private void startAutoExec(){
+        mHandler.post(autoexecTask);
+    }
+    
+    private Runnable autoexecTask = new Runnable(){
+	@Override
+	public void run(){
+	    mTaskExecutor.executeQueue();
+	    mHandler.postDelayed(this, 5000);
+	}
+    };
+    
+    private void stopAutoExec(){
+	mHandler.removeCallbacks(autoexecTask);
     }
 
     @Override
