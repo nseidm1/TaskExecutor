@@ -17,7 +17,7 @@ import android.content.Context;
 import android.os.Parcel;
 
 /**
- * @author nseidm1
+ * @author Noah Seidman
  */
 public class QueueOnDiskHelper{
     /**

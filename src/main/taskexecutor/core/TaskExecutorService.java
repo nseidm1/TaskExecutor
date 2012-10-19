@@ -18,7 +18,7 @@ import android.content.Intent;
 import android.os.IBinder;
 
 /**
- * @author nseidm1
+ * @author Noah Seidman
  */
 public class TaskExecutorService extends Service implements ServiceExecutorCallback{
     private              	  boolean                   mHaveTasksBeenRestored     = false;

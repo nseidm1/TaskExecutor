@@ -7,6 +7,9 @@ import main.taskexecutor.core.TaskExecutor;
 import main.taskexecutor.core.TaskExecutorService;
 import android.support.v4.app.DialogFragment;
 
+/**
+ * @author Noah Seidman
+ */
 public abstract class TaskExecutorDialogFragment extends DialogFragment implements TaskCompletedCallback, 
 								       		   ServiceActivityCallback,
 								       		   ExecutorReferenceCallback{

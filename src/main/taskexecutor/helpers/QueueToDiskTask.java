@@ -5,6 +5,9 @@ import main.taskexecutor.classes.Log;
 import main.taskexecutor.core.TaskExecutor;
 import main.taskexecutor.core.TaskExecutorService;
 
+/**
+ * @author Noah Seidman
+ */
 public class QueueToDiskTask implements Runnable{
     private TaskExecutor        mTaskExecutor         = null;
     private TaskExecutorService mTaskExecutorService  = null;

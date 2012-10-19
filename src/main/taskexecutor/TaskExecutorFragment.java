@@ -7,6 +7,9 @@ import main.taskexecutor.core.TaskExecutor;
 import main.taskexecutor.core.TaskExecutorService;
 import android.support.v4.app.Fragment;
 
+/**
+ * @author Noah Seidman
+ */
 public abstract class TaskExecutorFragment extends Fragment implements TaskCompletedCallback, 
 								       ServiceActivityCallback,
 								       ExecutorReferenceCallback{

@@ -8,7 +8,7 @@ import main.taskexecutor.core.TaskExecutorService;
 import android.support.v4.app.FragmentActivity;
 
 /**
- * @author nseidm1
+ * @author Noah Seidman
  */
 public abstract class TaskExecutorActivity extends FragmentActivity implements TaskCompletedCallback, 
 									       ServiceActivityCallback,

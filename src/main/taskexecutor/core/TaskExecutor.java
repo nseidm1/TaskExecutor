@@ -14,7 +14,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 /**
- * @author nseidm1
+ * @author Noah Seidman
  */
 public class TaskExecutor{
     private Handler                   mHandler                   = new Handler(Looper.getMainLooper());

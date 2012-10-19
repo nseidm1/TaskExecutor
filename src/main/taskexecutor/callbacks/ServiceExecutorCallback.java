@@ -1,7 +1,7 @@
 package main.taskexecutor.callbacks;
 
 /**
- * @author nseidm1
+ * @author Noah Seidman
  */
 public interface ServiceExecutorCallback {
     public void queueModified();

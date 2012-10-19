@@ -10,6 +10,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.content.Loader;
 
+/**
+ * @author Noah Seidman
+ */
 public abstract class TaskLoader<D> extends Loader<D> implements ExecutorReferenceCallback{
     
     private TaskExecutor mTaskExecutor  = null;

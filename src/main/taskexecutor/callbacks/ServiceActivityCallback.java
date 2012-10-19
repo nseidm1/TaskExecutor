@@ -1,5 +1,8 @@
 package main.taskexecutor.callbacks;
 
+/**
+ * @author Noah Seidman
+ */
 public interface ServiceActivityCallback{
     /**
      * This only gets called if the Tasks are restored from disk and the Service is in CALLBACK_DEPENDENT mode. 

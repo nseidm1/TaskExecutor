@@ -9,7 +9,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * @author nseidm1
+ * @author Noah Seidman
  */
 public abstract class Task implements Runnable{
     private TaskExecutor          mTaskExecutor                     = null;

@@ -3,7 +3,7 @@ package main.taskexecutor.callbacks;
 import android.os.Bundle;
 
 /**
- * @author nseidm1
+ * @author Noah Seidman
  */
 public interface TaskCompletedCallback {
     /**

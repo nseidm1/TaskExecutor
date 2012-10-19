@@ -8,7 +8,7 @@ import main.taskexecutor.core.TaskExecutor;
 import android.os.Handler;
 
 /**
- * @author nseidm1
+ * @author Noah Seidman
  */
 public class QueueInMemoryHelper{
     public static void setCallbackForAllQueuedTasks(Vector<Task> queue, TaskCompletedCallback completeCallback){

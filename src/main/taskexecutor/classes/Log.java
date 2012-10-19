@@ -1,5 +1,8 @@
 package main.taskexecutor.classes;
 
+/**
+ * @author Noah Seidman
+ */
 public class Log{
     static boolean enabled = false;
 
