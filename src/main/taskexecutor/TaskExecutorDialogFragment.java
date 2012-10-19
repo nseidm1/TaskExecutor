@@ -17,7 +17,11 @@ public abstract class TaskExecutorDialogFragment extends DialogFragment implemen
     @Override
     public void onResume(){
 	super.onResume();
-	TaskExecutorService.requestExecutorReference(TaskExecutorService.RETAIN_CURRENT_SERVICE_MODE, TaskExecutorService.RETAIN_CURRENT_AUTOEXEC_MODE, getActivity(), this, null);
+	TaskExecutorService.requestExecutorReference(TaskExecutorService.RETAIN_CURRENT_SERVICE_MODE, 
+						     TaskExecutorService.RETAIN_CURRENT_AUTOEXEC_MODE, 
+						     getActivity(), 
+						     this, 
+						     null);
     }
     
     @Override
