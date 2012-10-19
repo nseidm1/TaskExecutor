@@ -23,7 +23,7 @@ public abstract class TaskLoader<D> extends Loader<D> implements ExecutorReferen
      * Just like Tasks, define your asynchronous code needed to generate the data you want 
      * the Loader to manage. Return the data from the method you define.
      * @return
-     * The specified type defined in the subclass paraterization.
+     * The specified type defined in the subclass parameterization.
      * @throws Exception
      * Throw exception so the loader callback always gets hit even with null.
      */
