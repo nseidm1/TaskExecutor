@@ -13,7 +13,7 @@ import android.support.v4.app.DialogFragment;
 public abstract class TaskFragment extends DialogFragment implements ExecutorReferenceCallback{
 
     public static final String       TAG           = TaskFragment.class.getName();
-    protected           TaskExecutor mTaskExecutor = null;
+	protected           TaskExecutor mTaskExecutor = null;
 
     @Override
     public void onResume(){
