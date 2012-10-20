@@ -15,9 +15,10 @@ import android.support.v4.content.Loader;
  */
 public abstract class TaskLoader<D> extends Loader<D> implements ExecutorReferenceCallback{
     
-    private TaskExecutor mTaskExecutor  = null;
+    public  static final String       TAG           = TaskLoader.class.getName();
+	private              TaskExecutor mTaskExecutor = null;
     //We need a handler so deliverResults is called on the ui thread.
-    private Handler	 mHandler 	= new Handler(Looper.getMainLooper());
+    private              Handler	  mHandler      = new Handler(Looper.getMainLooper());
 
     /**
      * Just like Tasks, define your asynchronous code needed to generate the data you want 
