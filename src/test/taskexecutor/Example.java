@@ -1,7 +1,7 @@
 package test.taskexecutor;
 
 import main.taskexecutor.R;
-import main.taskexecutor.TaskExecutorActivity;
+import main.taskexecutor.TaskActivity;
 import main.taskexecutor.core.TaskExecutor;
 import main.taskexecutor.core.TaskExecutorService;
 import test.taskexecutor.tasks.GetTask;
@@ -25,7 +25,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Example extends TaskExecutorActivity implements OnClickListener{
+public class Example extends TaskActivity implements OnClickListener{
     
     private   	 	 GetTask  postTask                  = null;
     private static final String   mDefaultUrl 	            = "http://m.google.com";

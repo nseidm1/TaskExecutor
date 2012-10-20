@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentActivity;
 /**
  * @author Noah Seidman
  */
-public abstract class TaskExecutorActivity extends FragmentActivity implements TaskCompletedCallback, 
+public abstract class TaskActivity extends FragmentActivity implements TaskCompletedCallback, 
 									       TasksRestoredCallback,
 									       ExecutorReferenceCallback{
     protected TaskExecutor mTaskExecutor;
