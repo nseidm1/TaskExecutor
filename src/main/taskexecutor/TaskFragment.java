@@ -12,21 +12,20 @@ import main.taskexecutor.core.*;
  */
 public abstract class TaskFragment extends Fragment implements ExecutorReferenceCallback{
 
-	public static final String       TAG           = TaskFragment.class.getName();
-	protected           TaskExecutor mTaskExecutor = null;
-
-	@Override
-	public void onActivityCreated(Bundle bundle){
-		super.onActivityCreated(bundle);
-		TaskExecutorService.requestExecutorReference(TaskExecutorService.RETAIN_CURRENT_SERVICE_MODE, 
-							     TaskExecutorService.RETAIN_CURRENT_AUTOEXEC_MODE, 
-							     getActivity(), 
-							     this, 
-							     null);
-	    }
-
-	@Override
-	public void getTaskExecutorReference(TaskExecutor taskExecutor){
-		mTaskExecutor = taskExecutor;
-	    }
+    public static final String       TAG           = TaskFragment.class.getName();
+    protected           TaskExecutor mTaskExecutor = null;
+    
+    @Override
+    public void onActivityCreated(Bundle bundle){
+	super.onActivityCreated(bundle);
+	TaskExecutorService.requestExecutorReference(TaskExecutorService.RETAIN_CURRENT_SERVICE_MODE, 
+						     TaskExecutorService.RETAIN_CURRENT_AUTOEXEC_MODE, 
+						     getActivity(), 
+						     this, 
+						     null);
     }
+    @Override
+    public void getTaskExecutorReference(TaskExecutor taskExecutor){
+	mTaskExecutor = taskExecutor;
+    }
+}
