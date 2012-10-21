@@ -15,7 +15,7 @@ The TaskExecutor is overwhelmingly superior to AsyncTask. It's a super custom, r
 <b>TaskActivity</b><br>
 The included abstract TaskActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. 
 
-TaskActivity has three abstract methods, allowTaskFiness() and specifyServiceMode(), autoExecuteRestoredTasks(). 
+TaskActivity has three abstract methods, allowTaskFiness(), specifyServiceMode(), and autoExecuteRestoredTasks(). 
 
 The the Service has two MODEs, SERVICE_MODE_CALLBACK_INCONSIDERATE and SERVICE_MODE_CALLBACK_DEPENDENT which are pertinent when Tasks are restored from disk 
 after the Service is killed by the OS; oh did I mention that Tasks survive process termintion :-) 
