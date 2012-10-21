@@ -15,7 +15,7 @@ The TaskExecutor is overwhelmingly superior to AsyncTask. It's a super custom, r
 <b>TaskActivity</b><br>
 The included abstract TaskActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. 
 
-TaskActivity has three abstract methods, allowTaskFiness() and specifyServiceMode(), autoExecuteRestoredTasks(). 
+TaskActivity has three abstract methods, allowTaskFiness(), specifyServiceMode(), and autoExecuteRestoredTasks(). 
 
 The the Service has two MODEs, SERVICE_MODE_CALLBACK_INCONSIDERATE and SERVICE_MODE_CALLBACK_DEPENDENT which are pertinent when Tasks are restored from disk 
 after the Service is killed by the OS; oh did I mention that Tasks survive process termintion :-) 
@@ -31,7 +31,7 @@ to post back to the ui thread in the currently visible Activity. It doesn't matt
 for all Tasks will always be the current visibile Activity. ExecutorReferenceCallback is how the service provides 
 a reference of TaskExecutor to the current Activity.
 
-Tasks Are runnables with additional helper methods to facilitate management by the TaskExecutor facility. 
+Tasks are runnables with additional helper methods to facilitate management by the TaskExecutor facility. 
 Task is an abstract class you'll have to extend, and cannot be anonymous. Anonymous Tasks cannot be restored from 
 their persisted state on disk. If Tasks are implemented properly, and the Service is killed by the system, all executed 
 Tasks can be restored from a persisted state on disk; and depending on the Service MODE can even continue execution 
@@ -42,7 +42,7 @@ a Runnable. If designed as a static inner class do not reference stuff outside o
 within the Task itself to gracefully accommodate restoration from disk, the launching of new activities, and just 
 for general good coding practice. 
 
-The TaskExecutor is managed by a Service, but accessible in a unique way. TaskExecutorActivity makes a static request to the Service requesting a callback with a reference to 
+The TaskExecutor is managed by a Service, but accessible in a unique way. TaskActivity makes a static request to the Service requesting a callback with a reference to 
 the TaskExecutor. So it's a service, or is it a singleton, who know but it looks cool! :-)
 
 Tasks have 12 public methods:<br>
