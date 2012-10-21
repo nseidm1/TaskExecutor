@@ -188,10 +188,8 @@ public class Example extends TaskActivity implements OnClickListener{
     @Override
     public boolean autoExecuteRestoredTasks(){
 	//Aside from the javadoc it's worthwhile to mention here the following. 
-	//Returning true here is only useful when the Service is in CALLBACK_DEPENDENT 
-	//mode. Otherwise this callback will not be hit, and the Service will simply 
-	//execute the Tasks automatically, without waiting, when Tasks are restore after 
-	//a killed Service.
+	//Returning true here is only useful when the Service is in SERVICE_MODE_CALLBACK_DEPENDENT 
+	//mode. Otherwise this value is not useful.
 	return true;
     }
     @Override
