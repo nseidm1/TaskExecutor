@@ -17,10 +17,10 @@ The included abstract TaskExecutorActivity class makes for easy use. Simply exte
 TaskExecutorActivity has three abstract methods, allowTaskFiness() and specifyServiceMode(), autoExecuteRestoredTasks(). 
 Tasks can be finessed to maintain a callback to the currently visible Activity, 
 the the Service has two MODEs, SERVICE_MODE_CALLBACK_INCONSIDERATE and SERVICE_MODE_CALLBACK_DEPENDENT which are pertinent when Tasks are restored from disk 
-after the Service is killed by the os; oh did I mention that Tasks survive process termintion and automatically restore your Tasks :-) 
+after the Service is killed by the os; oh did I mention that Tasks survive process termintion :-) 
 When the Service is in SERVICE_MODE_CALLBACK_INCONSIDERATE mode 
 the Service will auto execute restored Tasks without a valid ui callback. In SERVICE_MODE_CALLBACK_DEPENDENT mode the Service 
-wait for the the next activity to assign a callback, and if you set autoExecuteRestoredTasks to true the restore 
+wait for the the next activity to assign a callback, and if you set autoExecuteRestoredTasks to true the restored 
 Tasks will be auto executed.
 
 TaskExecutorActivity has a couple of interfaces used by the Service. TasksRestoredCallback, TaskCompletedCallback, 
