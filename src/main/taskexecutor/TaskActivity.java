@@ -13,6 +13,8 @@ import android.support.v4.app.FragmentActivity;
 public abstract class TaskActivity extends FragmentActivity implements TaskCompletedCallback, 
 									       TasksRestoredCallback,
 									       ExecutorReferenceCallback{
+    private boolean mTaskExecutorAvailable = false;
+    
     protected TaskExecutor mTaskExecutor;
 
     /**
@@ -54,13 +56,15 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
      * Activity launch?
      */
     protected abstract boolean autoExecuteRestoredTasks();
+    
+    protected boolean isTaskExecutorAvailable(){
+	return mTaskExecutorAvailable;
+    }
 
     @Override
     public void onPause(){
 	super.onPause();
-	// Theoretically the activity can be finishing before the request for
-	// the executor reference is received.
-	if (mTaskExecutor != null)
+	if (mTaskExecutorAvailable)
 	    mTaskExecutor.restrain(allowTaskFiness());
     }
 
@@ -73,6 +77,7 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
     @Override
     public void getTaskExecutorReference(TaskExecutor taskExecutor){
 	mTaskExecutor = taskExecutor;
+	mTaskExecutorAvailable = true;
 	mTaskExecutor.finess(this);
     }
 
