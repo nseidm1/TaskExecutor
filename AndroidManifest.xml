@@ -5,12 +5,13 @@
     <uses-sdk android:minSdkVersion="8" android:maxSdkVersion="16" android:targetSdkVersion="16"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <application>
-        <activity android:windowSoftInputMode="stateHidden" android:name="test.taskexecutor.Example">
+        <activity android:launchMode="singleTask" android:windowSoftInputMode="stateHidden" android:name="test.taskexecutor.Example">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+	<activity android:windowSoftInputMode="stateHidden" android:name="test.taskexecutor.ExampleTwo"/>
         <service android:name=".core.TaskExecutorService"/>
     </application>
 </manifest>

@@ -4,7 +4,6 @@ import android.annotation.*;
 import android.content.*;
 import android.graphics.*;
 import android.os.*;
-import android.support.v4.app.*;
 import android.text.*;
 import android.view.*;
 import android.view.View.*;
@@ -127,8 +126,7 @@ public class Example extends TaskActivity implements OnClickListener{
 	    mTaskExecutor.clearQueue();
 	    manageExecuteTasksButton();
 	} else if (v.getId() == R.id.new_activity){
-	    Intent intent = new Intent(this, Example.class);
-	    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+	    Intent intent = new Intent(this, ExampleTwo.class);
 	    startActivity(intent);
 	} else if (v.getId() == R.id.new_dialog){
 	    ExampleDialog exampleDialog = ExampleDialog.newInstance();
