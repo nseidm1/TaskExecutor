@@ -5,9 +5,8 @@ package main.taskexecutor.callbacks;
  */
 public interface TasksRestoredCallback{
     /**
-     * This only gets called if the Tasks are restored from disk and the Service is in CALLBACK_DEPENDENT mode. 
-     * If the Service is in CALLBACK_INCONSIDERATE 
-     * mode they will just be executed by the Service without a valid ui callback.
+     * This only gets called if Tasks are restored from disk and the Service is in 
+     * SERVICE_MODE_CALLBACK_DEPENDENT mode.
      */
     public void notifyTasksHaveBeenRestored();
 }

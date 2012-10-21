@@ -132,7 +132,6 @@ public class Example extends TaskActivity implements OnClickListener{
 	    ExampleDialog exampleDialog = ExampleDialog.newInstance();
 	    exampleDialog.show(getSupportFragmentManager(), ExampleDialog.class.getName());
 	}
-
     }
 
     @Override

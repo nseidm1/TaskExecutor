@@ -24,6 +24,7 @@ public abstract class TaskFragment extends Fragment implements ExecutorReference
 						     this, 
 						     null);
     }
+    
     @Override
     public void getTaskExecutorReference(TaskExecutor taskExecutor){
 	mTaskExecutor = taskExecutor;

@@ -40,8 +40,7 @@ public abstract class TaskLoader<D> extends Loader<D> implements ExecutorReferen
 	//We override the run method so the Task doesn't call the internal post() method; there's 
 	//reasoning to this that follows. We will not be using the Task's callback that is managed 
 	//by the TaskExecutor. We want to use the Task and the TaskExecutor to consolidate all 
-	//asynchronous Task execution, but we want the callback to be here specific to the Loader 
-	//design pattern.
+	//asynchronous Task execution, but we want the ui post to be here.
 	@Override
 	public void task() throws Exception{}
 	@Override

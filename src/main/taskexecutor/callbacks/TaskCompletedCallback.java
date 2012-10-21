@@ -7,11 +7,8 @@ import android.os.Bundle;
  */
 public interface TaskCompletedCallback {
     /**
-     * @param task
-     * The Task that was being executed.
-     * @param success
-     * If no exception was thrown this will be true and exception will be null,
-     * otherwise this will be false and exception will have information.
+     * @param bundle
+     * The bundle from the Task that completed execution.
      * @param exception
      * Null if the task did not throw an exception.
      */
