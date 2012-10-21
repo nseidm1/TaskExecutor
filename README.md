@@ -12,12 +12,13 @@ With countless options, TaskExecutor really changes the game of asynchronous exe
 
 The TaskExecutor is overwhelmingly superior to AsyncTask. It's a super custom, rock solid, awesome implementation of a robust, consolidated, and centralized asynchronous Task execution mechanism.
 
-<b>TaskExecutorActivity</b><br>
-The included abstract TaskExecutorActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. 
-TaskExecutorActivity has three abstract methods, allowTaskFiness() and specifyServiceMode(), autoExecuteRestoredTasks(). 
-Tasks can be finessed to maintain a callback to the currently visible Activity, 
-the the Service has two MODEs, SERVICE_MODE_CALLBACK_INCONSIDERATE and SERVICE_MODE_CALLBACK_DEPENDENT which are pertinent when Tasks are restored from disk 
-after the Service is killed by the os; oh did I mention that Tasks survive process termintion :-) 
+<b>TaskActivity</b><br>
+The included abstract TaskActivity class makes for easy use. Simply extend the class and utilize the protected mTaskExecutor reference to execute Tasks. 
+
+TaskActivity has three abstract methods, allowTaskFiness() and specifyServiceMode(), autoExecuteRestoredTasks(). 
+
+The the Service has two MODEs, SERVICE_MODE_CALLBACK_INCONSIDERATE and SERVICE_MODE_CALLBACK_DEPENDENT which are pertinent when Tasks are restored from disk 
+after the Service is killed by the OS; oh did I mention that Tasks survive process termintion :-) 
 When the Service is in SERVICE_MODE_CALLBACK_INCONSIDERATE mode 
 the Service will auto execute restored Tasks without a valid ui callback. In SERVICE_MODE_CALLBACK_DEPENDENT mode the Service 
 wait for the the next activity to assign a callback, and if you set autoExecuteRestoredTasks to true the restored 
@@ -27,13 +28,13 @@ TaskExecutorActivity has a couple of interfaces used by the Service. TasksRestor
 and ExecutorReferenceCallback. The names really say it all. TasksRestoredCallback informs the current activity 
 that Tasks have been restored from disk. TaskCompletedCallback is a hard callback gracefully managed for each Task 
 to post back to the ui thread in the currently visible Activity. It doesn't matter if you start a new Activity, the callback 
-in all Tasks will always be the current visibile Activity. ExecutorReferenceCallback is how the service provides 
+for all Tasks will always be the current visibile Activity. ExecutorReferenceCallback is how the service provides 
 a reference of TaskExecutor to the current Activity.
 
 Tasks Are runnables with additional helper methods to facilitate management by the TaskExecutor facility. 
 Task is an abstract class you'll have to extend, and cannot be anonymous. Anonymous Tasks cannot be restored from 
 their persisted state on disk. If Tasks are implemented properly, and the Service is killed by the system, all executed 
-Tasks will be restored from a persisted state on disk; and depending on the Service MODE can even continue execution 
+Tasks can be restored from a persisted state on disk; and depending on the Service MODE can even continue execution 
 automatically or wait for an Activity to launch to provide a ui callback.
 
 The heart of Task is the abstract method task() that you'll override to define what your Task does. The same pattern as defining 
@@ -59,12 +60,12 @@ Tasks have 12 public methods:<br>
 12) The getter for 11.
 
 The only method you may want to use is setBundle(), all others are managed by the TaskExecutor and likely do not need to be used directly. 
-9, and 10 may come in handy, and are self explanatory in the method name.
+9, and 11 may come in handy, and are self explanatory in the method name.
 
 <b>Tips</b><br>
 1) The TaskExecutor has a queue for you to bulk execute Tasks. You use the addToQueue() and removeFromQueue() methods, 
 followed by the executeQueue() method.<br>
-2) If you add items to the queue after calling executeQueue(), you'll have to call executeQueue() at a future time. <br>
+2) If you add items to the queue after calling executeQueue(), you'll have to call executeQueue() at a future time.<br>
 4) TaskExecutor has the findTaskByTag(String TAG) method, so you can keep a local List of Task TAGs, and locate them is needed<br>
 5) Tasks also take a bundle. I highly encourage proper design, your Task should be designed to perform a discrete operation on the Bundle's data.
 <br><br>
