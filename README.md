@@ -42,7 +42,7 @@ a Runnable. If designed as a static inner class do not reference stuff outside o
 within the Task itself to gracefully accommodate restoration from disk, the launching of new activities, and just 
 for general good coding practice. 
 
-The TaskExecutor is managed by a Service, but accessible in a unique way. TaskExecutorActivity makes a static request to the Service requesting a callback with a reference to 
+The TaskExecutor is managed by a Service, but accessible in a unique way. TaskActivity makes a static request to the Service requesting a callback with a reference to 
 the TaskExecutor. So it's a service, or is it a singleton, who know but it looks cool! :-)
 
 Tasks have 12 public methods:<br>
