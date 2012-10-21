@@ -1,12 +1,9 @@
 package main.taskexecutor;
 
-import android.app.*;
 import android.os.*;
 import android.support.v4.app.*;
 import main.taskexecutor.callbacks.*;
 import main.taskexecutor.core.*;
-
-import android.support.v4.app.DialogFragment;
 
 /**
  * The TaskDialogFragment will request a reference to the TaskExecutor, but is not designed to get the callback for any 
