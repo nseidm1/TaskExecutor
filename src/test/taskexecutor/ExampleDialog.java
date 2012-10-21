@@ -36,6 +36,7 @@ public class ExampleDialog extends TaskDialogFragment{
     }
     
     public static class DialogTask extends Task{
+	@Override
 	public void task() throws Exception{
 	    SystemClock.sleep(3000);
 	    //Do stuff here.

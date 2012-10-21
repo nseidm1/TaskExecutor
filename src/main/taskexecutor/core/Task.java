@@ -103,7 +103,8 @@ public abstract class Task implements Runnable{
 	}
     }
 
-    private void post(final Exception e, final boolean shouldRemove){
+    private void post(final Exception exception, 
+                      final boolean   shouldRemove){
 	mTaskExecutor.mLock.block();
 	if (shouldRemove)
 	    mTaskExecutor.removeTaskFromQueue(this);
@@ -113,7 +114,7 @@ public abstract class Task implements Runnable{
 		//mTaskExecutor.mTaskCompletedCallback can be null because of 
 		//CALLBACK_INCONSIDERATE mode in the Service.
 		if(mTaskExecutor.mTaskCompletedCallback != null){
-		    mTaskExecutor.mTaskCompletedCallback.onTaskComplete(mBundle, e);
+		    mTaskExecutor.mTaskCompletedCallback.onTaskComplete(mBundle, exception);
 		}
 	    };
 	});
@@ -175,7 +176,8 @@ public abstract class Task implements Runnable{
 	}
 
 	@Override
-	public void writeToParcel(Parcel dest, int flags){
+	public void writeToParcel(Parcel dest, 
+	                          int    flags){
 	    dest.writeString(className                               );
 	    dest.writeString(TAG                                     );
 	    dest.writeInt   (shouldRemoveFromQueueOnSuccess ? 1 : 0  );
