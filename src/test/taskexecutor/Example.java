@@ -1,29 +1,20 @@
 package test.taskexecutor;
 
-import main.taskexecutor.R;
-import main.taskexecutor.TaskActivity;
-import main.taskexecutor.core.TaskExecutor;
-import main.taskexecutor.core.TaskExecutorService;
-import test.taskexecutor.tasks.GetTask;
-import android.annotation.TargetApi;
-import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.view.View;
+import android.annotation.*;
+import android.content.*;
+import android.graphics.*;
+import android.os.*;
+import android.support.v4.app.*;
+import android.text.*;
+import android.view.*;
+import android.view.View.*;
+import android.widget.*;
+import android.widget.CompoundButton.*;
+import main.taskexecutor.*;
+import main.taskexecutor.core.*;
+import test.taskexecutor.tasks.*;
+
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class Example extends TaskActivity implements OnClickListener{
     
@@ -53,6 +44,7 @@ public class Example extends TaskActivity implements OnClickListener{
 	((Button) findViewById(R.id.kill_example)).setOnClickListener(this);
 	((Button) findViewById(R.id.empty_queue)).setOnClickListener(this);
 	((Button) findViewById(R.id.new_activity)).setOnClickListener(this);
+	((Button) findViewById(R.id.new_dialog)).setOnClickListener(this);
 	
 	EditText url = ((EditText)findViewById(R.id.url));
 	url.addTextChangedListener(new TextWatcher()
@@ -138,6 +130,9 @@ public class Example extends TaskActivity implements OnClickListener{
 	    Intent intent = new Intent(this, Example.class);
 	    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 	    startActivity(intent);
+	} else if (v.getId() == R.id.new_dialog){
+	    ExampleDialog exampleDialog = ExampleDialog.newInstance();
+	    exampleDialog.show(getSupportFragmentManager(), ExampleDialog.class.getName());
 	}
 
     }
@@ -159,8 +154,11 @@ public class Example extends TaskActivity implements OnClickListener{
 	} else if (bundle != null){
 	    mHardCallbackFeedbackArea.setBackgroundColor(Color.GREEN);
 	    mHardCallbackFeedbackArea.setTextColor(Color.BLACK);
-	    Toast.makeText(this, bundle.getString("ResponseCode"), Toast.LENGTH_SHORT).show();
 	    mHandler.postDelayed(clearHardCallbackFeedbackArea, 1250);
+	}
+	TaskDialogFragment dialog = (TaskDialogFragment) getSupportFragmentManager().findFragmentByTag(bundle.getString("CloseDialog"));
+        if (dialog != null){
+	    dialog.dismissAllowingStateLoss();
 	}
     }
     
