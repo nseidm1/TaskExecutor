@@ -31,7 +31,7 @@ to post back to the ui thread in the currently visible Activity. It doesn't matt
 for all Tasks will always be the current visibile Activity. ExecutorReferenceCallback is how the service provides 
 a reference of TaskExecutor to the current Activity.
 
-Tasks Are runnables with additional helper methods to facilitate management by the TaskExecutor facility. 
+Tasks are runnables with additional helper methods to facilitate management by the TaskExecutor facility. 
 Task is an abstract class you'll have to extend, and cannot be anonymous. Anonymous Tasks cannot be restored from 
 their persisted state on disk. If Tasks are implemented properly, and the Service is killed by the system, all executed 
 Tasks can be restored from a persisted state on disk; and depending on the Service MODE can even continue execution 
