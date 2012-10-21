@@ -68,8 +68,9 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
     public int onStartCommand(Intent intent, 
 	    		      int    flags, 
 	    		      int    startId){
-	CURRENT_SERVICE_MODE = intent.getIntExtra(SERVICE_MODE_KEY, SERVICE_MODE_CALLBACK_DEPENDENT);
-	CURRENT_AUTOEXEC_MODE = intent.getIntExtra(AUTOEXEC_MODE_KEY, AUTOEXEC_MODE_DISABLED);
+	CURRENT_SERVICE_MODE  = intent.getIntExtra(SERVICE_MODE_KEY , SERVICE_MODE_CALLBACK_DEPENDENT);
+	CURRENT_AUTOEXEC_MODE = intent.getIntExtra(AUTOEXEC_MODE_KEY, AUTOEXEC_MODE_DISABLED         );
+	
 	processAutoExec();
 	Log.d(TaskExecutorService.class.getName(), "Current Service Mode: " + CURRENT_SERVICE_MODE);
 	if (mExecutorReferenceCallback != null)
@@ -95,12 +96,9 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
     }
     
     private void processAutoExec(){
-	if(CURRENT_AUTOEXEC_MODE == AUTOEXEC_MODE_ENABLED){
-	    mHandler.removeCallbacks(autoexecTask);
+	mHandler.removeCallbacks(autoexecTask);
+	if(CURRENT_AUTOEXEC_MODE == AUTOEXEC_MODE_ENABLED)
 	    mHandler.post(autoexecTask);
-	} else{
-	    mHandler.removeCallbacks(autoexecTask);
-	}	
     }
     
     private Runnable autoexecTask = new Runnable(){
