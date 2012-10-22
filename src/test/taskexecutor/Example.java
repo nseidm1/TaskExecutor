@@ -99,6 +99,7 @@ public class Example extends TaskActivity implements OnClickListener{
 	}
 	
 	EditText interrupt = (EditText) findViewById(R.id.interrupt);
+	interrupt.setInputType(InputType.TYPE_CLASS_PHONE);
 	interrupt.addTextChangedListener(new TextWatcher(){
 	    @Override
 	    public void beforeTextChanged(CharSequence s, int start, int count, int after){}
@@ -202,6 +203,7 @@ public class Example extends TaskActivity implements OnClickListener{
 	if (exception != null){
 	    mHardCallbackFeedbackArea.setBackgroundColor(Color.RED);
 	    mHardCallbackFeedbackArea.setTextColor(Color.BLACK);
+	    mHardCallbackFeedbackArea.setText(exception.toString());
 	    mHandler.postDelayed(clearHardCallbackFeedbackArea, 1250);
 	    return true;
 	} 	
@@ -223,6 +225,7 @@ public class Example extends TaskActivity implements OnClickListener{
 	    if (mHardCallbackFeedbackArea != null){
 		mHardCallbackFeedbackArea.setBackgroundColor(Color.TRANSPARENT);
 		mHardCallbackFeedbackArea.setTextColor(Color.WHITE);
+		mHardCallbackFeedbackArea.setText("Hard Callback Feedback Area");
 	    }
 	}
     };
