@@ -107,7 +107,7 @@ public abstract class Task implements Runnable{
 	    //The parameter here is just precautionary and likely with be interrupted 
 	    //by the Thread, rather than by itself. Maybe a rare race condition 
 	    //will make this parameter useful?
-	    mTaskExecutor.mLock.block(mTaskExecutor.mInterruptThreadsAfter != -1 ? mTaskExecutor.mInterruptThreadsAfter : 0);
+	    mTaskExecutor.mLock.block(mTaskExecutor.mInterruptTasksAfter != -1 ? mTaskExecutor.mInterruptTasksAfter : 0);
 	if (shouldRemove)
 	    mTaskExecutor.removeTaskFromQueue(this);
 	mTaskExecutor.mHandler.postAtFrontOfQueue(new Runnable(){
@@ -115,7 +115,7 @@ public abstract class Task implements Runnable{
 	    public void run(){
 		//mTaskExecutor.mTaskCompletedCallback can be null because of 
 		//SERVICE_MODE_CALLBACK_INCONSIDERATE mode in the Service. It can also 
-		//be null if the app is paused, finessMode is enabled and interruptThreadsAfter is set.
+		//be null if the app is paused, finessMode is enabled and interruptTasksAfter is set.
 		if(mTaskExecutor.mTaskCompletedCallback != null){
 		    mTaskExecutor.mTaskCompletedCallback.onTaskComplete(mBundle, exception);
 		} else{

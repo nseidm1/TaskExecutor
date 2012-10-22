@@ -16,7 +16,7 @@ public class TaskExecutor{
             Handler                   mHandler                   = new Handler(Looper.getMainLooper());
             TaskCompletedCallback     mTaskCompletedCallback     = null;
             ConditionVariable         mLock                      = new ConditionVariable(true);
-	    int                       mInterruptThreadsAfter     = -1;
+	    int                       mInterruptTasksAfter       = -1;
 	    Vector<Pair>              mPendingCompletedTasks     = new Vector<Pair>();
     private boolean                   mPause                     = false;  
     private Vector<Task>              mQueue                     = new Vector<Task>();
@@ -107,18 +107,18 @@ public class TaskExecutor{
      * Task has already begun executing it will be interrupted, which may prove 
      * useful if the Task has a blocking operation like network communication.
      */
-    public void setInterruptTaskAfter(int interruptThreadsAfter){
-	mInterruptThreadsAfter = interruptThreadsAfter;
+    public void setInterruptTaskAfter(int interruptTasksAfter){
+	mInterruptTasksAfter = interruptTasksAfter;
     }
     
     private void setInterruptorIfActive(final Future<?> future){
-	if (mInterruptThreadsAfter != -1){
+	if (mInterruptTasksAfter != -1){
 	    mHandler.postDelayed(new Runnable(){
 		@Override
 		public void run(){
 		    future.cancel(true);
 		}
-	    }, mInterruptThreadsAfter);
+	    }, mInterruptTasksAfter);
 	}
     }
 
