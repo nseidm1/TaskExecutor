@@ -5,10 +5,12 @@
 	<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
 		<EditText android:id="@+id/url" android:hint="Default Url: http://m.google.com" android:layout_width="match_parent" android:layout_height="wrap_content"/>
 		<EditText android:id="@+id/delay" android:hint="Default Delay: 0 Seconds" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+	        <EditText android:id="@+id/interrupt" android:hint="Default Timeout: ~ Seconds" android:layout_width="match_parent" android:layout_height="wrap_content"/>
 	    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center">
 			<CheckBox android:id="@+id/remove_on_success" android:text="Remove on Success" android:checked="true" android:layout_width="0dip" android:layout_weight="1" android:layout_height="wrap_content" android:gravity="center"/>	    
 			<CheckBox android:id="@+id/remove_on_exception" android:text="Remove on Exception" android:checked="true" android:layout_width="0dip" android:layout_weight="1" android:layout_height="wrap_content" android:gravity="center"/>	    
-	    </LinearLayout>
+		        <CheckBox android:id="@+id/finess_mode" android:text="Allow Task Finess" android:checked="true" android:layout_width="0dip" android:layout_weight="1" android:layout_height="wrap_content" android:gravity="center"/>
+	   </LinearLayout>
 	</LinearLayout>
 	<Button android:id="@+id/add_task_to_queue" android:text="Add Task to Queue" android:layout_width="match_parent" android:layout_height="wrap_content"/>
 

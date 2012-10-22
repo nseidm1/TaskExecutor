@@ -22,7 +22,9 @@ public class Example extends TaskActivity implements OnClickListener{
     private 		 String   mUrl                      = mDefaultUrl;
     private 		 boolean  mRemoveOnSuccess          = true;
     private 		 boolean  mRemoveOnException        = true;
+    private              boolean  mFinessMode               = true;
     private 		 int      mDefaultDelay             = 0;
+    private              int      mDefaultInterrupt         = 0;
     private 		 Button   mExecute                  = null;
     private              Handler  mHandler                  = new Handler(Looper.getMainLooper());
     private              TextView mHardCallbackFeedbackArea = null;
@@ -85,6 +87,25 @@ public class Example extends TaskActivity implements OnClickListener{
 	    delay.setText(Integer.toString(mDefaultDelay));
 	}
 	
+	EditText interrupt = (EditText) findViewById(R.id.interrupt);
+	interrupt.addTextChangedListener(new TextWatcher(){
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count){}
+		@Override
+		public void afterTextChanged(Editable s){
+		    if (s.toString() == null || s.toString().equalsIgnoreCase("")){
+			mDefaultInterrupt = 0;
+			return;
+		    }
+		    mDefaultInterrupt = Integer.parseInt(s.toString());
+		}
+	    });
+	if (mDefaultInterrupt != 0){
+	    interrupt.setText(Integer.toString(mDefaultInterrupt));
+	}
+	
 	CheckBox shouldRemoveOnSuccess = ((CheckBox)findViewById(R.id.remove_on_success));
 	shouldRemoveOnSuccess.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 	    @Override
@@ -102,6 +123,15 @@ public class Example extends TaskActivity implements OnClickListener{
 	    }
 	});
 	shouldRemoveOnException.setChecked(mRemoveOnException);
+	
+	CheckBox finessMode = ((CheckBox)findViewById(R.id.finess_mode));
+	finessMode.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
+		    mFinessMode = isChecked;
+		}
+	    });
+	finessMode.setChecked(mFinessMode);
     }
     
     @Override
@@ -117,6 +147,7 @@ public class Example extends TaskActivity implements OnClickListener{
 	    mTaskExecutor.addTaskToQueue(postTask);
 	    manageExecuteTasksButton();
 	} else if (v.getId() == R.id.execute){
+	    mTaskExecutor.setInterruptTaskAfter(mDefaultInterrupt);
 	    mTaskExecutor.executeQueue();
 	} else if (v.getId() == R.id.kill_example){
 	    System.runFinalization();
@@ -171,7 +202,7 @@ public class Example extends TaskActivity implements OnClickListener{
 
     @Override
     public boolean allowTaskFiness(){
-	return true;
+	return mFinessMode;
     }
 
     @Override
