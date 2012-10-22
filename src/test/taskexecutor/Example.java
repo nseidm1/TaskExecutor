@@ -35,7 +35,7 @@ public class Example extends TaskActivity implements OnClickListener{
     private 		 boolean  mRemoveOnException        = true;
     private              boolean  mFinessMode               = true;
     private 		 int      mDefaultDelay             = 0;
-    private              int      mDefaultInterrupt         = 0;
+    private              int      mDefaultInterrupt         = -1;
     private 		 Button   mExecute                  = null;
     private              Handler  mHandler                  = new Handler(Looper.getMainLooper());
     private              TextView mHardCallbackFeedbackArea = null;
@@ -87,11 +87,15 @@ public class Example extends TaskActivity implements OnClickListener{
 	    public void onTextChanged(CharSequence s, int start, int before, int count){}
 	    @Override
 	    public void afterTextChanged(Editable s){
-		if (s.toString() == null || s.toString().equalsIgnoreCase("")){
+		try{
+		    if (s.toString() == null || s.toString().equalsIgnoreCase("")){
+			mDefaultDelay = 0;
+			return;
+		    }
+		    mDefaultDelay = Integer.parseInt(s.toString());
+		}catch(NumberFormatException e){
 		    mDefaultDelay = 0;
-		    return;
 		}
-		mDefaultDelay = Integer.parseInt(s.toString());
 	    }
 	});
 	if (mDefaultDelay != 0){
@@ -107,14 +111,18 @@ public class Example extends TaskActivity implements OnClickListener{
 	    public void onTextChanged(CharSequence s, int start, int before, int count){}
 	    @Override
 	    public void afterTextChanged(Editable s){
-		if (s.toString() == null || s.toString().equalsIgnoreCase("")){
+		try{
+		    if (s.toString() == null || s.toString().equalsIgnoreCase("")){
+			mDefaultInterrupt = -1;
+			return;
+		    }
+		    mDefaultInterrupt = Integer.parseInt(s.toString());
+		}catch(NumberFormatException e){
 		    mDefaultInterrupt = -1;
-		    return;
 		}
-		mDefaultInterrupt = Integer.parseInt(s.toString());
 	    }
 	});
-	if (mDefaultInterrupt != 0){
+	if (mDefaultInterrupt != -1){
 	    interrupt.setText(Integer.toString(mDefaultInterrupt));
 	}
 	
