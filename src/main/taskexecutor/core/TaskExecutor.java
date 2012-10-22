@@ -120,6 +120,7 @@ public class TaskExecutor{
 		@Override
 		public void run(){
 		    future.cancel(true);
+		    mLock.open();
 		}
 	    }, mInterruptThreadsAfter);
 	}
