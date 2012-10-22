@@ -1,16 +1,13 @@
 package main.taskexecutor.core;
 
-import java.util.Vector;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
+import android.os.*;
+import android.util.*;
+import java.util.*;
+import java.util.concurrent.*;
+import main.taskexecutor.callbacks.*;
+import main.taskexecutor.classes.*;
 
-import main.taskexecutor.callbacks.ServiceExecutorCallback;
-import main.taskexecutor.callbacks.TaskCompletedCallback;
 import main.taskexecutor.classes.Log;
-import android.os.ConditionVariable;
-import android.os.Handler;
-import android.os.Looper;
 
 /**
  * @author Noah Seidman
@@ -20,6 +17,7 @@ public class TaskExecutor{
             TaskCompletedCallback     mTaskCompletedCallback     = null;
             ConditionVariable         mLock                      = new ConditionVariable(true);
 	    int                       mInterruptThreadsAfter     = -1;
+	    Vector<Pair>              mPendingCompletedTasks     = new Vector<Pair>();
     private boolean                   mPause                     = false;  
     private Vector<Task>              mQueue                     = new Vector<Task>();
     private ServiceExecutorCallback   mServiceHelperCallback     = null;
@@ -150,6 +148,9 @@ public class TaskExecutor{
 	//Set the callback, finess() will always be called essential on
 	//or after an Activity's onResume().
 	mTaskCompletedCallback = taskCompletedCallback;
+	for (Pair<Bundle, Exception> pair : mPendingCompletedTasks)
+	    mTaskCompletedCallback.onTaskComplete(pair.first, pair.second);
+	mPendingCompletedTasks.clear();
 	mPause = false;
 	mLock.open();
     }

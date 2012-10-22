@@ -1,10 +1,8 @@
 package main.taskexecutor.core;
 
-import java.util.Random;
-
-import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.*;
+import android.util.*;
+import java.util.*;
 
 /**
  * @author Noah Seidman
@@ -107,7 +105,7 @@ public abstract class Task implements Runnable{
                       final boolean   shouldRemove){
 	if (!Thread.currentThread().isInterrupted())
 	    //The parameter here is just precautionary and likely with be interrupted 
-	    //by thr Thread, rather than by itself. Maybe a rare race condition 
+	    //by the Thread, rather than by itself. Maybe a rare race condition 
 	    //will make this parameter useful?
 	    mTaskExecutor.mLock.block(mTaskExecutor.mInterruptThreadsAfter != -1 ? mTaskExecutor.mInterruptThreadsAfter : 0);
 	if (shouldRemove)
@@ -116,9 +114,14 @@ public abstract class Task implements Runnable{
 	    @Override
 	    public void run(){
 		//mTaskExecutor.mTaskCompletedCallback can be null because of 
-		//SERVICE_MODE_CALLBACK_INCONSIDERATE mode in the Service.
+		//SERVICE_MODE_CALLBACK_INCONSIDERATE mode in the Service. It can also 
+		//be null if the app is paused, finessMode is enabled and interruptThreadsAfter is set.
 		if(mTaskExecutor.mTaskCompletedCallback != null){
 		    mTaskExecutor.mTaskCompletedCallback.onTaskComplete(mBundle, exception);
+		} else{
+		    //The results will post when the next Activity resumes.
+		    Pair<Bundle, Exception> pair = new Pair<Bundle, Exception>(mBundle, exception);
+		    mTaskExecutor.mPendingCompletedTasks.add(pair);
 		}
 	    };
 	});
