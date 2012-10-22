@@ -2,7 +2,6 @@ package test.taskexecutor;
 
 import main.taskexecutor.R;
 import main.taskexecutor.TaskActivity;
-import main.taskexecutor.TaskDialogFragment;
 import main.taskexecutor.core.TaskExecutor;
 import main.taskexecutor.core.TaskExecutorService;
 import test.taskexecutor.tasks.GetTask;
@@ -13,6 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -99,19 +100,19 @@ public class Example extends TaskActivity implements OnClickListener{
 	
 	EditText interrupt = (EditText) findViewById(R.id.interrupt);
 	interrupt.addTextChangedListener(new TextWatcher(){
-		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count, int after){}
-		@Override
-		public void onTextChanged(CharSequence s, int start, int before, int count){}
-		@Override
-		public void afterTextChanged(Editable s){
-		    if (s.toString() == null || s.toString().equalsIgnoreCase("")){
-			mDefaultInterrupt = 0;
-			return;
-		    }
-		    mDefaultInterrupt = Integer.parseInt(s.toString());
+	    @Override
+	    public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+	    @Override
+	    public void onTextChanged(CharSequence s, int start, int before, int count){}
+	    @Override
+	    public void afterTextChanged(Editable s){
+		if (s.toString() == null || s.toString().equalsIgnoreCase("")){
+		    mDefaultInterrupt = -1;
+		    return;
 		}
-	    });
+		mDefaultInterrupt = Integer.parseInt(s.toString());
+	    }
+	});
 	if (mDefaultInterrupt != 0){
 	    interrupt.setText(Integer.toString(mDefaultInterrupt));
 	}
@@ -184,22 +185,38 @@ public class Example extends TaskActivity implements OnClickListener{
     @Override
     public void onTaskComplete(Bundle bundle, Exception exception){
 	manageExecuteTasksButton();
+	if (!processException(exception))
+	    processBundle(bundle);
+	processCloseDialogRequest(bundle);
+    }
+    
+    private void processBundle(Bundle bundle){
+	if (bundle != null){
+	    mHardCallbackFeedbackArea.setBackgroundColor(Color.GREEN);
+	    mHardCallbackFeedbackArea.setTextColor(Color.BLACK);
+	    mHandler.postDelayed(clearHardCallbackFeedbackArea, 1250);
+	}	
+    }
+
+    private boolean processException(Exception exception){
 	if (exception != null){
 	    mHardCallbackFeedbackArea.setBackgroundColor(Color.RED);
 	    mHardCallbackFeedbackArea.setTextColor(Color.BLACK);
 	    mHandler.postDelayed(clearHardCallbackFeedbackArea, 1250);
+	    return true;
+	} 	
+	return false;
+    }
 
-	} else if (bundle != null){
-	    mHardCallbackFeedbackArea.setBackgroundColor(Color.GREEN);
-	    mHardCallbackFeedbackArea.setTextColor(Color.BLACK);
-	    mHandler.postDelayed(clearHardCallbackFeedbackArea, 1250);
-	}
-	TaskDialogFragment dialog = (TaskDialogFragment) getSupportFragmentManager().findFragmentByTag(bundle.getString("CloseDialog"));
-        if (dialog != null){
-	    dialog.dismissAllowingStateLoss();
+    private void processCloseDialogRequest(Bundle bundle){
+	if (bundle != null){
+	    Fragment fragment = getSupportFragmentManager().findFragmentByTag(bundle.getString("CloseDialog"));
+	    if (fragment != null){
+		((DialogFragment) fragment).dismissAllowingStateLoss();
+	    }
 	}
     }
-    
+
     private Runnable clearHardCallbackFeedbackArea = new Runnable(){
 	@Override
 	public void run() {
