@@ -13,9 +13,8 @@ import android.support.v4.app.FragmentActivity;
 public abstract class TaskActivity extends FragmentActivity implements TaskCompletedCallback, 
 									       TasksRestoredCallback,
 									       ExecutorReferenceCallback{
-    private boolean mTaskExecutorAvailable = false;
-    
-    protected TaskExecutor mTaskExecutor;
+    private   boolean      mTaskExecutorAvailable = false;
+    protected TaskExecutor mTaskExecutor          = null;
 
     /**
      * @return Task finess will pause currently running Tasks prior to their
