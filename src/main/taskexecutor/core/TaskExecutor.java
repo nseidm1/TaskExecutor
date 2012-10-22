@@ -19,8 +19,8 @@ public class TaskExecutor{
             Handler                   mHandler                   = new Handler(Looper.getMainLooper());
             TaskCompletedCallback     mTaskCompletedCallback     = null;
             ConditionVariable         mLock                      = new ConditionVariable(true);
-    private boolean                   mPause                     = false;
-    private int                       mInterruptThreadsAfter     = -1;
+	    int                       mInterruptThreadsAfter     = -1;
+    private boolean                   mPause                     = false;  
     private Vector<Task>              mQueue                     = new Vector<Task>();
     private ServiceExecutorCallback   mServiceHelperCallback     = null;
     private ThreadPoolExecutor        mTaskExecutor              = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
@@ -120,7 +120,6 @@ public class TaskExecutor{
 		@Override
 		public void run(){
 		    future.cancel(true);
-		    mLock.open();
 		}
 	    }, mInterruptThreadsAfter);
 	}

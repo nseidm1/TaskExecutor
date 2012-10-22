@@ -14,16 +14,19 @@ public class GetTask extends Task{
     public static final String URL   = "URL";
 
     @Override
-    public void task() throws IOException{
+    public void task() throws IOException, InterruptedException{
 	AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 	try{
-	    SystemClock.sleep(getBundle().getInt(DELAY));
+	    Thread.sleep(getBundle().getInt(DELAY));
 	    HttpGet get = new HttpGet(getBundle().getString(URL));
 	    HttpResponse response = client.execute(get);
 	    client.close();
 	    int responseCode = response.getStatusLine().getStatusCode();
 	    getBundle().putString("ResponseCode", "Response Code: " + responseCode);
 	}catch (IOException e){
+	    client.close();
+	    throw e;
+	}catch (InterruptedException e){
 	    client.close();
 	    throw e;
 	}

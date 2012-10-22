@@ -105,7 +105,8 @@ public abstract class Task implements Runnable{
 
     private void post(final Exception exception, 
                       final boolean   shouldRemove){
-	mTaskExecutor.mLock.block();
+	if (!Thread.currentThread().isInterrupted())
+	    mTaskExecutor.mLock.block(mTaskExecutor.mInterruptThreadsAfter != -1 ? mTaskExecutor.mInterruptThreadsAfter : 0);
 	if (shouldRemove)
 	    mTaskExecutor.removeTaskFromQueue(this);
 	mTaskExecutor.mHandler.postAtFrontOfQueue(new Runnable(){
