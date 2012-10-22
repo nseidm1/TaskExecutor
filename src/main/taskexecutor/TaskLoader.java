@@ -17,7 +17,7 @@ public abstract class TaskLoader<D> extends Loader<D> implements ExecutorReferen
     
     public  static final String       TAG           = TaskLoader.class.getName();
     private              TaskExecutor mTaskExecutor = null;
-    //We need a handler so deliverResults is called on the ui thread.
+    //We need a handler so deliverResult is called on the ui thread.
     private              Handler	  mHandler      = new Handler(Looper.getMainLooper());
 
     /**
