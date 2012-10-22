@@ -50,7 +50,7 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
     protected abstract int specifyAutoexecMode();
 
     /**
-     * @return When the Service is in CALLBACK_DEPENDENT mode, and Tasks are
+     * @return When the Service is in SERVICE_MODE_CALLBACK_DEPENDENT mode, and Tasks are
      * restored from a killed Service, should the queue auto execute on the next
      * Activity launch?
      */
