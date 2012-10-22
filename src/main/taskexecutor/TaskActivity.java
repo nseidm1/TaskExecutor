@@ -71,7 +71,7 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
     @Override
     public void onResume(){
 	super.onResume();
-	TaskExecutorService.requestExecutorReference(specifyServiceMode(), specifyAutoexecMode(), this, this, autoExecuteRestoredTasks() ? this : null);
+	TaskExecutorService.requestExecutorReference(specifyServiceMode(), specifyAutoexecMode(), this, this, this);
     }
 
     @Override
@@ -83,6 +83,8 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
 
     @Override
     public void notifyTasksHaveBeenRestored(){
-	mTaskExecutor.executeQueue();
+        if(autoExecuteRestoredTasks()){
+	    mTaskExecutor.executeQueue();
+	}
     }
 }
