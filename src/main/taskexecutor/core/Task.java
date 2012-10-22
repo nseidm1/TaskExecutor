@@ -116,7 +116,7 @@ public abstract class Task implements Runnable{
 	    @Override
 	    public void run(){
 		//mTaskExecutor.mTaskCompletedCallback can be null because of 
-		//CALLBACK_INCONSIDERATE mode in the Service.
+		//SERVICE_MODE_CALLBACK_INCONSIDERATE mode in the Service.
 		if(mTaskExecutor.mTaskCompletedCallback != null){
 		    mTaskExecutor.mTaskCompletedCallback.onTaskComplete(mBundle, exception);
 		}
