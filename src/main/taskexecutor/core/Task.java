@@ -180,7 +180,7 @@ public abstract class Task implements Runnable{
 	                          int    flags){
 	    dest.writeString(className                               );
 	    dest.writeString(TAG                                     );
-	    dest.writeInt   (shouldRemoveFromQueueOnSuccess ? 1 : 0  );
+	    dest.writeInt   (shouldRemoveFromQueueOnSuccess   ? 1 : 0);
 	    dest.writeInt   (shouldRemoveFromQueueOnException ? 1 : 0);
 	    dest.writeBundle(bundle                                  );
 	}
