@@ -113,7 +113,6 @@ public class TaskExecutor{
 	mInterruptThreadsAfter = interruptThreadsAfter;
     }
     
-
     private void setInterruptorIfActive(final Future<?> future){
 	if (mInterruptThreadsAfter != -1){
 	    mHandler.postDelayed(new Runnable(){
