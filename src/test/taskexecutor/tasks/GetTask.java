@@ -6,8 +6,8 @@ import main.taskexecutor.core.Task;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+
 import android.net.http.AndroidHttpClient;
-import android.os.SystemClock;
 
 public class GetTask extends Task{
     public static final String DELAY = "DELAY";

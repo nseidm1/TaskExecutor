@@ -1,19 +1,29 @@
 package test.taskexecutor;
 
-import android.annotation.*;
-import android.content.*;
-import android.graphics.*;
-import android.os.*;
-import android.text.*;
-import android.view.*;
-import android.view.View.*;
-import android.widget.*;
-import android.widget.CompoundButton.*;
-import main.taskexecutor.*;
-import main.taskexecutor.core.*;
-import test.taskexecutor.tasks.*;
-
+import main.taskexecutor.R;
+import main.taskexecutor.TaskActivity;
+import main.taskexecutor.TaskDialogFragment;
+import main.taskexecutor.core.TaskExecutor;
+import main.taskexecutor.core.TaskExecutorService;
+import test.taskexecutor.tasks.GetTask;
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
+import android.widget.TextView;
 
 public class Example extends TaskActivity implements OnClickListener{
     

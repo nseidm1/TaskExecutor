@@ -1,27 +1,32 @@
 package main.taskexecutor.core;
 
-import android.os.*;
-import android.util.*;
-import java.util.*;
-import java.util.concurrent.*;
-import main.taskexecutor.callbacks.*;
-import main.taskexecutor.classes.*;
+import java.util.Vector;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
+import main.taskexecutor.callbacks.ServiceExecutorCallback;
+import main.taskexecutor.callbacks.TaskCompletedCallback;
 import main.taskexecutor.classes.Log;
+import android.os.Bundle;
+import android.os.ConditionVariable;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Pair;
 
 /**
  * @author Noah Seidman
  */
 public class TaskExecutor{
-            Handler                   mHandler                   = new Handler(Looper.getMainLooper());
-            TaskCompletedCallback     mTaskCompletedCallback     = null;
-            ConditionVariable         mLock                      = new ConditionVariable(true);
-	    int                       mInterruptTasksAfter       = -1;
-	    Vector<Pair>              mPendingCompletedTasks     = new Vector<Pair>();
-    private boolean                   mPause                     = false;  
-    private Vector<Task>              mQueue                     = new Vector<Task>();
-    private ServiceExecutorCallback   mServiceHelperCallback     = null;
-    private ThreadPoolExecutor        mTaskExecutor              = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+            Handler                         mHandler                   = new Handler(Looper.getMainLooper());
+            TaskCompletedCallback           mTaskCompletedCallback     = null;
+            ConditionVariable               mLock                      = new ConditionVariable(true);
+	    int                             mInterruptTasksAfter       = -1;
+	    Vector<Pair<Bundle, Exception>> mPendingCompletedTasks     = new Vector<Pair<Bundle, Exception>>();
+    private boolean                         mPause                     = false;  
+    private Vector<Task>                    mQueue                     = new Vector<Task>();
+    private ServiceExecutorCallback         mServiceHelperCallback     = null;
+    private ThreadPoolExecutor              mTaskExecutor              = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
 
     public TaskExecutor(ServiceExecutorCallback serviceHelperCallback){
 	mServiceHelperCallback = serviceHelperCallback;
