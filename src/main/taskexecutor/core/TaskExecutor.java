@@ -37,9 +37,8 @@ public class TaskExecutor{
     /**
      * @param pool
      * By default Tasks are executed serially. You can execute Tasks
-     * concurrently if you'd like, but please consider the implications on
-     * finessing your Tasks to accommodate configurationChanges if your
-     * implementation is configured as such.
+     * concurrently if you'd like, but please consider the implications such as ordered 
+     * ui callbacks.
      */
     public void poolThreads(boolean pool){
 	if (pool){
