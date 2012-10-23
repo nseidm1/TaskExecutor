@@ -44,7 +44,7 @@ public class ExampleDialog extends TaskDialogFragment{
 	    postUpdate(updateBundle);
 	    SystemClock.sleep(2000);
 	    //Do stuff here.
-	    getBundle().putString("CloseDialog", ExampleDialog.class.getName());
+	    getMainBundle().putString("CloseDialog", ExampleDialog.class.getName());
 	}
     }
 }

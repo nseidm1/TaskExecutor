@@ -64,8 +64,8 @@ Tasks have 12 public methods:
 2) setTaskExecutor(TaskExecutor taskExecutor)
 3) pause()
 4) resume()
-5) setBundle(Bundle bundle)
-6) getBundle()
+5) setMainBundle(Bundle bundle)
+6) getMainBundle()
 7) setTag(String TAG)
 8) getTag()
 9) setShouldRemoveFromQueueOnSuccess(boolean shouldRemoveFromQueueOnSuccess)
@@ -74,7 +74,7 @@ Tasks have 12 public methods:
 12) The getter for 11.
 </pre>
 
-The only method you may want to use is setBundle(), all others are managed by the TaskExecutor and likely do not need to be used directly. 
+The only method you may want to use is setMainBundle(), all others are managed by the TaskExecutor and likely do not need to be used directly. 
 9, and 11 may come in handy, and are self explanatory in the method name.
 
 <b>Tips</b><br>

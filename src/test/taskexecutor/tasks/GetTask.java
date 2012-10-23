@@ -17,12 +17,12 @@ public class GetTask extends Task{
     public void task() throws IOException, InterruptedException{
 	AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 	try{
-	    Thread.sleep(getBundle().getInt(DELAY));
-	    HttpGet get = new HttpGet(getBundle().getString(URL));
+	    Thread.sleep(getMainBundle().getInt(DELAY));
+	    HttpGet get = new HttpGet(getMainBundle().getString(URL));
 	    HttpResponse response = client.execute(get);
 	    client.close();
 	    int responseCode = response.getStatusLine().getStatusCode();
-	    getBundle().putString("ResponseCode", "Response Code: " + responseCode);
+	    getMainBundle().putString("ResponseCode", "Response Code: " + responseCode);
 	}catch (IOException e){
 	    client.close();
 	    throw e;

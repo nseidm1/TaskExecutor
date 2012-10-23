@@ -97,7 +97,7 @@ public class QueueOnDiskHelper{
 	    Class<?> clazzName = Class.forName(className);
 	    Constructor<?> constructor = clazzName.getConstructor();
 	    Task task = (Task) constructor.newInstance();
-	    task.setBundle(persistenceObject.getBundle());
+	    task.setMainBundle(persistenceObject.getBundle());
 	    task.setTag(persistenceObject.getTag());
 	    task.setShouldRemoveFromQueueOnException(persistenceObject.getShouldRemoveFromQueueOnException());
 	    task.setShouldRemoveFromQueueOnSuccess(persistenceObject.getShouldRemoveFromQueueOnSuccess());
@@ -114,7 +114,7 @@ public class QueueOnDiskHelper{
 	    if (!taskFile.exists()){
 		FileOutputStream fos = new FileOutputStream(taskFile);
 		PersistenceObject persistenceObject = new PersistenceObject(task.getClass().getName(), 
-									    task.getBundle(), 
+									    task.getMainBundle(), 
 									    task.getTag(), 
 									    task.getShouldRemoveFromQueueOnSuccess(), 
 									    task.getShouldRemoveFromQueueOnException());

@@ -55,14 +55,14 @@ public abstract class Task implements Runnable{
     /**
      * @param bundle
      */
-    public void setBundle(Bundle bundle){
+    public void setMainBundle(Bundle bundle){
 	mBundle = bundle;
     }
 
     /**
      * @return The bundle.
      */
-    public Bundle getBundle(){
+    public Bundle getMainBundle(){
 	return mBundle;
     }
 
