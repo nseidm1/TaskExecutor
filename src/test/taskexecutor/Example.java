@@ -25,6 +25,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.*;
 
 public class Example extends TaskActivity implements OnClickListener{
     
@@ -197,6 +198,20 @@ public class Example extends TaskActivity implements OnClickListener{
 	if (!processException(exception))
 	    processBundle(bundle);
 	processCloseDialogRequest(bundle);
+    }
+    
+    @Override
+    public void onTaskUpdate(Bundle bundle){
+	processToast(bundle);
+    }
+
+    private void processToast(Bundle bundle){
+	if (bundle != null){
+	    String toast = bundle.getString("TOAST");
+	    if (toast != null){
+		Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
+	    }
+	}
     }
     
     private void processBundle(Bundle bundle){

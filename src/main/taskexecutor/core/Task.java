@@ -95,14 +95,30 @@ public abstract class Task implements Runnable{
     public void run(){
 	try{
 	    task();
-	    post(null, mShouldRemoveFromQueueOnSuccess);
+	    postComplete(null, mShouldRemoveFromQueueOnSuccess);
 	}catch (final Exception e){
-	    post(e, mShouldRemoveFromQueueOnException);
+	    postComplete(e, mShouldRemoveFromQueueOnException);
 	}
     }
+    
+    /**
+     * Use this method to post updates to the ui thread. Pass strategic
+     * bundles that the callback is defined to process. Use ghis method 
+     * in when you define the abstract Task method.
+     */
+    protected void postUpdate(final Bundle bundle){
+	mTaskExecutor.mHandler.post(new Runnable(){
+	    @Override
+	    public void run(){
+		if(mTaskExecutor.mTaskUpdateCallback != null){
+		    mTaskExecutor.mTaskUpdateCallback.onTaskUpdate(bundle);
+		}
+	    }
+	});
+    }
 
-    private void post(final Exception exception, 
-                      final boolean   shouldRemove){
+    private void postComplete(final Exception exception, 
+                              final boolean   shouldRemove){
 	if (!Thread.currentThread().isInterrupted())
 	    //The parameter here is just precautionary and likely with be interrupted 
 	    //by the Thread, rather than by itself. Maybe a rare race condition 

@@ -13,6 +13,7 @@ import android.os.ConditionVariable;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Pair;
+import main.taskexecutor.callbacks.*;
 
 /**
  * @author Noah Seidman
@@ -20,6 +21,7 @@ import android.util.Pair;
 public class TaskExecutor{
             Handler                         mHandler                   = new Handler(Looper.getMainLooper());
             TaskCompletedCallback           mTaskCompletedCallback     = null;
+	    TaskUpdateCallback              mTaskUpdateCallback        = null;
             ConditionVariable               mLock                      = new ConditionVariable(true);
 	    int                             mInterruptTasksAfter       = -1;
 	    Vector<Pair<Bundle, Exception>> mPendingCompletedTasks     = new Vector<Pair<Bundle, Exception>>();
@@ -137,6 +139,7 @@ public class TaskExecutor{
     public void restrain(boolean finessMode){
 	// Clear the callback to prevent leaks.
 	mTaskCompletedCallback = null;
+	mTaskUpdateCallback = null;
 	if (finessMode){
 	    mPause = true;
 	    mLock.close();
@@ -149,10 +152,11 @@ public class TaskExecutor{
      * Provide the taskCompleteCallback so your Tasks can report back to the
      * activity.
      */
-    public void finess(TaskCompletedCallback taskCompletedCallback){
+    public void finess(TaskCompletedCallback taskCompletedCallback, TaskUpdateCallback TaskUpdateCallback){
 	//Set the callback, finess() will always be called essential on
 	//or after an Activity's onResume().
 	mTaskCompletedCallback = taskCompletedCallback;
+	mTaskUpdateCallback = TaskUpdateCallback;
 	for (Pair<Bundle, Exception> pair : mPendingCompletedTasks)
 	    mTaskCompletedCallback.onTaskComplete(pair.first, pair.second);
 	mPendingCompletedTasks.clear();

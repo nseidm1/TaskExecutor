@@ -6,13 +6,15 @@ import main.taskexecutor.callbacks.TaskCompletedCallback;
 import main.taskexecutor.core.TaskExecutor;
 import main.taskexecutor.core.TaskExecutorService;
 import android.support.v4.app.FragmentActivity;
+import main.taskexecutor.callbacks.*;
 
 /**
  * @author Noah Seidman
  */
-public abstract class TaskActivity extends FragmentActivity implements TaskCompletedCallback, 
-									       TasksRestoredCallback,
-									       ExecutorReferenceCallback{
+public abstract class TaskActivity extends FragmentActivity implements TaskCompletedCallback,
+                                                                       TaskUpdateCallback,
+                                                                       TasksRestoredCallback,
+								       ExecutorReferenceCallback{
     public    static final String       TAG                    = TaskActivity.class.getName();
     private                boolean      mTaskExecutorAvailable = false;
     protected              TaskExecutor mTaskExecutor          = null;
@@ -78,7 +80,7 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
     public void getTaskExecutorReference(TaskExecutor taskExecutor){
 	mTaskExecutor = taskExecutor;
 	mTaskExecutorAvailable = true;
-	mTaskExecutor.finess(this);
+	mTaskExecutor.finess(this, this);
     }
 
     @Override
