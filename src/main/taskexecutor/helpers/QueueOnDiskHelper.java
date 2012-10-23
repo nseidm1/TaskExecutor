@@ -1,5 +1,6 @@
 package main.taskexecutor.helpers;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,8 +12,8 @@ import java.util.Vector;
 
 import main.taskexecutor.classes.Log;
 import main.taskexecutor.core.Task;
-import main.taskexecutor.core.TaskExecutor;
 import main.taskexecutor.core.Task.PersistenceObject;
+import main.taskexecutor.core.TaskExecutor;
 import android.content.Context;
 import android.os.Parcel;
 
@@ -36,14 +37,7 @@ public class QueueOnDiskHelper{
      * @throws ClassNotFoundException
      */
     public static boolean retrieveTasksFromDisk(Context      context, 
-	    					TaskExecutor taskExecutor) throws FileNotFoundException, 
-	    									  IOException, 
-    										  IllegalArgumentException, 
-    										  InstantiationException, 
-    										  IllegalAccessException, 
-    										  InvocationTargetException, 
-    										  NoSuchMethodException, 
-    										  ClassNotFoundException{
+	    					TaskExecutor taskExecutor) throws Exception{
 	Vector<Task> tasks = getTasks(context, taskExecutor);
 	if (tasks.size() > 0){
 	    taskExecutor.setQueue(tasks);
@@ -67,27 +61,23 @@ public class QueueOnDiskHelper{
     // ////////////////////////////////////////////////////
     // //////////Private methods hereforth/////////////////
     // ////////////////////////////////////////////////////
-    private static Vector<Task> getTasks(Context context, TaskExecutor taskExecutor) throws FileNotFoundException, 
-    											    IOException, 
-    											    IllegalArgumentException, 
-    											    InstantiationException, 
-    											    IllegalAccessException, 
-    											    InvocationTargetException, 
-    											    NoSuchMethodException, 
-    											    ClassNotFoundException{
+    private static Vector<Task> getTasks(Context context, TaskExecutor taskExecutor) throws Exception{
 	Vector<Task> taskArray = new Vector<Task>();
 	File[] tasks = getTaskExecutorFilesDir(context).listFiles();
 	Log.d(QueueOnDiskHelper.class.getName(), "Number of Tasks being restored: " + tasks.length);
 	for (File file : tasks){
 	    FileInputStream fIn = new FileInputStream(file);
+	    ByteArrayOutputStream out = new ByteArrayOutputStream();
 	    byte[] buffer = new byte[(int) file.length()];
-	    int length = fIn.read(buffer);
-	    Log.d(QueueOnDiskHelper.class.getName(), "Buffer Length: " + length);
+	    int bytesRead = 0;
+	    while ((bytesRead = fIn.read(buffer, 0, (int) file.length())) != -1){
+		out.write(buffer, 0, bytesRead);
+	    }
 	    fIn.close();
-	    if (length != file.length())
-		throw new IndexOutOfBoundsException();
 	    Parcel parcel = Parcel.obtain();
-	    parcel.unmarshall(buffer, 0, buffer.length);
+	    parcel.unmarshall(out.toByteArray(), 0, out.size());
+	    out.flush();
+	    out.close();
 	    parcel.setDataPosition(0);
 	    Log.d(QueueOnDiskHelper.class.getName(), "Data Available: " + parcel.dataAvail());
 	    Log.d(QueueOnDiskHelper.class.getName(), "Data Size: " + parcel.dataSize());

@@ -7,13 +7,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import main.taskexecutor.callbacks.ServiceExecutorCallback;
 import main.taskexecutor.callbacks.TaskCompletedCallback;
+import main.taskexecutor.callbacks.TaskUpdateCallback;
 import main.taskexecutor.classes.Log;
 import android.os.Bundle;
-import android.os.ConditionVariable;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Pair;
-import main.taskexecutor.callbacks.*;
 
 /**
  * @author Noah Seidman
@@ -131,13 +130,16 @@ public class TaskExecutor{
      * @param taskUpdateCallback
      */
     public void finess(TaskCompletedCallback taskCompletedCallback, TaskUpdateCallback TaskUpdateCallback){
-	//Set the callback, finess() will always be called essential on
-	//or after an Activity's onResume().
+	//Set the callbacks and post any queued Task completed results.
 	mTaskCompletedCallback = taskCompletedCallback;
 	mTaskUpdateCallback = TaskUpdateCallback;
+	postQueuedCompletedTasks();
+    }
+
+    private void postQueuedCompletedTasks(){
 	for (Pair<Bundle, Exception> pendingCompletedTask : mPendingCompletedTasks)
 	    mTaskCompletedCallback.onTaskComplete(pendingCompletedTask.first, pendingCompletedTask.second);
-	mPendingCompletedTasks.clear();
+	mPendingCompletedTasks.clear();	
     }
 
     /**

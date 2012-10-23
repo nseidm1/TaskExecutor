@@ -8,7 +8,6 @@ import test.taskexecutor.tasks.GetTask;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,7 +24,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.*;
+import android.widget.Toast;
 
 public class Example extends TaskActivity implements OnClickListener{
     
@@ -44,9 +43,6 @@ public class Example extends TaskActivity implements OnClickListener{
     public void onCreate(Bundle bundle){
 	super.onCreate(bundle);
 	setContentView(R.layout.test);
-	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
-	    getActionBar().setTitle("TaskExector Demonstration");
-	}
 	
 	mHardCallbackFeedbackArea = (TextView)findViewById(R.id.hard_callback_beacon);
 
