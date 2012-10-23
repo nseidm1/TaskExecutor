@@ -86,8 +86,7 @@ public class TaskExecutor{
     
     /**
      * This method directly executes the Task, bypassing the queue. Useful for the 
-     * abstract TaskLoader. No callback TaskCompletedCallback 
-     * will be posted to the Activity.
+     * abstract TaskLoader. No callback will be posted to the Activity.
      * @param task
      * 
      */
@@ -120,23 +119,16 @@ public class TaskExecutor{
     }
 
     /**
-     * Block the current running Task prior to the hard callback until
-     * finessTasks() is called.
-     * @param finessMode 
-     * Should Tasks pause waiting for the callback to be re-assigned 
-     * in an onResume()?
+     * Clear the callbacks to prevent leaks.
      */
     public void clean(){
-	// Clear the callback to prevent leaks.
 	mTaskCompletedCallback = null;
 	mTaskUpdateCallback = null;
     }
 
     /**
-     * Resume Task execution from a restrained state.
-     * @param callCompleteCallback
-     * Provide the taskCompleteCallback so your Tasks can report back to the
-     * activity.
+     * @param taskCompletedCallback
+     * @param taskUpdateCallback
      */
     public void finess(TaskCompletedCallback taskCompletedCallback, TaskUpdateCallback TaskUpdateCallback){
 	//Set the callback, finess() will always be called essential on

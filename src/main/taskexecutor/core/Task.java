@@ -17,7 +17,6 @@ public abstract class Task implements Runnable{
 
     /**
      * Define the task you want to perform.
-     * 
      * @throws Exception
      */
     public abstract void task() throws Exception;
@@ -84,8 +83,6 @@ public abstract class Task implements Runnable{
 
     /**
      * @param taskExecutor
-     * If you want this Task to automatically retrieve itself from the
-     * TaskExecutor's queue, a reference is needed.
      */
     public void setTaskExecutor(TaskExecutor taskExecutor){
 	mTaskExecutor = taskExecutor;
@@ -103,8 +100,8 @@ public abstract class Task implements Runnable{
     
     /**
      * Use this method to post updates to the ui thread. Pass strategic
-     * bundles that the callback is defined to process. Use ghis method 
-     * in when you define the abstract Task method.
+     * bundles that the callback is defined to process. Use this method 
+     * strategically when you define the abstract Task method.
      */
     protected void postUpdate(final Bundle bundle){
 	mTaskExecutor.mHandler.post(new Runnable(){
@@ -125,8 +122,7 @@ public abstract class Task implements Runnable{
 	    @Override
 	    public void run(){
 		//mTaskExecutor.mTaskCompletedCallback can be null because of 
-		//SERVICE_MODE_CALLBACK_INCONSIDERATE mode in the Service. It can also 
-		//be null if the app is paused, finessMode is enabled and interruptTasksAfter is set.
+		//SERVICE_MODE_CALLBACK_INCONSIDERATE mode in the Service.
 		if(mTaskExecutor.mTaskCompletedCallback != null){
 		    mTaskExecutor.mTaskCompletedCallback.onTaskComplete(mBundle, exception);
 		} else{
