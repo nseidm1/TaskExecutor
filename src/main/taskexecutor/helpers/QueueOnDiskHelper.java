@@ -52,53 +52,78 @@ public class QueueOnDiskHelper{
      * Provide a reference to the TaskExecutor.
      * @throws IOException
      */
-    public static void updateTasksOnDisk(Context context, TaskExecutor taskExecutor) throws IOException{
+    public static void updateTasksOnDisk(Context      context, 
+	    				 TaskExecutor taskExecutor) throws IOException{
 	Vector<Task> localQueueCopy = new Vector<Task>(taskExecutor.getQueue());
 	addFilesInQueue(localQueueCopy, context);
 	deleteFilesNotIntQueue(localQueueCopy, context);
     }
 
-    // ////////////////////////////////////////////////////
-    // //////////Private methods hereforth/////////////////
-    // ////////////////////////////////////////////////////
-    private static Vector<Task> getTasks(Context context, TaskExecutor taskExecutor) throws Exception{
+    //////////////////////////////////////////////////////
+    ////////////Private methods hereforth/////////////////
+    //////////////////////////////////////////////////////
+    
+    private static Vector<Task> getTasks(Context      context, 
+	    				 TaskExecutor taskExecutor) throws Exception{
 	Vector<Task> taskArray = new Vector<Task>();
 	File[] tasks = getTaskExecutorFilesDir(context).listFiles();
 	Log.d(QueueOnDiskHelper.class.getName(), "Number of Tasks being restored: " + tasks.length);
 	for (File file : tasks){
-	    FileInputStream fIn = new FileInputStream(file);
-	    ByteArrayOutputStream out = new ByteArrayOutputStream();
-	    byte[] buffer = new byte[(int) file.length()];
-	    int bytesRead = 0;
-	    while ((bytesRead = fIn.read(buffer, 0, (int) file.length())) != -1){
-		out.write(buffer, 0, bytesRead);
-	    }
-	    fIn.close();
-	    Parcel parcel = Parcel.obtain();
-	    parcel.unmarshall(out.toByteArray(), 0, out.size());
-	    out.flush();
-	    out.close();
-	    parcel.setDataPosition(0);
-	    Log.d(QueueOnDiskHelper.class.getName(), "Data Available: " + parcel.dataAvail());
-	    Log.d(QueueOnDiskHelper.class.getName(), "Data Size: " + parcel.dataSize());
-	    PersistenceObject persistenceObject = PersistenceObject.CREATOR.createFromParcel(parcel);
-	    parcel.recycle();
-	    String className = persistenceObject.getClassName();
-	    Class<?> clazzName = Class.forName(className);
-	    Constructor<?> constructor = clazzName.getConstructor();
-	    Task task = (Task) constructor.newInstance();
-	    task.setMainBundle(persistenceObject.getBundle());
-	    task.setTag(persistenceObject.getTag());
-	    task.setShouldRemoveFromQueueOnException(persistenceObject.getShouldRemoveFromQueueOnException());
-	    task.setShouldRemoveFromQueueOnSuccess(persistenceObject.getShouldRemoveFromQueueOnSuccess());
-	    task.setTaskExecutor(taskExecutor);
-	    Log.d(QueueOnDiskHelper.class.getName(), task.getTag()+ " restored");
+	    ByteArrayOutputStream out = getByteArrayOutputStream(file);
+	    Parcel parcel = unmarshallParcel(out);
+	    PersistenceObject persistenceObject = constructPersistenceObject(parcel);
+	    Task task = inflateTask(persistenceObject, taskExecutor);
 	    taskArray.add(task);
 	}
 	return taskArray;
     }
 
-    private static void addFilesInQueue(Vector<Task> localQueueCopy, Context context) throws IOException{
+    private static Task inflateTask(PersistenceObject persistenceObject, 
+	    			    TaskExecutor      taskExecutor) throws Exception{
+	String className = persistenceObject.getClassName();
+	Class<?> clazzName = Class.forName(className);
+	Constructor<?> constructor = clazzName.getConstructor();
+	Task task = (Task) constructor.newInstance();
+	task.setMainBundle(persistenceObject.getBundle());
+	task.setTag(persistenceObject.getTag());
+	task.setShouldRemoveFromQueueOnException(persistenceObject.getShouldRemoveFromQueueOnException());
+	task.setShouldRemoveFromQueueOnSuccess(persistenceObject.getShouldRemoveFromQueueOnSuccess());
+	task.setTaskExecutor(taskExecutor);
+	Log.d(QueueOnDiskHelper.class.getName(), task.getTag()+ " restored");
+	return task;
+    }
+
+    private static PersistenceObject constructPersistenceObject(Parcel parcel){
+	PersistenceObject persistenceObject = PersistenceObject.CREATOR.createFromParcel(parcel);
+	parcel.recycle();
+	return persistenceObject;
+    }
+
+    private static Parcel unmarshallParcel(ByteArrayOutputStream out) throws IOException{
+	Parcel parcel = Parcel.obtain();
+	parcel.unmarshall(out.toByteArray(), 0, out.size());
+	out.flush();
+	out.close();
+	parcel.setDataPosition(0);
+	Log.d(QueueOnDiskHelper.class.getName(), "Data Available: " + parcel.dataAvail());
+	Log.d(QueueOnDiskHelper.class.getName(), "Data Size: " + parcel.dataSize());
+	return parcel;
+    }
+
+    private static ByteArrayOutputStream getByteArrayOutputStream(File file) throws IOException{
+	ByteArrayOutputStream out = new ByteArrayOutputStream();
+	FileInputStream fIn = new FileInputStream(file);
+	byte[] buffer = new byte[(int) file.length()];
+	int bytesRead = 0;
+	while ((bytesRead = fIn.read(buffer, 0, (int) file.length())) != -1){
+	    out.write(buffer, 0, bytesRead);
+	}
+	fIn.close();	
+	return out;
+    }
+
+    private static void addFilesInQueue(Vector<Task> localQueueCopy, 
+	    				Context      context) throws IOException{
 	for (Task task : localQueueCopy){
 	    File taskFile = new File(getTaskExecutorFilesDir(context), task.getTag());
 	    if (!taskFile.exists()){
@@ -122,7 +147,8 @@ public class QueueOnDiskHelper{
 	}
     }
 
-    private static void deleteFilesNotIntQueue(Vector<Task> queue, Context context){
+    private static void deleteFilesNotIntQueue(Vector<Task> queue, 
+	    				       Context      context){
 	File[] tasks = getTaskExecutorFilesDir(context).listFiles();
 	for (int i = 0; i < tasks.length; i++){
 	    boolean delete = true;
