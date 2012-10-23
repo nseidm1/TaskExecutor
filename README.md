@@ -26,7 +26,7 @@ of a robust, consolidated, and centralized asynchronous Task execution mechanism
 The included abstract TaskActivity class makes for easy use. Simply extend the class and utilize the protected 
 mTaskExecutor reference to execute Tasks. 
 
-TaskActivity has four abstract methods, allowTaskFiness(), specifyServiceMode(), specifyAutoexecMode(), and 
+TaskActivity has three abstract methods, specifyServiceMode(), specifyAutoexecMode(), and 
 autoExecuteRestoredTasks(). 
 
 The the Service has two MODEs, SERVICE_MODE_CALLBACK_INCONSIDERATE and SERVICE_MODE_CALLBACK_DEPENDENT which 

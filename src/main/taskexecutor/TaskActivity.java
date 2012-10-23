@@ -20,17 +20,6 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
     protected              TaskExecutor mTaskExecutor          = null;
 
     /**
-     * @return Task finess will pause currently running Tasks prior to their
-     * hard callback to accommodate onPause events; this allows for the hard
-     * callback to be reset when the activity is resumed, or a new one is 
-     * being created. Be careful, what if your activity isn't resumed for a 
-     * long time? Block your Task's execution wisely. Please consider using 
-     * setInterruptTaskAfter(int milliseconds) in the TaskExecutor if you 
-     * set this to true.
-     */
-    protected abstract boolean allowTaskFiness();
-
-    /**
      * Provide a Service mode, either SERVICE_MODE_CALLBACK_INCONSIDERATE, or SERVICE_MODE_CALLBACK_DEPENDENT.
      * This tells the service how to behave if it's restarted.
      * SERVICE_MODE_CALLBACK_DEPENDENT will not execute the queue and will wait for an
@@ -67,7 +56,7 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
     public void onPause(){
 	super.onPause();
 	if (mTaskExecutorAvailable)
-	    mTaskExecutor.restrain(allowTaskFiness());
+	    mTaskExecutor.clean();
     }
 
     @Override

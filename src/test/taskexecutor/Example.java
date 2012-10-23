@@ -34,7 +34,6 @@ public class Example extends TaskActivity implements OnClickListener{
     private 		 String   mUrl                      = mDefaultUrl;
     private 		 boolean  mRemoveOnSuccess          = true;
     private 		 boolean  mRemoveOnException        = true;
-    private              boolean  mFinessMode               = true;
     private 		 int      mDefaultDelay             = 0;
     private              int      mDefaultInterrupt         = -1;
     private 		 Button   mExecute                  = null;
@@ -145,14 +144,6 @@ public class Example extends TaskActivity implements OnClickListener{
 	});
 	shouldRemoveOnException.setChecked(mRemoveOnException);
 	
-	CheckBox finessMode = ((CheckBox)findViewById(R.id.finess_mode));
-	finessMode.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-		@Override
-		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
-		    mFinessMode = isChecked;
-		}
-	    });
-	finessMode.setChecked(mFinessMode);
     }
     
     @Override
@@ -252,11 +243,6 @@ public class Example extends TaskActivity implements OnClickListener{
 	    }
 	}
     };
-
-    @Override
-    public boolean allowTaskFiness(){
-	return mFinessMode;
-    }
 
     @Override
     public int specifyServiceMode(){

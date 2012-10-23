@@ -119,11 +119,6 @@ public abstract class Task implements Runnable{
 
     private void postComplete(final Exception exception, 
                               final boolean   shouldRemove){
-	if (!Thread.currentThread().isInterrupted())
-	    //The parameter here is just precautionary and likely with be interrupted 
-	    //by the Thread, rather than by itself. Maybe a rare race condition 
-	    //will make this parameter useful?
-	    mTaskExecutor.mLock.block(mTaskExecutor.mInterruptTasksAfter != -1 ? mTaskExecutor.mInterruptTasksAfter : 0);
 	if (shouldRemove)
 	    mTaskExecutor.removeTaskFromQueue(this);
 	mTaskExecutor.mHandler.postAtFrontOfQueue(new Runnable(){

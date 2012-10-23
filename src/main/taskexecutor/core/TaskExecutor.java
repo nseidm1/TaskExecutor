@@ -22,10 +22,8 @@ public class TaskExecutor{
             Handler                         mHandler                   = new Handler(Looper.getMainLooper());
             TaskCompletedCallback           mTaskCompletedCallback     = null;
 	    TaskUpdateCallback              mTaskUpdateCallback        = null;
-            ConditionVariable               mLock                      = new ConditionVariable(true);
 	    int                             mInterruptTasksAfter       = -1;
 	    Vector<Pair<Bundle, Exception>> mPendingCompletedTasks     = new Vector<Pair<Bundle, Exception>>();
-    private boolean                         mPause                     = false;  
     private Vector<Task>                    mQueue                     = new Vector<Task>();
     private ServiceExecutorCallback         mServiceHelperCallback     = null;
     private ThreadPoolExecutor              mTaskExecutor              = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
@@ -46,13 +44,6 @@ public class TaskExecutor{
 	} else{
 	    mTaskExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
 	}
-    }
-
-    /**
-     * @return Return if the queue's execution is currently paused.
-     */
-    public boolean isPaused(){
-	return mPause;
     }
     
     /**
@@ -135,14 +126,10 @@ public class TaskExecutor{
      * Should Tasks pause waiting for the callback to be re-assigned 
      * in an onResume()?
      */
-    public void restrain(boolean finessMode){
+    public void clean(){
 	// Clear the callback to prevent leaks.
 	mTaskCompletedCallback = null;
 	mTaskUpdateCallback = null;
-	if (finessMode){
-	    mPause = true;
-	    mLock.close();
-	}
     }
 
     /**
@@ -159,8 +146,6 @@ public class TaskExecutor{
 	for (Pair<Bundle, Exception> pendingCompletedTask : mPendingCompletedTasks)
 	    mTaskCompletedCallback.onTaskComplete(pendingCompletedTask.first, pendingCompletedTask.second);
 	mPendingCompletedTasks.clear();
-	mPause = false;
-	mLock.open();
     }
 
     /**
