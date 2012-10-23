@@ -157,8 +157,8 @@ public class TaskExecutor{
 	//or after an Activity's onResume().
 	mTaskCompletedCallback = taskCompletedCallback;
 	mTaskUpdateCallback = TaskUpdateCallback;
-	for (Pair<Bundle, Exception> pair : mPendingCompletedTasks)
-	    mTaskCompletedCallback.onTaskComplete(pair.first, pair.second);
+	for (Pair<Bundle, Exception> pendingCompletedTask : mPendingCompletedTasks)
+	    mTaskCompletedCallback.onTaskComplete(pendingCompletedTask.first, pendingCompletedTask.second);
 	mPendingCompletedTasks.clear();
 	mPause = false;
 	mLock.open();
