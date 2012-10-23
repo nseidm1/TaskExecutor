@@ -11,7 +11,7 @@ Activity. TaskExecutor is an AsyncTask on sterroids.
 
 Too many projects I've seen where AsyncTask, and threading is done without consideration. I've even seen anonymous 
 AyncTask implementations that make me throw up a little. The TaskExecutor consolidates ALL asynchronous 
-activity into a single Executor service accessible on ALL Activities application wide. You can even set a 
+activity into a single Executor service accessible in ALL Activities application wide. You can even set a 
 custom ThreadPoolExecutor if you want to define exactly how your Tasks are asynchronously executed. No more 
 anonymous threading, no more starting a thread in one Activity, and having to think about what happens when it's 
 completes if the user opened a new Activity. 
@@ -20,7 +20,7 @@ With countless options, TaskExecutor really changes the game of asynchronous exe
 where your Tasks are, and you know exactly where the callback of the result will be!
 
 The TaskExecutor is overwhelmingly superior to AsyncTask. It's a super custom, rock solid, awesome implementation 
-of a robust, consolidated, and centralized asynchronous Task execution mechanism.
+of a robust, consolidated, and centralized asynchronous Task execution framework.
 
 <b>TaskActivity</b><br>
 The included abstract TaskActivity class makes for easy use. Simply extend the class and utilize the protected 
@@ -67,9 +67,9 @@ Tasks have 10 public methods:
 5) setTag(String TAG)
 6) getTag()
 7) setShouldRemoveFromQueueOnSuccess(boolean shouldRemoveFromQueueOnSuccess)
-8) The getter for 9.
+8) The getter for 7.
 9) setShouldRemoveFromQueueOnException(boolean shouldRemoveFromQueueOnException)
-10) The getter for 11.
+10) The getter for 9.
 </pre>
 
 The only method you may want to use is setMainBundle(), all others are managed by the TaskExecutor and likely do not need to be used directly. 
