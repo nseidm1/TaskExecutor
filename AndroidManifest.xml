@@ -5,7 +5,7 @@
     <uses-sdk android:minSdkVersion="8" android:maxSdkVersion="16" android:targetSdkVersion="16"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <application android:label="TaskExector Demonstration">
-        <activity android:launchMode="singleTask" android:windowSoftInputMode="stateHidden" android:name="test.taskexecutor.Example">
+        <activity android:launchMode="singleTop" android:windowSoftInputMode="stateHidden" android:name="test.taskexecutor.Example">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
