@@ -1,9 +1,12 @@
 package test.taskexecutor;
 
-import android.app.*;
-import android.os.*;
-import main.taskexecutor.*;
-import main.taskexecutor.core.*;
+import main.taskexecutor.TaskActivity;
+import main.taskexecutor.TaskDialogFragment;
+import main.taskexecutor.core.Task;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.os.Bundle;
+import android.os.SystemClock;
 
 public class ExampleDialog extends TaskDialogFragment{
 
@@ -29,8 +32,8 @@ public class ExampleDialog extends TaskDialogFragment{
     }
     
     @Override
-    public void getTaskExecutorReference(TaskExecutor taskExecutor){
-	super.getTaskExecutorReference(taskExecutor);
+    public void onActivityCreated(Bundle bundle){
+	super.onActivityCreated(bundle);
 	mTaskExecutor.addTaskToQueue(new DialogTask());
 	mTaskExecutor.executeQueue();
     }

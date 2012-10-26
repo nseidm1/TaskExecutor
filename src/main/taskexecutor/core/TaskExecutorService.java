@@ -29,11 +29,9 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
     private volatile static       ExecutorReferenceCallback mExecutorReferenceCallback          = null;
     public  	     static final int                       SERVICE_MODE_CALLBACK_INCONSIDERATE = 0;
     public  	     static final int                       SERVICE_MODE_CALLBACK_DEPENDENT     = 1;
-    public 	     static final int                       RETAIN_CURRENT_SERVICE_MODE         = 2;
     private volatile static    	  int                       CURRENT_SERVICE_MODE                = SERVICE_MODE_CALLBACK_DEPENDENT;
     public           static final int                       AUTOEXEC_MODE_DISABLED              = 0;
     public           static final int                       AUTOEXEC_MODE_ENABLED               = 1;
-    public           static final int                       RETAIN_CURRENT_AUTOEXEC_MODE        = 2;
     private volatile static       int                       CURRENT_AUTOEXEC_MODE               = AUTOEXEC_MODE_DISABLED;
     public  	     static final String                    SERVICE_MODE_KEY                    = "SERVICE_MODE_KEY";
     public           static final String                    AUTOEXEC_MODE_KEY                   = "AUTO_EXECUTE_MODE_KEY";
@@ -64,8 +62,6 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	    					TasksRestoredCallback     tasksRestoredCallback) {
 	mExecutorReferenceCallback = executorReferenceCallback;
 	mTasksRestoredCallback     = tasksRestoredCallback;
-	SERVICE_MODE      	   = SERVICE_MODE  == RETAIN_CURRENT_SERVICE_MODE  ? CURRENT_SERVICE_MODE  : SERVICE_MODE ;
-	AUTOEXEC_MODE 		   = AUTOEXEC_MODE == RETAIN_CURRENT_AUTOEXEC_MODE ? CURRENT_AUTOEXEC_MODE : AUTOEXEC_MODE;    
 	context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY , SERVICE_MODE ).
 	                                                                    putExtra(AUTOEXEC_MODE_KEY, AUTOEXEC_MODE));
     }
