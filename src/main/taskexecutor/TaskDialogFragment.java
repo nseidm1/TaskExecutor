@@ -1,6 +1,8 @@
 package main.taskexecutor;
 
 import main.taskexecutor.core.TaskExecutor;
+import main.taskexecutor.exceptions.CalledFromWrongActivityException;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
@@ -16,6 +18,11 @@ public abstract class TaskDialogFragment extends DialogFragment{
     @Override
     public void onCreate(Bundle bundle){
 	super.onCreate(bundle);
-	mTaskExecutor = ((TaskActivity)getActivity()).mTaskExecutor;
+	Activity activity = getActivity();
+	if (activity instanceof TaskActivity){
+	    mTaskExecutor = ((TaskActivity)getActivity()).mTaskExecutor;
+	}else{
+	    throw new CalledFromWrongActivityException("The calling Activity must be an instance of TaskActivity.");
+	}
     }
 }
