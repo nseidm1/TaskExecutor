@@ -1,6 +1,8 @@
 
 package main.taskexecutor;
 
+import java.util.concurrent.Future;
+
 import main.taskexecutor.core.Task;
 import main.taskexecutor.core.TaskExecutor;
 import android.content.Context;
@@ -16,7 +18,8 @@ public abstract class TaskLoader<D> extends Loader<D>{
     private              Handler      mHandler      = new Handler(Looper.getMainLooper());
     public  static final String       TAG           = TaskLoader.class.getName();
     private              TaskExecutor mTaskExecutor = null;
-    protected            D         mData         = null;
+    protected            D            mData         = null;
+    private              Future<?>    mFuture       = null;
 
     /**
      * Just like Tasks, define your asynchronous code needed to generate the data you want 
@@ -75,6 +78,18 @@ public abstract class TaskLoader<D> extends Loader<D>{
     
     @Override
     protected void onForceLoad(){
-	mTaskExecutor.executeTask(new LoaderTask());
+	mFuture = mTaskExecutor.executeTask(new LoaderTask());
+    }
+    
+    @Override
+    protected void onReset() {
+	onStopLoading();
+	mData = null;
+    }
+    
+    @Override
+    protected void onStopLoading() {
+	if (mFuture != null)
+	    mFuture.cancel(true);
     }
 }

@@ -87,11 +87,14 @@ public class TaskExecutor{
      * This method directly executes the Task, bypassing the queue. Useful for the 
      * abstract TaskLoader. No callback will be posted to the Activity.
      * @param task
+     * @return Future<?>
+     * For optimal use in a Loader, return a reference to the Future.
      * 
      */
-    public void executeTask(Task task){
+    public Future<?> executeTask(Task task){
 	Future<?> future = mTaskExecutor.submit(task);
 	setInterruptorIfActive(future);
+	return future;
     }
     
     /**
