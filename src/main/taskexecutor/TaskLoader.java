@@ -41,8 +41,6 @@ public abstract class TaskLoader<D> extends Loader<D>{
      *  reasoning to this that follows. We will not be using the Task's callback that is managed 
      *  by the TaskExecutor. We want to use the Task and the TaskExecutor to consolidate all 
      *  asynchronous Task execution, but we want the ui post to be here.
-     * @author nseidman
-     *
      */
     private final class LoaderTask extends Task{
 	private D result = null;
