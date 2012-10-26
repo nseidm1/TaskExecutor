@@ -1,15 +1,14 @@
 package test.taskexecutor.loaders;
 
+import main.taskexecutor.TaskActivity;
 import main.taskexecutor.TaskLoader;
-import main.taskexecutor.core.TaskExecutor;
 import test.taskexecutor.ExampleTwo;
-import android.content.Context;
 import android.os.Bundle;
 
 public class ExampleTwoLoader extends TaskLoader<Bundle>{
 
-    public ExampleTwoLoader(Context context, TaskExecutor taskExecutor){
-        super(context, taskExecutor);
+    public ExampleTwoLoader(TaskActivity activity){
+        super(activity);
     }
     @Override
     protected Bundle loaderTask() throws Exception {

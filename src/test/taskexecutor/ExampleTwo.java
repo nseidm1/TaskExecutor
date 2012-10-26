@@ -49,7 +49,7 @@ public class ExampleTwo extends Example implements LoaderCallbacks<Bundle>{
 	//Restore the reference to an existing loader, or create a new one.
 	mExampleTwoLoader = mLoaderManager.getLoader(1);
 	if (mExampleTwoLoader == null)
-	    mExampleTwoLoader = new ExampleTwoLoader(this, mTaskExecutor);
+	    mExampleTwoLoader = new ExampleTwoLoader(this);
 	this.getSupportLoaderManager().initLoader(1/*Only one loader*/, null/*No bundle needed*/, this);
     }
 }

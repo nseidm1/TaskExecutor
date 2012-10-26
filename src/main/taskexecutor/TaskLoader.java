@@ -5,7 +5,6 @@ import java.util.concurrent.Future;
 
 import main.taskexecutor.core.Task;
 import main.taskexecutor.core.TaskExecutor;
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.content.Loader;
@@ -15,11 +14,11 @@ import android.support.v4.content.Loader;
  */
 public abstract class TaskLoader<D> extends Loader<D>{
     
-    private              Handler      mHandler      = new Handler(Looper.getMainLooper());
     public  static final String       TAG           = TaskLoader.class.getName();
+    private              Handler      mHandler      = new Handler(Looper.getMainLooper());
     private              TaskExecutor mTaskExecutor = null;
-    protected            D            mData         = null;
     private              Future<?>    mFuture       = null;
+    protected            D            mData         = null;
 
     /**
      * Just like Tasks, define your asynchronous code needed to generate the data you want 
@@ -31,9 +30,9 @@ public abstract class TaskLoader<D> extends Loader<D>{
      */
     protected abstract D loaderTask() throws Exception;
     
-    public TaskLoader(Context context, TaskExecutor taskExecutor){
-        super(context);
-	mTaskExecutor = taskExecutor;
+    public TaskLoader(TaskActivity activity){
+        super(activity);
+	mTaskExecutor = activity.mTaskExecutor;
     }
     
     /**
