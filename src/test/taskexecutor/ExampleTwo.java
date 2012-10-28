@@ -19,8 +19,6 @@ public class ExampleTwo extends Example implements LoaderCallbacks<Bundle>{
     @Override
     public void onCreate(Bundle bundle){
 	super.onCreate(bundle);
-	//Hide the new Activity button.
-	((Button)findViewById(R.id.new_activity)).setVisibility(Button.GONE);
 	mLoaderManager = getSupportLoaderManager();
     }
 
@@ -43,12 +41,11 @@ public class ExampleTwo extends Example implements LoaderCallbacks<Bundle>{
 	Toast.makeText(this, "Loader Reset", Toast.LENGTH_SHORT).show();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void getTaskExecutorReference(TaskExecutor taskExecutor){
 	super.getTaskExecutorReference(taskExecutor);
 	//Restore the reference to an existing loader, or create a new one.
-	mExampleTwoLoader = (Loader<Bundle>) (mLoaderManager.getLoader(1) == null ? new ExampleTwoLoader(this) : mLoaderManager.getLoader(1));
+	mExampleTwoLoader = mLoaderManager.getLoader(1) == null ? new ExampleTwoLoader(this) : mLoaderManager.getLoader(1);
 	//Always hit initLoader, it will handle forceLoad automagically posting existing, or generating new, data as required.
 	this.getSupportLoaderManager().initLoader(1/*Only one loader*/, null/*No bundle needed*/, this);
     }
