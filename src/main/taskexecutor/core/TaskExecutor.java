@@ -75,17 +75,17 @@ public class TaskExecutor{
      */
     public void executeQueue(){
 	Log.d(TaskExecutor.class.getName(), "Execute " + mQueue.size() + " Tasks");
-	for (int i = 0; i < mQueue.size(); i++){
-	    if (!mTaskExecutor.getQueue().contains(mQueue.get(i))){
-		Future<?> future = mTaskExecutor.submit(mQueue.get(i));
-		setInterruptorIfActive(future);
+	for (Task task : mQueue){
+	    if (!mTaskExecutor.getQueue().contains(task)){
+		executeTask(task);
 	    }
 	}
     }
     
     /**
      * This method directly executes the Task, bypassing the queue. Useful for the 
-     * abstract TaskLoader. No callback will be posted to the Activity.
+     * abstract TaskLoader. The Task will not be persisted to disk, no ui callbacks
+     * will be posted unless a reference to the TaskExecutor is set.
      * @param task
      * @return Future<?>
      * For optimal use in a Loader, return a reference to the Future.
