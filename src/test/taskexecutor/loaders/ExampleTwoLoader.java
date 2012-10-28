@@ -17,13 +17,4 @@ public class ExampleTwoLoader extends TaskLoader<Bundle>{
 	Thread.sleep(3000);
 	return bundle;
     }
-    @Override
-    protected void onStartLoading(){
-	if (mData != null) {
-	    deliverResult(mData);
-	}
-	else{
-	    forceLoad();
-	}
-    }
 }

@@ -18,7 +18,7 @@ public abstract class TaskLoader<D> extends Loader<D>{
     private              Handler      mHandler      = new Handler(Looper.getMainLooper());
     private              TaskExecutor mTaskExecutor = null;
     private              Future<?>    mFuture       = null;
-    protected            D            mData         = null;
+    private              D            mData         = null;
 
     /**
      * Just like Tasks, define your asynchronous code needed to generate the data you want 
