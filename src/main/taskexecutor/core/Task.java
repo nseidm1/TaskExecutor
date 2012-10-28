@@ -121,8 +121,6 @@ public abstract class Task implements Runnable{
 	mTaskExecutor.mHandler.postAtFrontOfQueue(new Runnable(){
 	    @Override
 	    public void run(){
-		//mTaskExecutor.mTaskCompletedCallback can be null because of 
-		//SERVICE_MODE_CALLBACK_INCONSIDERATE mode in the Service.
 		if(mTaskExecutor.mTaskCompletedCallback != null){
 		    mTaskExecutor.mTaskCompletedCallback.onTaskComplete(mBundle, exception);
 		} else{
