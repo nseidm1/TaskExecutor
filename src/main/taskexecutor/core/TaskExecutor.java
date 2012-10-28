@@ -48,10 +48,6 @@ public class TaskExecutor{
     /**
      * @param task
      * Provide a Task to be added to the queue pending execution.
-     * @param taskCompletedCallback
-     * Provide an interface to callback when the Task has completed execution,
-     * you may supply null, but if you have allowFiness() enabled a callback
-     * will assigned at that time.
      */
     public void addTaskToQueue(Task task){
 	task.setTaskExecutor(this);
