@@ -59,21 +59,20 @@ The TaskExecutor is managed by a Service, but accessible in a unique way. TaskAc
 the TaskExecutor. So it's a service, or is it a singleton, who know but it looks cool! :-)
 
 <pre>
-Tasks have 10 public methods:
-1) setCompleteCallback(TaskCompletedCallback completeCallback)
-2) setTaskExecutor(TaskExecutor taskExecutor)
-3) setMainBundle(Bundle bundle)
-4) getMainBundle()
-5) setTag(String TAG)
-6) getTag()
-7) setShouldRemoveFromQueueOnSuccess(boolean shouldRemoveFromQueueOnSuccess)
-8) The getter for 7.
-9) setShouldRemoveFromQueueOnException(boolean shouldRemoveFromQueueOnException)
-10) The getter for 9.
+Tasks have 9 public methods:
+1) setTaskExecutor(TaskExecutor taskExecutor)
+2) setMainBundle(Bundle bundle)
+3) getMainBundle()
+4) setTag(String TAG)
+5) getTag()
+6) setShouldRemoveFromQueueOnSuccess(boolean shouldRemoveFromQueueOnSuccess)
+7) The getter for 7.
+8) setShouldRemoveFromQueueOnException(boolean shouldRemoveFromQueueOnException)
+9) The getter for 9.
 </pre>
 
 The only method you may want to use is setMainBundle(), all others are managed by the TaskExecutor and likely do not need to be used directly. 
-7, and 9 may come in handy, and are self explanatory in the method name.
+6, and 8 may come in handy, and are self explanatory in the method name.
 
 <b>Tips</b><br>
 1) The TaskExecutor has a queue for you to bulk execute Tasks. You use the addToQueue() and removeFromQueue() methods, 
