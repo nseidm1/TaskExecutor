@@ -19,6 +19,8 @@ public class ExampleTwo extends Example implements LoaderCallbacks<Bundle>{
     @Override
     public void onCreate(Bundle bundle){
 	super.onCreate(bundle);
+	//Hide the new Activity button.
+	((Button)findViewById(R.id.new_activity)).setVisibility(Button.GONE);
 	mLoaderManager = getSupportLoaderManager();
     }
 
