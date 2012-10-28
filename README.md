@@ -66,9 +66,9 @@ Tasks have 9 public methods:
 4) setTag(String TAG)
 5) getTag()
 6) setShouldRemoveFromQueueOnSuccess(boolean shouldRemoveFromQueueOnSuccess)
-7) The getter for 7.
+7) The getter for 6.
 8) setShouldRemoveFromQueueOnException(boolean shouldRemoveFromQueueOnException)
-9) The getter for 9.
+9) The getter for 8.
 </pre>
 
 The only method you may want to use is setMainBundle(), all others are managed by the TaskExecutor and likely do not need to be used directly. 
