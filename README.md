@@ -61,14 +61,14 @@ a reference of TaskExecutor to the current Activity.
 
 <b>Tasks</b><br>
 Tasks are runnables with additional helper methods to facilitate management by the TaskExecutor facility. 
-Task is an abstract class you'll have to extend, and cannot be anonymous. Anonymous Tasks cannot be restored from 
-their persisted state on disk. If Tasks are implemented properly, and the Service is killed by the system, all executed 
+Task is an abstract class you'll have to extend, and cannot be anonymous, and need an empty public constructor. 
+Anonymous Tasks cannot be restored from their persisted state on disk. If Tasks are implemented properly, and the Service is killed by the system, all executed 
 Tasks can be restored from a persisted state on disk; and depending on the Service MODE can even continue execution 
 automatically or wait for an Activity to launch to provide a ui callback.
 
-The heart of Task is the abstract method task() that you'll override to define what your Task does. The same pattern as defining 
+The heart of a Task is the abstract method task() that you'll override to define what your Task does. The same pattern as defining 
 a Runnable. If designed as a static inner class do not reference stuff outside of the Task's scope, keep everything 
-within the Task itself to gracefully accommodate restoration from disk, the launching of new activities, and just 
+within the Task itself to gracefully accommodate restoration from disk, always possible null references, and just 
 for general good coding practice. 
 
 The TaskExecutor is managed by a Service, but accessible in a unique way. TaskActivity makes a static request to the Service requesting a callback with a reference to 
