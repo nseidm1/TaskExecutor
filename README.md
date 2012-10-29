@@ -20,6 +20,10 @@ of a robust, consolidated, and centralized asynchronous Task execution framework
 accommodate configurationChanges, new Activity creation, and even survive process termination. With many options, 
 your Tasks are almost guaranteed to execute.
 
+The most important power of the TaskExecutor is the consolidation of all asynchronous activity. Control, organization, and consolidation is 
+the only way to take an app to a higher level. With the TaskExecutor you'll always know where your Tasks are executing, and exactly 
+where the ui callbacks will be.
+
 <b>Quick Info</b><br>
 1) Tasks are persisted to disk, and the Service has several configurations on how to handle restored Tasks considering process termination.<br>
 2) Tasks can remain, or be removed from the queue, on success/exception. This is useful for network communication, if their is an exception
@@ -32,9 +36,6 @@ progress updates can get a reference to a DialogFragment and trigger message upd
 5) If a Task completes and all Activities are closed the results, by default, will be queued and delivered to the next Activity that launches. 
 Maybe the results aren't important, which is the beauty of passing bundles around; just define your onTaskComplete method to process strategically 
 bundled info however you'd like.<br>
-6) The most important power of the TaskExecutor is the consolidation of all asynchronous activity. Control, organization, and consolidation is 
-the only way to take an app to a higher level. With the TaskExecutor you'll always know where your Tasks are executing, and exactly 
-where the ui callbacks will be.<br>
 
 <b>TaskActivity</b><br>
 The included abstract TaskActivity class makes for easy use. Simply extend the class and utilize the protected 
@@ -43,7 +44,7 @@ mTaskExecutor reference to execute Tasks.
 TaskActivity has three abstract methods, specifyServiceMode(), specifyAutoexecMode(), and 
 autoExecuteRestoredTasks(). 
 
-The the Service has two MODEs, SERVICE_MODE_CALLBACK_INCONSIDERATE and SERVICE_MODE_CALLBACK_DEPENDENT which 
+The Service has two MODEs, SERVICE_MODE_CALLBACK_INCONSIDERATE and SERVICE_MODE_CALLBACK_DEPENDENT which 
 are pertinent when Tasks are restored from disk 
 after the Service is killed by the OS; oh did I mention that Tasks survive process termintion :-) 
 When the Service is in SERVICE_MODE_CALLBACK_INCONSIDERATE mode 
