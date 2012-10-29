@@ -4,20 +4,21 @@ TaskExecutor
 <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Highway_401_by_401-DVP.jpg/320px-Highway_401_by_401-DVP.jpg"/>
 
 <b>What problem does the TaskExecutor solve?</b></br><br>
-When you typically implement an AsyncTask the ui callback is going to be in that particular instance of the Activity, 
-huh? So your doing something in the background, and if it takes a fair amount of time the user may go to a new 
-Activity, what happen in the onPostExecute()? No matter what the ui callback of a Task will always be in the current 
-Activity. TaskExecutor is an AsyncTask on sterroids.
-
 Too many projects I've seen where AsyncTask, and threading is done without consideration. I've even seen anonymous 
-AyncTask implementations that make me throw up a little. The TaskExecutor consolidates ALL asynchronous 
-activity into a single Executor service accessible in ALL Activities application wide. You can even set a 
-custom ThreadPoolExecutor if you want to define exactly how your Tasks are asynchronously executed. No more 
-anonymous threading, no more starting a thread in one Activity, and having to think about what happens when it's 
+AyncTask implementations :( The TaskExecutor consolidates ALL asynchronous 
+activity into a single ExecutorService accessible in ALL Activities application wide via a uniquely queried Service. 
+No more anonymous threading, no more starting a thread in one Activity, and having to think about what happens when it's 
 completes if the user opened a new Activity. 
 
-<b>Intro</b><br>
-The TaskExecutor is a super custom, rock solid, awesome implementation of a robust, consolidated, and centralized asynchronous Task execution framework. Tasks are persisted to disk, accommodate configurationChanges, new Activity creation, and even survive process termination. With many options, your Tasks are almost guaranteed to execute, and post back directly to the current activity via a hard callback. 
+Do you worry about null pointers in onProgressUpdate()?
+What happens if a user launches a new Activity while your thread is running?
+What happens if the user presses the home button?
+
+The TaskExecutor manages everything for you, updates your ui callbacks to have a valid reference, and will even queue 
+completion results if no Activity is available. The TaskExecutor is a super custom, rock solid, awesome implementation 
+of a robust, consolidated, and centralized asynchronous Task execution framework. Tasks are persisted to disk, 
+accommodate configurationChanges, new Activity creation, and even survive process termination. With many options, 
+your Tasks are almost guaranteed to execute.
 
 <b>Quick Info</b><br>
 1) Tasks are persisted to disk, and the Service has several configurations on how to handle restored Tasks considering process termination.<br>
