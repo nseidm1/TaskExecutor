@@ -22,6 +22,24 @@ where your Tasks are, and you know exactly where the callback of the result will
 The TaskExecutor is overwhelmingly superior to AsyncTask. It's a super custom, rock solid, awesome implementation 
 of a robust, consolidated, and centralized asynchronous Task execution framework.
 
+<b>Quick Info</b><br>
+<pre>
+1) Tasks are persisted to disk, and the Service has several configurations on how to handle restored Tasks considering process termination.
+2) Tasks can remain, or be removed from the queue, on success/exception. This is useful for network communication, if their an exception
+the Task can just be re-executed.
+3) The service has an auto execute mode that is designed to accommodate #2.
+4) Tasks mirror the two main ui callbacks of AsyncTask. Progress update, and post execute. The callbacks are gracefully managed 
+by the TaskExecutor to always be in the curently visible activity. Both callbacks take a bundle, and the post execute will 
+provide the exception if one occured. Strategic data can be added to the bundles definining what events should occur in the ui. For example 
+progress updates can get a reference the a DialogFragment and trigger message updates, or even increment a horizontal progress bar.
+5) If a Task completes and all Activities are closed the results, by default, will be queued and delivered to the next Activity that launches. 
+Maybe the results aren't important, which is the beauty of passing bundles around; just define your onTaskComplete method to process strategically 
+bundled info however you'd like.
+6) The most important power of the TaskExecutor is the consolidation of all asynchronous activity. Control, organization, and consolidation is 
+the only way to take an app to a higher level. With the TaskExecutor you'll always know where your Tasks are executing, and exactly 
+where the ui callbacks will be.
+</pre>
+
 <b>TaskActivity</b><br>
 The included abstract TaskActivity class makes for easy use. Simply extend the class and utilize the protected 
 mTaskExecutor reference to execute Tasks. 
