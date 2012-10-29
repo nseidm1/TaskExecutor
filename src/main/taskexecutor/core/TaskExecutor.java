@@ -121,7 +121,7 @@ public class TaskExecutor{
      */
     public void clean(){
 	mTaskCompletedCallback = null;
-	mTaskUpdateCallback = null;
+	mTaskUpdateCallback    = null;
     }
 
     /**
@@ -131,7 +131,7 @@ public class TaskExecutor{
     public void finess(TaskCompletedCallback taskCompletedCallback, TaskUpdateCallback TaskUpdateCallback){
 	//Set the callbacks and post any queued Task completed results.
 	mTaskCompletedCallback = taskCompletedCallback;
-	mTaskUpdateCallback = TaskUpdateCallback;
+	mTaskUpdateCallback    = TaskUpdateCallback;
 	postQueuedCompletedTasks();
     }
 

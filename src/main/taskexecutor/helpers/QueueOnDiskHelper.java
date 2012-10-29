@@ -86,8 +86,8 @@ public class QueueOnDiskHelper{
 	Task task = (Task) constructor.newInstance();
 	task.setMainBundle(persistenceObject.getBundle());
 	task.setTag(persistenceObject.getTag());
-	task.setShouldRemoveFromQueueOnException(persistenceObject.getShouldRemoveFromQueueOnException());
-	task.setShouldRemoveFromQueueOnSuccess(persistenceObject.getShouldRemoveFromQueueOnSuccess());
+	task.setRemoveFromQueueOnException(persistenceObject.getRemoveFromQueueOnException());
+	task.setRemoveFromQueueOnSuccess(persistenceObject.getRemoveFromQueueOnSuccess());
 	task.setTaskExecutor(taskExecutor);
 	Log.d(QueueOnDiskHelper.class.getName(), task.getTag()+ " restored");
 	return task;
@@ -131,8 +131,8 @@ public class QueueOnDiskHelper{
 		PersistenceObject persistenceObject = new PersistenceObject(task.getClass().getName(), 
 									    task.getMainBundle(), 
 									    task.getTag(), 
-									    task.getShouldRemoveFromQueueOnSuccess(), 
-									    task.getShouldRemoveFromQueueOnException());
+									    task.getRemoveFromQueueOnSuccess(), 
+									    task.getRemoveFromQueueOnException());
 		Parcel parcel = Parcel.obtain();
 		persistenceObject.writeToParcel(parcel, 0);
 		try{

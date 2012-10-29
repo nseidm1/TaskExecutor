@@ -146,8 +146,8 @@ public class Example extends TaskActivity implements OnClickListener{
     public void onClick(View v){
 	if (v.getId() == R.id.add_task_to_queue){
 	    postTask = new GetTask();
-	    postTask.setShouldRemoveFromQueueOnException(mRemoveOnException);
-	    postTask.setShouldRemoveFromQueueOnSuccess(mRemoveOnSuccess);
+	    postTask.setRemoveFromQueueOnException(mRemoveOnException);
+	    postTask.setRemoveFromQueueOnSuccess(mRemoveOnSuccess);
 	    Bundle bundle = new Bundle();
 	    bundle.putInt(GetTask.DELAY, mDefaultDelay);
 	    bundle.putString(GetTask.URL, mUrl);
