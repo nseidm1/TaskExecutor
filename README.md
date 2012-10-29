@@ -4,7 +4,7 @@ TaskExecutor
 <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Highway_401_by_401-DVP.jpg/320px-Highway_401_by_401-DVP.jpg"/>
 
 <b>What problem does the TaskExecutor solve?</b></br><br>
-Too many projects I've seen where AsyncTask, and threading is done without consideration. I've even seen anonymous 
+Too many projects I've seen where AsyncTask, and threading in general is done without consideration. I've even seen anonymous 
 AyncTask implementations :( The TaskExecutor consolidates ALL asynchronous 
 activity into a single ExecutorService accessible in ALL Activities application wide via a uniquely queried Service. 
 No more anonymous threading, no more starting a thread in one Activity, and having to think about what happens when it's 
