@@ -52,7 +52,7 @@ the Service will auto execute restored Tasks without a valid ui callback. In CAL
 wait for the the next activity to assign a callback, and if you set autoExecuteRestoredTasks to true the restored 
 Tasks will be auto executed.
 
-TaskActivity has a couple of interfaces used by the Service. TasksRestoredCallback, TaskCompletedCallback, TaskUpdateCallback, 
+TaskActivity has a couple of interfaces used to do all the dirty work. TasksRestoredCallback, TaskCompletedCallback, TaskUpdateCallback, 
 and ExecutorReferenceCallback. The names really say it all. TasksRestoredCallback informs the current activity 
 that Tasks have been restored from disk. TaskCompletedCallback, and TaskUpdateCallback are hard callbacks gracefully managed for each Task 
 to post back to the ui thread in the currently visible Activity. It doesn't matter if you start a new Activity, the callback 
