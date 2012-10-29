@@ -87,9 +87,6 @@ Tasks have 9 public methods:
 9) The getter for 8.
 </pre>
 
-The only method you may want to use is setMainBundle(), all others are managed by the TaskExecutor and likely do not need to be used directly. 
-6, and 8 may come in handy, and are self explanatory in the method name.
-
 <b>Tips</b><br>
 1) The TaskExecutor has a queue for you to bulk execute Tasks. You use the addToQueue() and removeFromQueue() methods, 
 followed by the executeQueue() method.<br>
