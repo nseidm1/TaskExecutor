@@ -28,7 +28,7 @@ the Task can just be re-executed.<br>
 4) Tasks mirror the two main ui callbacks of AsyncTask. Progress update, and post execute. The callbacks are gracefully managed 
 by the TaskExecutor to always be in the curently visible activity. Both callbacks take a bundle, and the post execute will 
 provide the exception if one occured. Strategic data can be added to the bundles definining what events should occur in the ui. For example 
-progress updates can get a reference the a DialogFragment and trigger message updates, or even increment a horizontal progress bar.<br>
+progress updates can get a reference to a DialogFragment and trigger message updates, or even increment a horizontal progress bar.<br>
 5) If a Task completes and all Activities are closed the results, by default, will be queued and delivered to the next Activity that launches. 
 Maybe the results aren't important, which is the beauty of passing bundles around; just define your onTaskComplete method to process strategically 
 bundled info however you'd like.<br>
