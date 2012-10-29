@@ -10,8 +10,8 @@ activity into a single ExecutorService accessible in ALL Activities application 
 No more anonymous threading, no more starting a thread in one Activity, and having to think about what happens when it's 
 completes if the user opened a new Activity. 
 
-Do you worry about null pointers in onProgressUpdate()?
-What happens if a user launches a new Activity while your thread is running?
+Do you worry about null pointers in onProgressUpdate()?<br>
+What happens if a user launches a new Activity while your thread is running?<br>
 What happens if the user presses the home button?
 
 The TaskExecutor manages everything for you, updates your ui callbacks to have a valid reference, and will even queue 
