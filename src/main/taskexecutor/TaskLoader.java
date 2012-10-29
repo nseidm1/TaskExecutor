@@ -51,6 +51,7 @@ public abstract class TaskLoader<D> extends Loader<D>{
 	    try{
 		result = loaderTask();
 	    }catch (Exception e){
+		//Print the stack trace, and allow things to continue. The Loader will return null and the dev will see the exception in the LogCat.
 		e.printStackTrace();
 	    }
 	    mData = result;

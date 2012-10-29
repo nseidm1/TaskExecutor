@@ -27,9 +27,9 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
     private              	  QueueToDiskTask           mQueueToDisk                        = new QueueToDiskTask(mTaskExecutor, this);
     private volatile static       TasksRestoredCallback     mTasksRestoredCallback              = null;
     private volatile static       ExecutorReferenceCallback mExecutorReferenceCallback          = null;
-    public  	     static final int                       SERVICE_MODE_CALLBACK_INCONSIDERATE = 0;
-    public  	     static final int                       SERVICE_MODE_CALLBACK_DEPENDENT     = 1;
-    private volatile static    	  int                       CURRENT_SERVICE_MODE                = SERVICE_MODE_CALLBACK_DEPENDENT;
+    public  	     static final int                       CALLBACK_INCONSIDERATE = 0;
+    public  	     static final int                       CALLBACK_DEPENDENT     = 1;
+    private volatile static    	  int                       CURRENT_SERVICE_MODE                = CALLBACK_DEPENDENT;
     public           static final int                       AUTOEXEC_MODE_DISABLED              = 0;
     public           static final int                       AUTOEXEC_MODE_ENABLED               = 1;
     private volatile static       int                       CURRENT_AUTOEXEC_MODE               = AUTOEXEC_MODE_DISABLED;
@@ -53,7 +53,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
      * @param tasksRestoredCallback
      * The interface informing an activity if Tasks have been restored by the
      * service after a restart. This interface is ONLY called when the service 
-     * is in CALLBACK_DEPENDENT mode.
+     * is in SERVICE_MODE_CALLBACK_DEPENDENT mode.
      */
     public static void requestExecutorReference(int                       SERVICE_MODE, 
                                                 int                       AUTOEXEC_MODE,
@@ -70,7 +70,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
     public int onStartCommand(Intent intent, 
 	    		      int    flags, 
 	    		      int    startId){
-	CURRENT_SERVICE_MODE  = intent.getIntExtra(SERVICE_MODE_KEY , SERVICE_MODE_CALLBACK_DEPENDENT);
+	CURRENT_SERVICE_MODE  = intent.getIntExtra(SERVICE_MODE_KEY , CALLBACK_DEPENDENT);
 	CURRENT_AUTOEXEC_MODE = intent.getIntExtra(AUTOEXEC_MODE_KEY, AUTOEXEC_MODE_DISABLED         );
 	
 	processAutoExec();
@@ -79,12 +79,12 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	    mExecutorReferenceCallback.getTaskExecutorReference(mTaskExecutor);
 	if (mHaveTasksBeenRestored){
 	    switch (CURRENT_SERVICE_MODE){
-	    case SERVICE_MODE_CALLBACK_INCONSIDERATE:
+	    case CALLBACK_INCONSIDERATE:
 		Log.d(TaskExecutorService.class.getName(), "Tasks Executing, Callback Inconsiderate Mode");
 		mTaskExecutor.executeQueue();
 		mHaveTasksBeenRestored = false;
 		break;
-	    case SERVICE_MODE_CALLBACK_DEPENDENT:
+	    case CALLBACK_DEPENDENT:
 		if (mTasksRestoredCallback != null){
 		    mTasksRestoredCallback.notifyTasksHaveBeenRestored();
 		    mHaveTasksBeenRestored = false;  

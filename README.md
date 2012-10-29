@@ -44,11 +44,11 @@ mTaskExecutor reference to execute Tasks.
 TaskActivity has three abstract methods, specifyServiceMode(), specifyAutoexecMode(), and 
 autoExecuteRestoredTasks(). 
 
-The Service has two MODEs, SERVICE_MODE_CALLBACK_INCONSIDERATE and SERVICE_MODE_CALLBACK_DEPENDENT which 
+The Service has two MODEs, CALLBACK_INCONSIDERATE and CALLBACK_DEPENDENT which 
 are pertinent when Tasks are restored from disk 
 after the Service is killed by the OS; oh did I mention that Tasks survive process termintion :-) 
-When the Service is in SERVICE_MODE_CALLBACK_INCONSIDERATE mode 
-the Service will auto execute restored Tasks without a valid ui callback. In SERVICE_MODE_CALLBACK_DEPENDENT mode the Service 
+When the Service is in CALLBACK_INCONSIDERATE mode 
+the Service will auto execute restored Tasks without a valid ui callback. In CALLBACK_DEPENDENT mode the Service 
 wait for the the next activity to assign a callback, and if you set autoExecuteRestoredTasks to true the restored 
 Tasks will be auto executed.
 
