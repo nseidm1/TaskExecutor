@@ -72,7 +72,7 @@ within the Task itself to gracefully accommodate restoration from disk, always p
 for general good coding practice. 
 
 The TaskExecutor is managed by a Service, but accessible in a unique way. TaskActivity makes a static request to the Service requesting a callback with a reference to 
-the TaskExecutor. So it's a service, or is it a singleton, who know but it looks cool! :-)
+the TaskExecutor. So it's a service with a dash of singleton feel, but with a predictable defined lifecycle :-)
 
 <pre>
 Tasks have 9 public methods:
