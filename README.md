@@ -58,7 +58,7 @@ your implementation.
 
 <b>Tasks</b><br>
 Tasks are runnables with additional helper methods to facilitate management by the TaskExecutor facility. 
-Task is an abstract class you'll have to extend, cannot be anonymous, and need an empty public constructor. 
+Task is an abstract class you'll have to extend, cannot be anonymous, and needs an empty public constructor. 
 Anonymous Tasks cannot be restored from their persisted state on disk. If Tasks are implemented properly, and the Service is killed by the system, all executed 
 Tasks can be restored from a persisted state on disk; and depending on the Service MODE can even continue execution 
 automatically or wait for an Activity to launch to provide a ui callback.
