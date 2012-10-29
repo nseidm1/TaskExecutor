@@ -184,7 +184,6 @@ public class Example extends TaskActivity implements OnClickListener{
 	manageExecuteTasksButton();
 	if (!processException(exception))
 	    processBundle(bundle);
-	processCloseDialogRequest(bundle);
     }
     
     @Override
@@ -203,10 +202,15 @@ public class Example extends TaskActivity implements OnClickListener{
     
     private void processBundle(Bundle bundle){
 	if (bundle != null){
-	    mHardCallbackFeedbackArea.setBackgroundColor(Color.GREEN);
-	    mHardCallbackFeedbackArea.setTextColor(Color.BLACK);
-	    mHandler.postDelayed(clearHardCallbackFeedbackArea, 1250);
+	    processHardCallbackFeedback();
+	    processCloseDialogRequest(bundle);
 	}	
+    }
+
+    private void processHardCallbackFeedback(){
+	mHardCallbackFeedbackArea.setBackgroundColor(Color.GREEN);
+	mHardCallbackFeedbackArea.setTextColor(Color.BLACK);
+	mHandler.postDelayed(clearHardCallbackFeedbackArea, 1250);
     }
 
     private boolean processException(Exception exception){
@@ -221,11 +225,9 @@ public class Example extends TaskActivity implements OnClickListener{
     }
 
     private void processCloseDialogRequest(Bundle bundle){
-	if (bundle != null){
-	    Fragment fragment = getSupportFragmentManager().findFragmentByTag(bundle.getString("CloseDialog"));
-	    if (fragment != null){
-		((DialogFragment) fragment).dismissAllowingStateLoss();
-	    }
+	Fragment fragment = getSupportFragmentManager().findFragmentByTag(bundle.getString("CloseDialog"));
+	if (fragment != null){
+	    ((DialogFragment) fragment).dismissAllowingStateLoss();
 	}
     }
 
@@ -253,7 +255,7 @@ public class Example extends TaskActivity implements OnClickListener{
     @Override
     public boolean autoExecuteRestoredTasks(){
 	//Aside from the javadoc it's worthwhile to mention here the following. 
-	//Returning true here is only useful when the Service is in SERVICE_MODE_CALLBACK_DEPENDENT 
+	//Returning true here is only useful when the Service is in CALLBACK_DEPENDENT 
 	//mode. Otherwise this value is not useful.
 	return true;
     }
