@@ -52,13 +52,14 @@ the Service will auto execute restored Tasks without a valid ui callback. In SER
 wait for the the next activity to assign a callback, and if you set autoExecuteRestoredTasks to true the restored 
 Tasks will be auto executed.
 
-TaskExecutorActivity has a couple of interfaces used by the Service. TasksRestoredCallback, TaskCompletedCallback, TaskUpdateCallback, 
+TaskActivity has a couple of interfaces used by the Service. TasksRestoredCallback, TaskCompletedCallback, TaskUpdateCallback, 
 and ExecutorReferenceCallback. The names really say it all. TasksRestoredCallback informs the current activity 
 that Tasks have been restored from disk. TaskCompletedCallback, and TaskUpdateCallback are hard callbacks gracefully managed for each Task 
 to post back to the ui thread in the currently visible Activity. It doesn't matter if you start a new Activity, the callback 
 for all Tasks will always be the current visibile Activity. ExecutorReferenceCallback is how the service provides 
 a reference of TaskExecutor to the current Activity.
 
+<b>Tasks</b><br>
 Tasks are runnables with additional helper methods to facilitate management by the TaskExecutor facility. 
 Task is an abstract class you'll have to extend, and cannot be anonymous. Anonymous Tasks cannot be restored from 
 their persisted state on disk. If Tasks are implemented properly, and the Service is killed by the system, all executed 
