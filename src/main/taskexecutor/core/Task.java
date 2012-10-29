@@ -26,7 +26,7 @@ public abstract class Task implements Runnable{
     }
 
     /**
-     * @param shouldRemoveFromQueueOnSuccess
+     * @param removeFromQueueOnSuccess
      * Default is true, but the Task can remain in the queue on success if
      * desired. This means it can be re-executed again.
      */
@@ -39,7 +39,7 @@ public abstract class Task implements Runnable{
     }
 
     /**
-     * @param shouldRemoveFromQueueOnException
+     * @param removeFromQueueOnException
      * Default is true, but the Task can remain in the queue on exception if
      * desired. This means it can be re-executed again.
      */
@@ -92,9 +92,9 @@ public abstract class Task implements Runnable{
     public void run(){
 	try{
 	    task();
-	    postComplete(null, mRemoveFromQueueOnSuccess);
+	    postComplete(mRemoveFromQueueOnSuccess, null);
 	}catch (final Exception e){
-	    postComplete(e, mRemoveFromQueueOnException);
+	    postComplete(mRemoveFromQueueOnException, e);
 	}
     }
     
@@ -114,8 +114,8 @@ public abstract class Task implements Runnable{
 	});
     }
 
-    private void postComplete(final Exception exception, 
-                              final boolean   shouldRemove){
+    private void postComplete(final boolean   shouldRemove, 
+	    		      final Exception exception){
 	if (shouldRemove)
 	    mTaskExecutor.removeTaskFromQueue(Task.this);
 	mTaskExecutor.mHandler.postAtFrontOfQueue(new Runnable(){
