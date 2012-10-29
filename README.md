@@ -30,7 +30,7 @@ where the ui callbacks will be.
 the Task can just be re-executed.<br>
 3) The service has an auto execute mode that is designed specifically for #2.<br>
 4) Tasks mirror the two main ui callbacks of AsyncTask. Progress update, and post execute. The callbacks are gracefully managed 
-by the TaskExecutor to always be in the curently visible activity. Both callbacks take a bundle, and the post execute will 
+by the TaskExecutor to always be in the curently visible activity. Both callbacks take a bundle, and onTaskComplete will 
 provide the exception if one occured. Strategic data can be added to the bundles definining what events should occur in the ui. For example 
 progress updates can get a reference to a DialogFragment and trigger message updates, or even increment a horizontal progress bar.<br>
 5) If a Task completes and all Activities are closed the results, by default, will be queued and delivered to the next Activity that launches. 
