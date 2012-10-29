@@ -16,6 +16,9 @@ custom ThreadPoolExecutor if you want to define exactly how your Tasks are async
 anonymous threading, no more starting a thread in one Activity, and having to think about what happens when it's 
 completes if the user opened a new Activity. 
 
+<br>Intro</b><br>
+The TaskExecutor is a super custom, rock solid, awesome implementation of a robust, consolidated, and centralized asynchronous Task execution framework. Tasks are persisted to disk, accommodate configurationChanges, new Activity creation, and even survive process termination. With many options, your Tasks are almost guaranteed to execute, and post back directly to the current activity via a hard callback. 
+
 <b>Quick Info</b><br>
 1) Tasks are persisted to disk, and the Service has several configurations on how to handle restored Tasks considering process termination.<br>
 2) Tasks can remain, or be removed from the queue, on success/exception. This is useful for network communication, if their is an exception
