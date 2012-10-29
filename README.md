@@ -53,11 +53,8 @@ wait for the the next activity to assign a callback, and if you set autoExecuteR
 Tasks will be auto executed.
 
 TaskActivity has a couple of interfaces used to do all the dirty work. TasksRestoredCallback, TaskCompletedCallback, TaskUpdateCallback, 
-and ExecutorReferenceCallback. The names really say it all. TasksRestoredCallback informs the current activity 
-that Tasks have been restored from disk. TaskCompletedCallback, and TaskUpdateCallback are hard callbacks gracefully managed for each Task 
-to post back to the ui thread in the currently visible Activity. It doesn't matter if you start a new Activity, the callback 
-for all Tasks will always be the current visibile Activity. ExecutorReferenceCallback is how the service provides 
-a reference of TaskExecutor to the current Activity.
+and ExecutorReferenceCallback. The names really say it all. TaskCompletedCallback, and TaskUpdateCallback aren't defined in the abstract Activity, and are for you to define in 
+your implementation.
 
 <b>Tasks</b><br>
 Tasks are runnables with additional helper methods to facilitate management by the TaskExecutor facility. 
