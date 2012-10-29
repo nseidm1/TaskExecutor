@@ -24,9 +24,9 @@ of a robust, consolidated, and centralized asynchronous Task execution framework
 
 <b>Quick Info</b><br>
 1) Tasks are persisted to disk, and the Service has several configurations on how to handle restored Tasks considering process termination.<br>
-2) Tasks can remain, or be removed from the queue, on success/exception. This is useful for network communication, if their an exception
+2) Tasks can remain, or be removed from the queue, on success/exception. This is useful for network communication, if their is an exception
 the Task can just be re-executed.<br>
-3) The service has an auto execute mode that is designed to accommodate #2.<br>
+3) The service has an auto execute mode that is designed specifically for #2.<br>
 4) Tasks mirror the two main ui callbacks of AsyncTask. Progress update, and post execute. The callbacks are gracefully managed 
 by the TaskExecutor to always be in the curently visible activity. Both callbacks take a bundle, and the post execute will 
 provide the exception if one occured. Strategic data can be added to the bundles definining what events should occur in the ui. For example 
