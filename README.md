@@ -81,9 +81,9 @@ Tasks have 9 public methods:
 3) getMainBundle()
 4) setTag(String TAG)
 5) getTag()
-6) setRemoveFromQueueOnSuccess(boolean shouldRemoveFromQueueOnSuccess)
+6) setRemoveFromQueueOnSuccess(boolean removeFromQueueOnSuccess)
 7) The getter for 6.
-8) setRemoveFromQueueOnException(boolean shouldRemoveFromQueueOnException)
+8) setRemoveFromQueueOnException(boolean removeFromQueueOnException)
 9) The getter for 8.
 </pre>
 
