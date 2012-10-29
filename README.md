@@ -53,7 +53,7 @@ wait for the the next activity to assign a callback, and if you set autoExecuteR
 Tasks will be auto executed.
 
 TaskActivity has a couple of interfaces used to do all the dirty work. TasksRestoredCallback, TaskCompletedCallback, TaskUpdateCallback, 
-and ExecutorReferenceCallback. The names really say it all. TaskCompletedCallback, and TaskUpdateCallback aren't defined in the abstract Activity, and are for you to define in 
+and ExecutorReferenceCallback. The names really say it all. TaskCompletedCallback, and TaskUpdateCallback aren't defined in the abstract TaskActivity, and are for you to define in 
 your implementation.
 
 <b>Tasks</b><br>
