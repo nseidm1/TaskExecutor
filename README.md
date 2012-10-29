@@ -12,7 +12,7 @@ completes if the user opened a new Activity.
 
 Do you worry about null pointers in onProgressUpdate()?<br>
 What happens if a user launches a new Activity while your thread is running?<br>
-What happens if the user presses the home button?
+What happens if the user presses the home button during a long running operation?
 
 The TaskExecutor manages everything for you, updates your ui callbacks to have a valid reference, and will even queue 
 completion results if no Activity is available. The TaskExecutor is a super custom, rock solid, awesome implementation 
