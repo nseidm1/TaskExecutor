@@ -38,10 +38,10 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
   
     /**
      * @param SERVICE_MODE
-     * Provide a Service mode, either SERVICE_MODE_CALLBACK_INCONSIDERATE, or SERVICE_MODE_CALLBACK_DEPENDENT.
+     * Provide a Service mode, either CALLBACK_INCONSIDERATE, or CALLBACK_DEPENDENT.
      * This tells the service how to behave if it's restarted.
-     * SERVICE_MODE_CALLBACK_DEPENDENT will not execute the queue and will wait for an
-     * activity for a hard callback to be available. SERVICE_MODE_CALLBACK_INCONSIDERATE will
+     * CALLBACK_DEPENDENT will not execute the queue and will wait for an
+     * activity for a hard callback to be available. CALLBACK_INCONSIDERATE will
      * execute the queue without a hard callback being available.
      * @param AUTOEXEC_MODE
      * Provide an auto execute mode, either AUTOEXEC_MODE_ENABLED, or AUTOEXEC_MODE_DISABLED. The service 
@@ -53,7 +53,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
      * @param tasksRestoredCallback
      * The interface informing an activity if Tasks have been restored by the
      * service after a restart. This interface is ONLY called when the service 
-     * is in SERVICE_MODE_CALLBACK_DEPENDENT mode.
+     * is in CALLBACK_DEPENDENT mode.
      */
     public static void requestExecutorReference(int                       SERVICE_MODE, 
                                                 int                       AUTOEXEC_MODE,
