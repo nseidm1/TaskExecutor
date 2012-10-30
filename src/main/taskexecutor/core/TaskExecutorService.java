@@ -27,8 +27,8 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
     private              	  QueueToDiskTask           mQueueToDisk                        = new QueueToDiskTask(mTaskExecutor, this);
     private volatile static       TasksRestoredCallback     mTasksRestoredCallback              = null;
     private volatile static       ExecutorReferenceCallback mExecutorReferenceCallback          = null;
-    public  	     static final int                       CALLBACK_INCONSIDERATE = 0;
-    public  	     static final int                       CALLBACK_DEPENDENT     = 1;
+    public  	     static final int                       CALLBACK_INCONSIDERATE              = 0;
+    public  	     static final int                       CALLBACK_DEPENDENT                  = 1;
     private volatile static    	  int                       CURRENT_SERVICE_MODE                = CALLBACK_DEPENDENT;
     public           static final int                       AUTOEXEC_MODE_DISABLED              = 0;
     public           static final int                       AUTOEXEC_MODE_ENABLED               = 1;
