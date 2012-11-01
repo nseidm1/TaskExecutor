@@ -24,7 +24,7 @@ public abstract class TaskLoader<D> extends Loader<D>{
      * Just like Tasks, define your asynchronous code needed to generate the data you want 
      * the Loader to manage. Return the data from the method you define.
      * @return
-     * The specified type defined in the subclass parameterization.
+     * The specified data type defined in the subclass parameterization.
      * @throws Exception
      * Throw exception so the deliverResult callback always gets hit even with null.
      */
@@ -37,10 +37,10 @@ public abstract class TaskLoader<D> extends Loader<D>{
     
     /**
      * 	Were not going to use the abstract task method.
-     *  We override the run method so the Task doesn't call the internal post() method; there's 
-     *  reasoning to this that follows. We will not be using the Task's callback that is managed 
+     *  We override the run method so the Task doesn't call the managed ui callbacks; there's 
+     *  reasoning to this that follows. We will not be using the Task's callbacks that are managed 
      *  by the TaskExecutor. We want to use the Task and the TaskExecutor to consolidate all 
-     *  asynchronous Task execution, but we want the ui post to be here.
+     *  asynchronous code execution, but we want the ui post to be here.
      */
     private final class LoaderTask extends Task{
 	private D result = null;

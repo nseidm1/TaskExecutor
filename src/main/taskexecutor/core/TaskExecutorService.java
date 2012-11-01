@@ -20,7 +20,6 @@ import android.os.Looper;
  * @author Noah Seidman
  */
 public class TaskExecutorService extends Service implements ServiceExecutorCallback{
-    private                       Handler                   mHandler                            = new Handler(Looper.getMainLooper());
     private              	  boolean                   mHaveTasksBeenRestored              = false;
     private              	  TaskExecutor              mTaskExecutor                       = new TaskExecutor(this);
     private              	  Executor                  mQueuePersister                     = Executors.newSingleThreadExecutor();
@@ -55,7 +54,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
      * service after a restart. This interface is ONLY called when the service 
      * is in SERVICE_MODE_CALLBACK_DEPENDENT mode.
      */
-    public static void requestExecutorReference(int                       SERVICE_MODE, 
+    public static void requestTaskExecutorReference(int                       SERVICE_MODE, 
                                                 int                       AUTOEXEC_MODE,
 	    					Context                   context, 
 	    					ExecutorReferenceCallback executorReferenceCallback, 
@@ -98,16 +97,16 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
     }
     
     private void processAutoExec(){
-	mHandler.removeCallbacks(autoexecTask);
+	mTaskExecutor.mHandler.removeCallbacks(autoexecTask);
 	if(CURRENT_AUTOEXEC_MODE == AUTOEXEC_MODE_ENABLED)
-	    mHandler.post(autoexecTask);
+	    mTaskExecutor.mHandler.post(autoexecTask);
     }
     
     private Runnable autoexecTask = new Runnable(){
 	@Override
 	public void run(){
 	    mTaskExecutor.executeQueue();
-	    mHandler.postDelayed(this, 5000);
+	    mTaskExecutor.mHandler.postDelayed(this, 5000);
 	}
     };
     

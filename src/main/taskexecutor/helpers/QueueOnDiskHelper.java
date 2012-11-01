@@ -27,14 +27,9 @@ public class QueueOnDiskHelper{
      * @param taskExecutor
      * Provide a reference to the TaskExecutor.
      * @return Returns true if Tasks were retrived from disk.
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @throws IllegalArgumentException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws NoSuchMethodException
-     * @throws ClassNotFoundException
+     * @throws Exception
+     * All tbr hoopla exceptions associated with reflection are thrown here and all stream 
+     * related exceptions.
      */
     public static boolean retrieveTasksFromDisk(Context      context, 
 	    					TaskExecutor taskExecutor) throws Exception{
@@ -69,8 +64,7 @@ public class QueueOnDiskHelper{
 	File[] tasks = getTaskExecutorFilesDir(context).listFiles();
 	Log.d(QueueOnDiskHelper.class.getName(), "Number of Tasks being restored: " + tasks.length);
 	for (File file : tasks){
-	    ByteArrayOutputStream out = getByteArrayOutputStream(file);
-	    Parcel parcel = unmarshallParcel(out);
+	    Parcel parcel = unmarshallParcel(file);
 	    PersistenceObject persistenceObject = constructPersistenceObject(parcel);
 	    Task task = inflateTask(persistenceObject, taskExecutor);
 	    taskArray.add(task);
@@ -99,27 +93,17 @@ public class QueueOnDiskHelper{
 	return persistenceObject;
     }
 
-    private static Parcel unmarshallParcel(ByteArrayOutputStream out) throws IOException{
+    private static Parcel unmarshallParcel(File file) throws Exception{
 	Parcel parcel = Parcel.obtain();
-	parcel.unmarshall(out.toByteArray(), 0, out.size());
-	out.flush();
-	out.close();
+	FileInputStream fIn = new FileInputStream(file);
+	byte[] fileBytes = new byte[(int)file.length()];
+	fIn.read(fileBytes);
+	fIn.close();
+	parcel.unmarshall(fileBytes, 0, fileBytes.length);
 	parcel.setDataPosition(0);
 	Log.d(QueueOnDiskHelper.class.getName(), "Data Available: " + parcel.dataAvail());
 	Log.d(QueueOnDiskHelper.class.getName(), "Data Size: " + parcel.dataSize());
 	return parcel;
-    }
-
-    private static ByteArrayOutputStream getByteArrayOutputStream(File file) throws IOException{
-	ByteArrayOutputStream out = new ByteArrayOutputStream();
-	FileInputStream fIn = new FileInputStream(file);
-	byte[] buffer = new byte[(int) file.length()];
-	int bytesRead = 0;
-	while ((bytesRead = fIn.read(buffer, 0, (int) file.length())) != -1){
-	    out.write(buffer, 0, bytesRead);
-	}
-	fIn.close();	
-	return out;
     }
 
     private static void addFilesInQueue(Vector<Task> localQueueCopy, 
@@ -153,6 +137,7 @@ public class QueueOnDiskHelper{
 	for (int i = 0; i < tasks.length; i++){
 	    boolean delete = true;
 	    for (Task task : queue){
+		//Tasks are written to disk eith the TAG being the name.
 		if (task.getTag().equalsIgnoreCase(tasks[i].getName()))
 		    delete = false;
 	    }

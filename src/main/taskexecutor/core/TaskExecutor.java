@@ -21,8 +21,9 @@ public class TaskExecutor{
             Handler                         mHandler                   = new Handler(Looper.getMainLooper());
             TaskCompletedCallback           mTaskCompletedCallback     = null;
 	    TaskUpdateCallback              mTaskUpdateCallback        = null;
-	    int                             mInterruptTasksAfter       = -1;
 	    Vector<Pair<Bundle, Exception>> mPendingCompletedTasks     = new Vector<Pair<Bundle, Exception>>();
+    private boolean                         mIsDirty                   = false;
+    private int                             mInterruptTasksAfter       = -1;
     private Vector<Task>                    mQueue                     = new Vector<Task>();
     private ServiceExecutorCallback         mServiceHelperCallback     = null;
     private ThreadPoolExecutor              mTaskExecutor              = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
@@ -122,17 +123,27 @@ public class TaskExecutor{
     public void clean(){
 	mTaskCompletedCallback = null;
 	mTaskUpdateCallback    = null;
+	mIsDirty = false;
     }
 
     /**
      * @param taskCompletedCallback
      * @param taskUpdateCallback
      */
-    public void finess(TaskCompletedCallback taskCompletedCallback, TaskUpdateCallback TaskUpdateCallback){
+    public void dirty(TaskCompletedCallback taskCompletedCallback, TaskUpdateCallback TaskUpdateCallback){
 	//Set the callbacks and post any queued Task completed results.
 	mTaskCompletedCallback = taskCompletedCallback;
 	mTaskUpdateCallback    = TaskUpdateCallback;
+	mIsDirty = true;
 	postQueuedCompletedTasks();
+    }
+    
+    /**
+     * @return boolean
+     * Returns the assigned state of the hard callbacks.
+     */
+    public boolean isDirty(){
+	return mIsDirty;
     }
 
     private void postQueuedCompletedTasks(){

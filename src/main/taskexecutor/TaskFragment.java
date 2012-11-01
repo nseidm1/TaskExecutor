@@ -12,8 +12,8 @@ import android.support.v4.app.Fragment;
  */
 public abstract class TaskFragment extends Fragment{
 
-    public static final String       TAG           = TaskFragment.class.getName();
-    protected           TaskExecutor mTaskExecutor = null;
+    public    static final String       TAG           = TaskFragment.class.getName();
+    protected              TaskExecutor mTaskExecutor = null;
     
     @Override
     public void onCreate(Bundle bundle){

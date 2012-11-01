@@ -41,11 +41,11 @@ public class ExampleDialog extends TaskDialogFragment{
     public static class DialogTask extends Task{
 	@Override
 	public void task() throws Exception{
-	    SystemClock.sleep(1000);
+	    Thread.sleep(1000);
 	    Bundle updateBundle = new Bundle();
 	    updateBundle.putString("TOAST", "Almost There");
 	    postUpdate(updateBundle);
-	    SystemClock.sleep(2000);
+	    Thread.sleep(2000);
 	    //Do stuff here.
 	    getMainBundle().putString("CloseDialog", ExampleDialog.class.getName());
 	}

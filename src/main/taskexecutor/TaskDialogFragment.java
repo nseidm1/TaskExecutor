@@ -12,8 +12,8 @@ import android.support.v4.app.DialogFragment;
  */
 public abstract class TaskDialogFragment extends DialogFragment{
 
-    public static final String       TAG           = TaskDialogFragment.class.getName();
-    protected           TaskExecutor mTaskExecutor = null;
+    public    static final String       TAG           = TaskDialogFragment.class.getName();
+    protected              TaskExecutor mTaskExecutor = null;
 
     @Override
     public void onCreate(Bundle bundle){

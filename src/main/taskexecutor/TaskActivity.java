@@ -62,14 +62,14 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
     @Override
     public void onResume(){
 	super.onResume();
-	TaskExecutorService.requestExecutorReference(specifyServiceMode(), specifyAutoexecMode(), this, this, this);
+	TaskExecutorService.requestTaskExecutorReference(specifyServiceMode(), specifyAutoexecMode(), this, this, this);
     }
 
     @Override
     public void getTaskExecutorReference(TaskExecutor taskExecutor){
 	mTaskExecutor = taskExecutor;
 	mTaskExecutorAvailable = true;
-	mTaskExecutor.finess(this, this);
+	mTaskExecutor.dirty(this, this);
     }
 
     @Override
