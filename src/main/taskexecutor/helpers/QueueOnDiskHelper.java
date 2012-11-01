@@ -28,7 +28,7 @@ public class QueueOnDiskHelper{
      * Provide a reference to the TaskExecutor.
      * @return Returns true if Tasks were retrived from disk.
      * @throws Exception
-     * All tbr hoopla exceptions associated with reflection are thrown here and all stream 
+     * All the hoopla exceptions associated with reflection are thrown here and all stream 
      * related exceptions.
      */
     public static boolean retrieveTasksFromDisk(Context      context, 
