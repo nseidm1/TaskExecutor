@@ -54,11 +54,11 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
      * service after a restart. This interface is ONLY called when the service 
      * is in CALLBACK_DEPENDENT mode.
      */
-    public static void requestTaskExecutorReference(int                   SERVICE_MODE, 
-                                                int                       AUTOEXEC_MODE,
-	    					Context                   context, 
-	    					ExecutorReferenceCallback executorReferenceCallback, 
-	    					TasksRestoredCallback     tasksRestoredCallback) {
+    public static void requestTaskExecutorReference(int                       SERVICE_MODE, 
+                                                    int                       AUTOEXEC_MODE,
+	    					    Context                   context, 
+	    					    ExecutorReferenceCallback executorReferenceCallback, 
+	    					    TasksRestoredCallback     tasksRestoredCallback) {
 	mExecutorReferenceCallback = executorReferenceCallback;
 	mTasksRestoredCallback     = tasksRestoredCallback;
 	context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY , SERVICE_MODE ).
