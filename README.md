@@ -88,7 +88,7 @@ Tasks have 9 public methods:
 1) The TaskExecutor has a queue for you to bulk execute Tasks. You use the addToQueue() and removeFromQueue() methods, 
 followed by the executeQueue() method.<br>
 2) If you add items to the queue after calling executeQueue(), you'll have to call executeQueue() at a future time.<br>
-4) TaskExecutor has the findTaskByTag(String TAG) method, so you can keep a local List of Task TAGs, and locate them is needed<br>
+4) TaskExecutor has the findTaskByTag(String TAG) method, so you can keep a local List of Task TAGs, and locate them as needed<br>
 5) Tasks also take a bundle. I highly encourage proper design, your Task should be designed to perform a discrete operation on the Bundle's data. The main 
 bundle is returned in the onTaskComplete callback, and you can define any bundle you'd like to pass to the onTaskUpdate callback.
 <br><br>
