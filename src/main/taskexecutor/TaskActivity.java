@@ -48,6 +48,11 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
      */
     protected abstract boolean autoExecuteRestoredTasks();
     
+    /**
+     * It's save to begin execution of your Tasks here. The TaskExecutor reference is now available.
+     */
+    protected abstract void taskExecutorReferenceAvailable();
+    
     protected boolean isTaskExecutorAvailable(){
 	return mTaskExecutorAvailable;
     }
@@ -68,6 +73,7 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
     @Override
     public void getTaskExecutorReference(TaskExecutor taskExecutor){
 	mTaskExecutor = taskExecutor;
+	taskExecutorReferenceAvailable();
 	mTaskExecutorAvailable = true;
 	mTaskExecutor.dirty(this, this);
     }

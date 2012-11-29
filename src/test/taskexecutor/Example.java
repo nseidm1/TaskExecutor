@@ -271,4 +271,10 @@ public class Example extends TaskActivity implements OnClickListener{
 	    mExecute.setEnabled(true);
 	}
     }
+
+    @Override
+    protected void taskExecutorReferenceAvailable() {
+	// TODO Auto-generated method stub
+	
+    }
 }
