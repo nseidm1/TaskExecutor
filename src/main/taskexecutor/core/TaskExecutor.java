@@ -82,7 +82,8 @@ public class TaskExecutor{
     /**
      * This method directly executes the Task, bypassing the queue. Useful for the 
      * abstract TaskLoader. The Task will not be persisted to disk, no ui callbacks
-     * will be posted unless a reference to the TaskExecutor is set.
+     * will be posted unless a reference to the TaskExecutor is set specifically on 
+     * the supplied Task using {@link Task#setTaskExecutor(TaskExecutor)}.
      * @param task
      * @return Future<?>
      * For optimal use in a Loader, return a reference to the Future.

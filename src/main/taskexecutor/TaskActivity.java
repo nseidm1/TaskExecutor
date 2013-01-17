@@ -20,29 +20,23 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
     protected              TaskExecutor mTaskExecutor          = null;
 
     /**
-     * Provide a Service mode, either CALLBACK_INCONSIDERATE, or CALLBACK_DEPENDENT.
+     * Return a Service mode, either {@link ExecutorService#CALLBACK_INCONSIDERATE}, or {@link ExecutorService#CALLBACK_DEPENDENT}.
      * This tells the service how to behave if it's restarted.
      * CALLBACK_DEPENDENT will not execute the queue and will wait for an
      * activity for a hard callback to be available. CALLBACK_INCONSIDERATE will
      * execute the queue without a hard callback being available.
-     * 
-     * @return return either TaskExecutorService.CALLBACK_INCONSIDERATE or
-     * TaskExecutorService.CALLBACK_DEPENDENT.
      */
     protected abstract int specifyServiceMode();
     
     /**
-     * Provide an auto execute mode, either AUTOEXEC_MODE_ENABLED, or AUTOEXEC_MODE_DISABLED. The service 
+     * Return an auto execute mode, either {@link ExecutorService#AUTOEXEC_MODE_ENABLED}, or {@link ExecutorService#AUTOEXEC_MODE_DISABLED}. The service 
      * will auto execute queued Tasks every five seconds automatically without needing to manually call 
      * executeTasks().
-
-     * @return return either TaskExecutorService.AUTOEXEC_MODE_ENABLED or
-     * TaskExecutorService.AUTOEXEC_MODE_DISABLED.
      */
     protected abstract int specifyAutoexecMode();
 
     /**
-     * @return When the Service is in CALLBACK_DEPENDENT mode, and Tasks are
+     * @return When the Service is in {@link ExecutorService#CALLBACK_DEPENDENT} mode, and Tasks are
      * restored from a killed Service, should the queue auto execute on the next
      * Activity launch?
      */

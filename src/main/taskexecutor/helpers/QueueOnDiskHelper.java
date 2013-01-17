@@ -42,7 +42,7 @@ public class QueueOnDiskHelper{
     }
 
     /**
-     * @param context
+     * @param Context
      * @param taskExecutor
      * Provide a reference to the TaskExecutor.
      * @throws IOException

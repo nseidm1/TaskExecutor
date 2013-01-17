@@ -12,6 +12,7 @@ import main.taskexecutor.helpers.QueueToDiskTask;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.IBinder;
 
 /**
@@ -43,7 +44,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
      * @param AUTOEXEC_MODE
      * Provide an auto execute mode, either AUTOEXEC_MODE_ENABLED, or AUTOEXEC_MODE_DISABLED. The service 
      * will auto execute queued Tasks every five seconds automatically without needing to manually call 
-     * executeTasks().
+     * {@link #executeTasks()}.
      * @param context
      * @param ExecutorReferenceCallback
      * The interface that returns a reference to the TaskExecutor.
