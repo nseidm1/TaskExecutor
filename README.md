@@ -41,8 +41,7 @@ bundled info however you'd like.<br>
 The included abstract TaskActivity class makes for easy use. Simply extend the class and utilize the protected 
 mTaskExecutor reference to execute Tasks. 
 
-TaskActivity has three abstract methods, specifyServiceMode(), specifyAutoexecMode(), and 
-autoExecuteRestoredTasks(). 
+TaskActivity has four abstract methods, specifyServiceMode(), specifyAutoexecMode(), autoExecuteRestoredTasks(), and taskExecutorReferenceAvailable(). 
 
 The Service has two MODEs, CALLBACK_INCONSIDERATE and CALLBACK_DEPENDENT which 
 are pertinent when Tasks are restored from disk 
