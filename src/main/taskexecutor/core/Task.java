@@ -5,7 +5,12 @@ import android.util.*;
 import java.util.*;
 
 /**
- * @author Noah Seidman
+ * 
+ * Welcome to the Task. This is where you get stuff done. There's one abstract method just like a Runnable that you'll implement to get your work done.
+ * The Task has the two main callbacks you're accustomed to in AsyncTasks, {@link #postUpdate(Bundle)}, and {@link #postComplete(Boolean, Exception)}.
+ * postComplete is automatically managed, but set to protected if you want to define it yourself. By default it will pass the main Task bundle to the
+ * TaskExecutor's onTaskComplete method that you end up defining in your Activity's abstract implementation. Updates don't have a default implementation 
+ * so you'll want to use postUpdate when you define the {@link #task()} method; postUpdate will execute on the UI thread.
  */
 public abstract class Task implements Runnable{
     private TaskExecutor mTaskExecutor               = null;
