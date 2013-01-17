@@ -6,7 +6,6 @@ import main.taskexecutor.core.Task;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.os.SystemClock;
 
 public class ExampleDialog extends TaskDialogFragment{
 
