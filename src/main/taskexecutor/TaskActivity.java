@@ -9,7 +9,10 @@ import android.support.v4.app.FragmentActivity;
 import main.taskexecutor.callbacks.*;
 
 /**
+ * Typically configurations are done using direct method calls, the TaskActivity uses abstract definitions to allow for variation to the configurations 
+ * depending on conditions. Defining behavior abstractly also forces definition, rather than optionally allowing configuration by method calls.
  * @author Noah Seidman
+ * 
  */
 public abstract class TaskActivity extends FragmentActivity implements TaskCompletedCallback,
                                                                        TaskUpdateCallback,
@@ -43,11 +46,14 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
     protected abstract boolean autoExecuteRestoredTasks();
     
     /**
-     * It's save to begin execution of your Tasks here. The TaskExecutor reference is now available.
+     * It's safe to begin using the TaskExecutor here. The TaskExecutor reference is now available.
      */
     protected abstract void taskExecutorReferenceAvailable();
     
-    protected boolean isTaskExecutorAvailable(){
+    /**
+     * @return the current availability of the TaskExecutor reference. 
+     */
+    public final boolean isTaskExecutorAvailable(){
 	return mTaskExecutorAvailable;
     }
 
