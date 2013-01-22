@@ -22,6 +22,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
     private              	  TaskExecutor              mTaskExecutor                       = new TaskExecutor(this);
     private              	  Executor                  mQueuePersister                     = Executors.newSingleThreadExecutor();
     private              	  QueueToDiskTask           mQueueToDisk                        = new QueueToDiskTask(mTaskExecutor, this);
+    private          static       int                       mNumberOfReferenceRequests          = 0;
     private volatile static       TasksRestoredCallback     mTasksRestoredCallback              = null;
     private volatile static       ExecutorReferenceCallback mExecutorReferenceCallback          = null;
     public  	     static final int                       CALLBACK_INCONSIDERATE              = 0;
@@ -57,6 +58,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	    					    Context                   context, 
 	    					    ExecutorReferenceCallback executorReferenceCallback, 
 	    					    TasksRestoredCallback     tasksRestoredCallback) {
+	mNumberOfReferenceRequests++;
 	mExecutorReferenceCallback = executorReferenceCallback;
 	mTasksRestoredCallback     = tasksRestoredCallback;
 	context.startService(new Intent(context, TaskExecutorService.class).putExtra(SERVICE_MODE_KEY , SERVICE_MODE ).
@@ -67,6 +69,7 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
     public int onStartCommand(Intent intent, 
 	    		      int    flags, 
 	    		      int    startId){
+	mNumberOfReferenceRequests--;
 	CURRENT_SERVICE_MODE  = intent.getIntExtra(SERVICE_MODE_KEY , CALLBACK_DEPENDENT    );
 	CURRENT_AUTOEXEC_MODE = intent.getIntExtra(AUTOEXEC_MODE_KEY, AUTOEXEC_MODE_DISABLED);
 	
@@ -89,8 +92,12 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 		break;
 	    }
 	}
-	mExecutorReferenceCallback = null;
-	mTasksRestoredCallback = null;
+	//Only clear the callbacks if the number of reference requests is 0. This will prevent a race condition if multi reference requests 
+	//are pending the onStartCommand call.
+	if (mNumberOfReferenceRequests == 0) {
+	    mExecutorReferenceCallback = null;
+	    mTasksRestoredCallback = null;
+	}
 	return Service.START_REDELIVER_INTENT;
     }
     

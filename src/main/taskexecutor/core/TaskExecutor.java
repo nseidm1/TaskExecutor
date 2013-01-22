@@ -25,11 +25,11 @@ public class TaskExecutor{
     private boolean                         mIsDirty                   = false;
     private int                             mInterruptTasksAfter       = -1;
     private Vector<Task>                    mQueue                     = new Vector<Task>();
-    private ServiceExecutorCallback         mServiceHelperCallback     = null;
+    private ServiceExecutorCallback         mServiceExecutorCallback     = null;
     private ThreadPoolExecutor              mTaskExecutor              = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
 
     public TaskExecutor(ServiceExecutorCallback serviceHelperCallback){
-	mServiceHelperCallback = serviceHelperCallback;
+	mServiceExecutorCallback = serviceHelperCallback;
     }
 
     /**
@@ -73,9 +73,8 @@ public class TaskExecutor{
     public void executeQueue(){
 	Log.d(TaskExecutor.class.getName(), "Execute " + mQueue.size() + " Tasks");
 	for (Task task : mQueue){
-	    if (!mTaskExecutor.getQueue().contains(task)){
+	    if (!mTaskExecutor.getQueue().contains(task))
 		executeTask(task);
-	    }
 	}
     }
     
@@ -107,8 +106,12 @@ public class TaskExecutor{
 	mInterruptTasksAfter = interruptTasksAfter;
     }
     
+    /**
+     * @param future
+     * If {@link #setInterruptTaskAfter(int)} is set to a millisecond value > 0 the Future<?> of the submitted Task will be canceled after the specific time.
+     */
     private void setInterruptorIfActive(final Future<?> future){
-	if (mInterruptTasksAfter != -1){
+	if (mInterruptTasksAfter > 0){
 	    mHandler.postDelayed(new Runnable(){
 		@Override
 		public void run(){
@@ -124,7 +127,7 @@ public class TaskExecutor{
     public void clean(){
 	mTaskCompletedCallback = null;
 	mTaskUpdateCallback    = null;
-	mIsDirty = false;
+	mIsDirty               = false;
     }
 
     /**
@@ -135,7 +138,7 @@ public class TaskExecutor{
 	//Set the callbacks and post any queued Task completed results.
 	mTaskCompletedCallback = taskCompletedCallback;
 	mTaskUpdateCallback    = TaskUpdateCallback;
-	mIsDirty = true;
+	mIsDirty               = true;
 	postQueuedCompletedTasks();
     }
     
@@ -201,7 +204,10 @@ public class TaskExecutor{
 	queueModified();
     }
 
+    /**
+     * This triggers the persisted queue on disk to occur in the Service. It's done in the service to have Context available.
+     */
     private void queueModified(){
-	mServiceHelperCallback.queueModified();
+	mServiceExecutorCallback.queueModified();
     }
 }

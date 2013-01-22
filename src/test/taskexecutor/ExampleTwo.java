@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -20,7 +21,7 @@ public class ExampleTwo extends Example implements LoaderCallbacks<Bundle>{
     public void onCreate(Bundle bundle){
 	super.onCreate(bundle);
 	//Hide the new Activity button.
-	((Button)findViewById(R.id.new_activity)).setVisibility(Button.GONE);
+	((Button)findViewById(R.id.new_activity)).setVisibility(View.GONE);
 	mLoaderManager = getSupportLoaderManager();
     }
 
