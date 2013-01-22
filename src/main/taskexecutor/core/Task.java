@@ -17,6 +17,7 @@ public abstract class Task implements Runnable{
     private String       TAG                         = "";
     private boolean      mRemoveFromQueueOnSuccess   = true;
     private boolean      mRemoveFromQueueOnException = true;
+    private boolean      mQueueResultsIfNoActivity   = true;
     private Bundle       mBundle                     = new Bundle();
     private Random       mRandom                     = new Random();
 
@@ -85,6 +86,14 @@ public abstract class Task implements Runnable{
     public String getTag(){
 	return TAG;
     }
+    
+    /**
+     * @param queueResultsIfNoActivity
+     * If no Activity is available by default results are queue for delivery to the next visible Activity. You can disable this behavior here.
+     */
+    public void setCacheResultsIfNoActivity(boolean queueResultsIfNoActivity) {
+	mQueueResultsIfNoActivity = queueResultsIfNoActivity;
+    }
 
     /**
      * @param taskExecutor
@@ -119,6 +128,12 @@ public abstract class Task implements Runnable{
 	});
     }
 
+    /**
+     * @param shouldRemove
+     * @param exception
+     * The main bundle of the Task will be passed to the TaskCompletedCallback managed by the TaskExecutor, or it will be queued for delivery
+     * if no currently visible Activity is available. You can enable and disable the queueing using {@link #setCacheResultsIfNoActivity(Boolean)}
+     */
     private void postComplete(final boolean   shouldRemove, 
 	    		      final Exception exception){
 	if (shouldRemove)
@@ -128,7 +143,7 @@ public abstract class Task implements Runnable{
 	    public void run(){
 		if(mTaskExecutor.mTaskCompletedCallback != null){
 		    mTaskExecutor.mTaskCompletedCallback.onTaskComplete(mBundle, exception);
-		} else{
+		} else if (mQueueResultsIfNoActivity){
 		    //The results will post when the next Activity resumes.
 		    Pair<Bundle, Exception> pair = new Pair<Bundle, Exception>(mBundle, exception);
 		    mTaskExecutor.mPendingCompletedTasks.add(pair);
