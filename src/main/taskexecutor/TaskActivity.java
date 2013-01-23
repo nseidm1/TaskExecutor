@@ -19,7 +19,6 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
                                                                        TasksRestoredCallback,
 								       ExecutorReferenceCallback{
     public    static final String       TAG                    = TaskActivity.class.getName();
-    private                boolean      mTaskExecutorAvailable = false;
     protected              TaskExecutor mTaskExecutor          = null;
 
     /**
@@ -54,13 +53,13 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
      * @return the current availability of the TaskExecutor reference. 
      */
     public final boolean isTaskExecutorAvailable(){
-	return mTaskExecutorAvailable;
+	return mTaskExecutor != null;
     }
 
     @Override
     public void onPause(){
 	super.onPause();
-	if (mTaskExecutorAvailable)
+	if (mTaskExecutor != null)
 	    mTaskExecutor.clean();
     }
 
@@ -74,7 +73,6 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
     public void getTaskExecutorReference(TaskExecutor taskExecutor){
 	mTaskExecutor = taskExecutor;
 	taskExecutorReferenceAvailable();
-	mTaskExecutorAvailable = true;
 	mTaskExecutor.dirty(this, this);
     }
 
