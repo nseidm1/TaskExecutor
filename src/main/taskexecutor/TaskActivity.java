@@ -46,7 +46,7 @@ public abstract class TaskActivity extends FragmentActivity implements TaskCompl
     protected abstract boolean autoExecuteRestoredTasks();
     
     /**
-     * It's safe to begin using the TaskExecutor here. The TaskExecutor reference is now available.
+     * It's safe to begin using the TaskExecutor here. The TaskExecutor reference is now available. This method will be called after every onResume.
      */
     protected abstract void taskExecutorReferenceAvailable();
     
