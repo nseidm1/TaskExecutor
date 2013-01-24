@@ -48,5 +48,10 @@ public class ExampleDialog extends TaskDialogFragment{
 	    //Do stuff here.
 	    getMainBundle().putString("CloseDialog", ExampleDialog.class.getName());
 	}
+
+	@Override
+	public boolean queueResultsIfNoActivity() {
+	    return true;
+	}
     }
 }

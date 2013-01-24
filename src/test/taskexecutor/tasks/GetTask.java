@@ -31,4 +31,9 @@ public class GetTask extends Task{
 	    throw e;
 	}
     }
+
+    @Override
+    public boolean queueResultsIfNoActivity() {
+	return false;
+    }
 }

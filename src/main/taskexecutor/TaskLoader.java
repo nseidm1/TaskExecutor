@@ -62,6 +62,10 @@ public abstract class TaskLoader<D> extends Loader<D>{
 		}
 	    });	
 	}
+	@Override
+	public boolean queueResultsIfNoActivity() {
+	    return false;
+	}
     }
     
     @Override
