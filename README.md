@@ -71,7 +71,7 @@ The TaskExecutor is managed by a Service, but accessible in a unique way. TaskAc
 the TaskExecutor. So it's a service with a dash of singleton feel, but with a predictable defined lifecycle :-)
 
 <pre>
-Tasks have 10 public methods:
+Tasks have 9 public methods:
 1) setTaskExecutor(TaskExecutor taskExecutor)
 2) setMainBundle(Bundle bundle)
 3) getMainBundle()
@@ -81,7 +81,6 @@ Tasks have 10 public methods:
 7) The getter for 6.
 8) setRemoveFromQueueOnException(boolean removeFromQueueOnException)
 9) The getter for 8.
-10) setCacheResultsIfNoActivity(boolean setCacheResultsIfNoActivity)
 </pre>
 
 <b>Tips</b><br>
