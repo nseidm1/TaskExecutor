@@ -1,6 +1,8 @@
 TaskExecutor
 ===================
 
+Mad props to Napalm, the best damned coder I've ever seen :-)
+
 <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Highway_401_by_401-DVP.jpg/320px-Highway_401_by_401-DVP.jpg"/>
 
 <b>What problem does the TaskExecutor solve?</b></br><br>
