@@ -122,6 +122,12 @@ public class TaskExecutorService extends Service implements ServiceExecutorCallb
 	    Log.e(TaskExecutorService.class.getName(), "Error retrieving existing queue.");
 	}
     }
+    
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mTaskExecutor.mHandler.removeCallbacks(autoexecTask);
+    }
 
     @Override
     public void queueModified() {
