@@ -8,25 +8,24 @@ import main.taskexecutor.core.TaskExecutorService;
 /**
  * @author Noah Seidman
  */
-public class QueueToDiskTask implements Runnable{
-    private TaskExecutor        mTaskExecutor         = null;
-    private TaskExecutorService mTaskExecutorService  = null;
+public class QueueToDiskTask implements Runnable {
+    private TaskExecutor mTaskExecutor = null;
+    private TaskExecutorService mTaskExecutorService = null;
 
-    public QueueToDiskTask(TaskExecutor        taskExecutor,
-	    		   TaskExecutorService taskExecutorService){
-	mTaskExecutor        = taskExecutor;
+    public QueueToDiskTask(TaskExecutor taskExecutor, TaskExecutorService taskExecutorService) {
+	mTaskExecutor = taskExecutor;
 	mTaskExecutorService = taskExecutorService;
     }
 
     @Override
-    public void run(){
+    public void run() {
 	updateTasksOnDisk();
     }
 
-    private void updateTasksOnDisk(){
-	try{
+    private void updateTasksOnDisk() {
+	try {
 	    QueueOnDiskHelper.updateTasksOnDisk(mTaskExecutorService, mTaskExecutor);
-	}catch (IOException e){
+	} catch (IOException e) {
 	    e.printStackTrace();
 	    Log.e(TaskExecutorService.class.getName(), "Error saving existing queue.");
 	}

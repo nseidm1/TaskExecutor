@@ -9,24 +9,24 @@ import org.apache.http.client.methods.HttpGet;
 
 import android.net.http.AndroidHttpClient;
 
-public class GetTask extends Task{
+public class GetTask extends Task {
     public static final String DELAY = "DELAY";
-    public static final String URL   = "URL";
+    public static final String URL = "URL";
 
     @Override
-    public void task() throws IOException, InterruptedException{
+    public void task() throws IOException, InterruptedException {
 	AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
-	try{
+	try {
 	    Thread.sleep(getMainBundle().getInt(DELAY));
 	    HttpGet get = new HttpGet(getMainBundle().getString(URL));
 	    HttpResponse response = client.execute(get);
 	    client.close();
 	    int responseCode = response.getStatusLine().getStatusCode();
 	    getMainBundle().putString("ResponseCode", "Response Code: " + responseCode);
-	}catch (IOException e){
+	} catch (IOException e) {
 	    client.close();
 	    throw e;
-	}catch (InterruptedException e){
+	} catch (InterruptedException e) {
 	    client.close();
 	    throw e;
 	}

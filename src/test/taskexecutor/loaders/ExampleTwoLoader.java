@@ -5,11 +5,12 @@ import main.taskexecutor.TaskLoader;
 import test.taskexecutor.ExampleTwo;
 import android.os.Bundle;
 
-public class ExampleTwoLoader extends TaskLoader<Bundle>{
+public class ExampleTwoLoader extends TaskLoader<Bundle> {
 
-    public ExampleTwoLoader(TaskActivity activity){
-        super(activity);
+    public ExampleTwoLoader(TaskActivity activity) {
+	super(activity);
     }
+
     @Override
     protected Bundle loaderTask() throws Exception {
 	Bundle bundle = new Bundle();
