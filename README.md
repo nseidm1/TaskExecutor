@@ -19,8 +19,7 @@ and will even queue completion results if no Activity is available. Tasks are pe
 accommodate configurationChanges, new Activity creation, and even survive process termination. With many options, 
 your Tasks are almost guaranteed to execute.
 
-The most important power of the TaskExecutor is the consolidation of all asynchronous activity. Control, organization, and consolidation is 
-the only way to take an app to a higher level. With the TaskExecutor you'll always know where your Tasks are executing, and exactly 
+The most important power of the TaskExecutor is the consolidation of all asynchronous activity. With the TaskExecutor you'll always know where your Tasks are executing, and exactly 
 where the ui callbacks will be.
 
 <b>Quick Info</b><br>
