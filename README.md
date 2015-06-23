@@ -15,8 +15,7 @@ What happens if a user launches a new Activity while your thread is running?<br>
 What happens if the user presses the home button during a long running operation?
 
 The TaskExecutor manages everything for you, updates your ui callbacks to have a valid reference when a new Activity is launched, 
-and will even queue completion results if no Activity is available. The TaskExecutor is a super custom, rock solid, implementation 
-of a robust, consolidated, and centralized asynchronous Task execution framework. Tasks are persisted to disk, 
+and will even queue completion results if no Activity is available. Tasks are persisted to disk, 
 accommodate configurationChanges, new Activity creation, and even survive process termination. With many options, 
 your Tasks are almost guaranteed to execute.
 
